@@ -273,12 +273,15 @@ class CurveUI(QWidget):
         self._undoStack.push(CurveModelEdit(mdl, [], rows))
 
     def __copyCameraPosition(self):
+        # TODO
         raise NotImplementedError()
 
     def __copyCameraAngles(self):
+        # TODO
         raise NotImplementedError()
 
     def __copyKeys(self):
+        # TODO
         raise NotImplementedError()
 
 

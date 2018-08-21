@@ -351,8 +351,6 @@ class DirectionalAction(Action):
     def processMouseDelta(self, event):
         raise NotImplementedError()
 
-    def draw(self, painter):
-        pass
 
 
 class MoveKeyAction(DirectionalAction):

@@ -48,7 +48,6 @@ if __name__ == '__main__':
     # TODO: Curve renames and loop mode changes are not undoable
     curveUI = CurveUI(timer, eventManager, clipManager, undoStack)
 
-
     def eventChanged():
         for event in eventManager.selectionModel().selectedRows():
             curveUI.setEvent(event.data(Qt.UserRole + 1))
