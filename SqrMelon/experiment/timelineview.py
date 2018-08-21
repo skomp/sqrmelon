@@ -1,9 +1,11 @@
 import functools
 
-from experiment.actions import MarqueeActionBase, MoveTimeAction, MoveEventAction
+from experiment.actions import MarqueeActionBase, MoveTimeAction, MoveEventAction, DuplicateEventAction
 from experiment.gridview import GridView
 from experiment.model import Shot
+from experiment.model import Event
 from experiment.timer import drawPlayhead
+
 from qtutil import *
 import icons
 
@@ -178,12 +180,13 @@ class TimelineMarqueeAction(MarqueeActionBase):
 class TimelineView(GridView):
     def __init__(self, timer, undoStack, model, selectionModel):
         super(TimelineView, self).__init__(mask=1)
-
-        # TODO: these multiple models should become 1 model owned by this view, where the other views are just filtered
+        
         self.__model = model
         self.__selectionModel = selectionModel
         selectionModel.selectionChanged.connect(self.repaint)
         model.dataChanged.connect(self.layout)
+        model.rowsInserted.connect(self.layout)
+        model.rowsRemoved.connect(self.layout)
 
         self._timer = timer
         timer.changed.connect(self.repaint)
@@ -193,6 +196,7 @@ class TimelineView(GridView):
         self.frameAll()
         self._viewRect.changed.connect(self.layout)
         self._viewRect.changed.disconnect(self.repaint)  # layout already calls repaint
+        self._copyPasteAction = None
 
     def frameAll(self):
         start = float('inf')
@@ -326,3 +330,31 @@ class TimelineView(GridView):
 
         if self._action is not None:
             self._action.draw(painter)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_D and event.modifiers() & Qt.ControlModifier:
+            # Duplicate items
+            selected = list(self._selectedItems())
+            if self._action is None:
+                self._action = DuplicateEventAction(selected, self.__models, self._undoStack)
+
+            if self._action.keyPressEvent(event):
+                self.layout()
+
+        if event.matches(QKeySequence.Copy):
+            # Copy items
+            # TODO: What happens when we copy something somewhere else in the UI?
+            selected = list(self._selectedItems())
+            self._copyPasteAction = DuplicateEventAction(selected, self.__models, self._undoStack)
+
+        if event.matches(QKeySequence.Paste) and self._copyPasteAction:
+            # Paste items
+            if self._copyPasteAction.keyPressEvent(event):
+                self.layout()
+
+    def keyReleaseEvent(self, event):
+        if event.key() == Qt.Key_Control:
+            if isinstance(self._action, DuplicateEventAction):
+                self._action = None
+
+
