@@ -1,3 +1,11 @@
 {
-  "pipeline": "default"
+  "pipeline": "default",
+  "camera": {
+    "tx": 0.0,
+    "ty": 1.0,
+    "tz": -10.0,
+    "rx": 0.0,
+    "ry": 0.0,
+    "rz": 0.0
+  }
 }

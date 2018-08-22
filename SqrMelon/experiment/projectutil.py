@@ -4,7 +4,7 @@ from qtutil import *
 
 
 def settings():
-    return QSettings('PB', 'SqrMelon')
+    return QSettings('PB', 'SqrMelon2')
 
 
 def projectFolder():
@@ -17,7 +17,7 @@ def pipelineFolder():
 
 
 def iterPipelineNames():
-    for name in os.listdir(projectFolder()):
+    for name in os.listdir(pipelineFolder()):
         if name.endswith('.json'):
             yield name[:-len('.json')]
 
@@ -42,6 +42,10 @@ def _iterStitches(pipelineName, key):
 
 def publicStitches(pipelineName):
     return set(_iterStitches(pipelineName, 'Public'))
+
+
+def sceneStitchesSource(pipelineName):
+    return set(_iterStitches(pipelineName, 'Scene'))
 
 
 def sceneStitches(sceneName):

@@ -5,10 +5,11 @@ from experiment.model import Clip, Shot, Event
 from experiment.timelineview import TimelineView
 from experiment.timer import Time
 from experiment.widgets import ClipManager, CurveUI, EventModel, ShotModel, FilteredView
+from experiment.projectutil import settings
 
 if __name__ == '__main__':
     app = QApplication([])
-    settings = QSettings('PB', 'experimental')
+    settings().setValue('currentproject', 'defaultproject')
 
     undoStack = QUndoStack()
     undoView = QUndoView(undoStack)
@@ -58,7 +59,7 @@ if __name__ == '__main__':
     eventManager.selectionChange.connect(eventChanged)
     eventTimeline = TimelineView(timer, undoStack, model, selectionModel)
 
-    mainWindow = QMainWindowState(settings)
+    mainWindow = QMainWindowState(settings())
     mainWindow.setDockNestingEnabled(True)
     mainWindow.createDockWidget(undoView)
     mainWindow.createDockWidget(clipManager)

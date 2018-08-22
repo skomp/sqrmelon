@@ -1,5 +1,7 @@
+import json
+
 import fileutil
-from experiment.projectutil import iterSceneNames, scenesFolder, iterPipelineNames, publicStitches, sceneStitches
+from experiment.projectutil import iterSceneNames, scenesFolder, iterPipelineNames, publicStitches, sceneStitches, pipelineFolder, sceneStitchesSource
 from qtutil import *
 import icons
 from send2trash import send2trash
@@ -61,11 +63,11 @@ class SceneList(QWidget):
             self.view.setExpanded(items[0].index(), True)
             self.view.selectionModel().select(items[0].index(), QItemSelectionModel.ClearAndSelect)
 
-    def __createShot(self):
-        for idx in self.view.selectionModel().selectedIndexes():
-            item = self.view.model().itemFromIndex(idx)
-            self.requestCreateShot.emit(item.text())
-            return
+    # def __createShot(self):
+    #    for idx in self.view.selectionModel().selectedIndexes():
+    #        item = self.view.model().itemFromIndex(idx)
+    #        self.requestCreateShot.emit(item.text())
+    #        return
 
     def __contextMenu(self, pos):
         index = self.view.indexAt(pos)
@@ -97,7 +99,7 @@ class SceneList(QWidget):
             self.currentChanged.emit(self.view.model().itemFromIndex(current))
 
     def __onDeleteScene(self):
-        if QMessageBox.warning(self, 'Deleting scene', 'This action is not undoable! Continue?', QMessageBox.Yes | QMessageBox.No) != QMessageBox.Yes:
+        if QMessageBox.warning(self, 'Deleting scene(s)', 'This action is not undoable! Continue?', QMessageBox.Yes | QMessageBox.No) != QMessageBox.Yes:
             return
         rows = []
         for idx in self.view.selectionModel().selectedIndexes():
@@ -111,62 +113,6 @@ class SceneList(QWidget):
         rows.sort()
         for row in rows[::-1]:
             self.view.model().removeRow(row)
-
-    def __onAddScene(self):
-        # request user for a template if there are multiple options
-        templates = list(Templates(self.__subFolder))
-
-        if not templates:
-            QMessageBox.critical(self, 'Could not create scene', 'Can not add scenes to this project until a template has been made to base them off.')
-            return
-
-        if len(templates) == 1:
-            templateDir = TemplateSourceFolderFromName(templates[0], self.__subFolder)
-            templatePath = TemplateFileFromName(templates[0], self.__subFolder)
-        else:
-            template = QInputDialog.getItem(self, 'Create scene', 'Select template', templates, 0, False)
-            if not template[1] or not template[0] in templates:
-                return
-            templateDir = TemplateSourceFolderFromName(template[0], self.__subFolder)
-            templatePath = TemplateFileFromName(template[0], self.__subFolder)
-
-        name = QInputDialog.getText(self, 'Create scene', 'Scene name')
-        if not name[1]:
-            return
-
-        scenesPath = ScenesPath(self.__subFolder)
-        outFile = os.path.join(scenesPath, name[0] + SCENE_EXT)
-        outDir = os.path.join(scenesPath, name[0])
-        if fileutil.exists(outFile):
-            QMessageBox.critical(self, 'Could not create scene', 'A scene with name "%s" already exists. No scene was created.' % name[0])
-            return
-
-        if fileutil.exists(outDir):
-            if QMessageBox.warning(self, 'Scene not empty', 'A folder with name "%s" already exists. Create scene anyways?' % name[0], QMessageBox.Ok | QMessageBox.Cancel) == QMessageBox.Cancel:
-                return
-        else:
-            os.makedirs(outDir.replace('\\', '/'))
-
-        with fileutil.edit(outFile) as fh:
-            fh.write('<scene camera="0,1,-10,0,0,0" template="%s"/>' % os.path.relpath(templatePath, scenesPath))
-
-        # find required template inputs (sections)
-        xTemplate = ParseXMLWithIncludes(templatePath)
-        for xPass in xTemplate:
-            for xElement in xPass:
-                if xElement.tag.lower() != 'section':
-                    continue
-                # given a section make a stub file so the scene is complete on disk
-                resource = os.path.join(templateDir, xElement.attrib['path'])
-                text = ''
-                # copy template data if there is any
-                if fileutil.exists(resource):
-                    with fileutil.read(resource) as fh:
-                        text = fh.read()
-                with fileutil.edit(os.path.join(outDir, xElement.attrib['path'])) as fh:
-                    fh.write(text)
-
-        self.appendSceneItem(name[0])
 
     def updateWithCurrentProject(self):
         self.setEnabled(True)
@@ -201,3 +147,56 @@ class SceneList(QWidget):
 
     def clear(self):
         self.view.model().clear()
+
+    def __onAddScene(self):
+        # request user for a template if there are multiple options
+        pipelines = list(iterPipelineNames())
+        if not pipelines:
+            QMessageBox.critical(self, 'Could not create scene', 'Can not add scenes to this project until a pipeline has been set up to base them off.')
+            return
+
+        if len(pipelines) > 1:
+            pipeline = QInputDialog.getItem(self, 'Create scene', 'Select pipeline', pipelines, 0, False)
+            if not pipeline[1] or not pipeline[0] in pipelines:
+                return
+            pipeline = pipeline[0]
+        else:
+            pipeline = pipelines[0]
+
+        name = QInputDialog.getText(self, 'Create scene', 'Scene name')
+        if not name[1]:
+            return
+
+        scenesPath = scenesFolder()
+        outFile = os.path.join(scenesPath, name[0] + SCENE_EXT)
+        outDir = os.path.join(scenesPath, name[0])
+        if fileutil.exists(outFile):
+            QMessageBox.critical(self, 'Could not create scene', 'A scene with name "%s" already exists. No scene was created.' % name[0])
+            return
+
+        if fileutil.exists(outDir):
+            if QMessageBox.warning(self, 'Scene not empty', 'A folder with name "%s" already exists. Create scene anyways?' % name[0], QMessageBox.Ok | QMessageBox.Cancel) == QMessageBox.Cancel:
+                return
+        else:
+            os.makedirs(outDir.replace('\\', '/'))
+
+        # create scene
+        with fileutil.edit(outFile) as fh:
+            initialSceneContent = {'pipeline': 'default', 'camera': {'tx': 0.0, 'ty': 1.0, 'tz': -10.0, 'rx': 0.0, 'ry': 0.0, 'rz': 0.0}}
+            json.dump(initialSceneContent, fh)
+
+        # create files required per-scene as defined by the pipeline
+        srcDir = os.path.join(pipelineFolder(), pipeline)
+        for sitchName in sceneStitchesSource(pipeline):
+            # read source data if any
+            src = os.path.join(srcDir, sitchName + '.glsl')
+            text = ''
+            if fileutil.exists(src):
+                with fileutil.read(src) as fh:
+                    text = fh.read()
+            # create required shader stitch
+            dst = os.path.join(outDir, sitchName + '.glsl')
+            with fileutil.edit(dst) as fh:
+                fh.write(text)
+
+        self.appendSceneItem(name[0])
