@@ -84,24 +84,23 @@ class GraphicsItemShot(GraphicsItemEvent):
 class TimelineMarqueeAction(MarqueeActionBase):
     CLICK_SIZE = 2
 
-    def __init__(self, view, selectionModel, undoStack):
-        super(TimelineMarqueeAction, self).__init__(view, selectionModel)
+    def __init__(self, view, selectionModels, undoStack):
+        super(TimelineMarqueeAction, self).__init__(view, selectionModels)
         self._undoStack = undoStack
 
     @staticmethod
-    def _preprocess(selectionModel, itemsIter):
-        # an items model will tell us what rows are selected in that model
-        model = selectionModel.model()
-        selectedRows = set(idx.row() for idx in selectionModel.selectedRows())
+    def _preprocess(selectionModels, itemsIter):
+        events = list(graphicsItem.event for graphicsItem in itemsIter)
+        for selectionModel in selectionModels:
+            selectedRows = set(idx.row() for idx in selectionModel.selectedRows())
 
-        # an items model will tell us what change has happened in that model
-        touchedRows = set()
-        for graphicsItem in itemsIter:
-            # add row to right model change
-            pyObj = graphicsItem.event
-            touchedRows.add(pyObj.items[0].row())
-
-        yield selectionModel, selectedRows, touchedRows
+            touchedRows = set()
+            for event in events:
+                if event.items[0].model() != selectionModel.model().sourceModel():
+                    continue
+                proxyRow = selectionModel.model().mapFromSource(event.items[0].index()).row()
+                touchedRows.add(proxyRow)
+            yield selectionModel, selectedRows, touchedRows
 
     @staticmethod
     def _selectNew(selectionModels, itemsIter):
@@ -119,7 +118,7 @@ class TimelineMarqueeAction(MarqueeActionBase):
     def _selectAdd(selectionModels, itemsIter):
         changeMap = {}
         for selectionModel, selectedRows, touchedRows in TimelineMarqueeAction._preprocess(selectionModels, itemsIter):
-            select = set(x for x in itemsIter) - selectedRows
+            select = touchedRows - selectedRows
             if not select:
                 continue
             changeMap[selectionModel] = select, set()
@@ -129,7 +128,7 @@ class TimelineMarqueeAction(MarqueeActionBase):
     def _selectRemove(selectionModels, itemsIter):
         changeMap = {}
         for selectionModel, selectedRows, touchedRows in TimelineMarqueeAction._preprocess(selectionModels, itemsIter):
-            deselect = set(x for x in itemsIter) & selectedRows
+            deselect = touchedRows & selectedRows
             if not deselect:
                 continue
             changeMap[selectionModel] = set(), deselect
@@ -179,12 +178,13 @@ class TimelineMarqueeAction(MarqueeActionBase):
 
 class TimelineView(GridView):
     # TODO: Mouse release after moving or rescaling events should repaint the curve view in case the loop-range should be updated
-    def __init__(self, timer, undoStack, model, selectionModel):
+    def __init__(self, timer, undoStack, model, selectionModels):
         super(TimelineView, self).__init__(mask=1)
 
         self.__model = model
-        self.__selectionModel = selectionModel
-        selectionModel.selectionChanged.connect(self.repaint)
+        self.__selectionModels = selectionModels
+        for selectionModel in selectionModels:
+            selectionModel.selectionChanged.connect(self.repaint)
         model.dataChanged.connect(self.layout)
         model.rowsInserted.connect(self.layout)
         model.rowsRemoved.connect(self.layout)
@@ -242,8 +242,9 @@ class TimelineView(GridView):
         return self.xToT(x), y
 
     def _selectedItems(self):
-        for row in set(idx.row() for idx in self.__selectionModel.selectedRows()):
-            yield self.__model.item(row).data()
+        for selectionModel in self.__selectionModels:
+            for row in set(selectionModel.model().mapToSource(idx).row() for idx in selectionModel.selectedRows()):
+                yield self.__model.item(row).data()
 
     def _itemHandleAt(self, itemRect, pos):
         # reimplemented from GraphicsItemEvent.mouseMoveEvent
@@ -279,7 +280,7 @@ class TimelineView(GridView):
 
         if not self._action:
             # else we start a new selection action
-            self._action = TimelineMarqueeAction(self, self.__selectionModel, self._undoStack)
+            self._action = TimelineMarqueeAction(self, self.__selectionModels, self._undoStack)
 
         if self._action.mousePressEvent(event):
             self.repaint()
@@ -318,7 +319,9 @@ class TimelineView(GridView):
     def paintEvent(self, event):
         super(TimelineView, self).paintEvent(event)
 
-        selectedPyObjs = {idx.data(Qt.UserRole + 1) for idx in self.__selectionModel.selectedRows()}
+        selectedPyObjs = set()
+        for selectionModel in self.__selectionModels:
+            selectedPyObjs |= {idx.data(Qt.UserRole + 1) for idx in selectionModel.selectedRows()}
 
         painter = QPainter(self)
         for item in self.__graphicsItems:

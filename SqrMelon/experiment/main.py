@@ -23,7 +23,6 @@ if __name__ == '__main__':
     clip1.curves.appendRow(HermiteCurve('uOrigin.y', ELoopMode.Clamp, [HermiteKey(0.0, 0.0, 1.0, 1.0), HermiteKey(1.0, 1.0, 1.0, 1.0)]).items)
 
     model = QStandardItemModel()
-    selectionModel = QItemSelectionModel(model)
 
     # TODO: Edits in these views are not undoable, but I would like to mass-edit in the future
     shotManager = FilteredView(undoStack, ShotModel(model))
@@ -57,7 +56,7 @@ if __name__ == '__main__':
         curveUI.setEvent(None)
 
     eventManager.selectionChange.connect(eventChanged)
-    eventTimeline = TimelineView(timer, undoStack, model, selectionModel)
+    eventTimeline = TimelineView(timer, undoStack, model, (shotManager.selectionModel(), eventManager.selectionModel()))
 
     mainWindow = QMainWindowState(settings())
     mainWindow.setDockNestingEnabled(True)
