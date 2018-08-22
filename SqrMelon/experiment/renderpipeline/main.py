@@ -79,7 +79,7 @@ class RenderPipelineEditor(QMainWindowState):
         currentPath = self.currentGraphFile()
         if currentPath:
             return os.path.dirname(currentPath)
-        return projectutil.templateFolder()
+        return projectutil.pipelineFolder()
 
 
 if __name__ == '__main__':

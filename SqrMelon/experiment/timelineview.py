@@ -178,9 +178,10 @@ class TimelineMarqueeAction(MarqueeActionBase):
 
 
 class TimelineView(GridView):
+    # TODO: Mouse release after moving or rescaling events should repaint the curve view in case the loop-range should be updated
     def __init__(self, timer, undoStack, model, selectionModel):
         super(TimelineView, self).__init__(mask=1)
-        
+
         self.__model = model
         self.__selectionModel = selectionModel
         selectionModel.selectionChanged.connect(self.repaint)
@@ -356,5 +357,3 @@ class TimelineView(GridView):
         if event.key() == Qt.Key_Control:
             if isinstance(self._action, DuplicateEventAction):
                 self._action = None
-
-

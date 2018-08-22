@@ -352,7 +352,6 @@ class DirectionalAction(Action):
         raise NotImplementedError()
 
 
-
 class MoveKeyAction(DirectionalAction):
     def __init__(self, reproject, selectedKeys, triggerRepaint):
         super(MoveKeyAction, self).__init__(reproject)
@@ -437,6 +436,7 @@ class MoveEventAction(DirectionalAction):
             # Change cursor to horizontal move when dragging start or end section
             QApplication.setOverrideCursor(Qt.SizeHorCursor)
             self._cursorOverride = True
+            self._mask = 1
 
         return super(MoveEventAction, self).mousePressEvent(event)
 

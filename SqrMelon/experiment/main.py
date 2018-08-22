@@ -1,3 +1,4 @@
+from experiment.scenes import SceneList
 from qtutil import *
 from experiment.curvemodel import HermiteCurve, HermiteKey, ELoopMode
 from experiment.model import Clip, Shot, Event
@@ -54,9 +55,7 @@ if __name__ == '__main__':
             return
         curveUI.setEvent(None)
 
-
     eventManager.selectionChange.connect(eventChanged)
-
     eventTimeline = TimelineView(timer, undoStack, model, selectionModel)
 
     mainWindow = QMainWindowState(settings)
@@ -67,6 +66,7 @@ if __name__ == '__main__':
     mainWindow.createDockWidget(shotManager, name='Shots')
     mainWindow.createDockWidget(eventManager, name='Events')
     mainWindow.createDockWidget(eventTimeline)
+    mainWindow.createDockWidget(SceneList())
 
     mainWindow.show()
     # makes sure qt cleans up & python stops after closing the main window; https://stackoverflow.com/questions/39304366/qobjectstarttimer-qtimer-can-only-be-used-with-threads-started-with-qthread
