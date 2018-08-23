@@ -184,6 +184,15 @@ class FullScreenRectSingleton(object):
 class BufferPool(object):
     _pool = []
 
+    @classmethod
+    def clear(cls):
+        del BufferPool._pool[:]
+
+    @classmethod
+    def reset(cls):
+        for entry in BufferPool._pool:
+            entry.inUse = False
+
     def __init__(self, w, h, numOutputs):
         self.buffer = FrameBuffer(w, h)
         for i in xrange(numOutputs):
@@ -196,9 +205,39 @@ class BufferPool(object):
         for buffer in BufferPool._pool:
             if buffer.inUse:
                 continue
-            if buffer.buffer.width == w and buffer.buffer.height == h and len(buffer.buffer.textures()) == numOutputs:
+            if buffer.buffer.width() == w and buffer.buffer.height() == h and len(list(buffer.buffer.textures())) == numOutputs:
                 return buffer
         return BufferPool(w, h, numOutputs)
+
+
+_passThroughProgram = None
+
+
+def passThroughProgram():
+    global _passThroughProgram
+    if _passThroughProgram is not None:
+        return _passThroughProgram
+    _passThroughProgram = ShaderPool.instance().compileProgram(Shader.STATIC_VERT, Shader.PASS_THROUGH_FRAG)
+    return _passThroughProgram
+
+
+def usePassThroughProgram(color=(1.0, 1.0, 1.0, 1.0)):
+    passThrough = passThroughProgram()
+    glUseProgram(passThrough)
+    glUniform4f(glGetUniformLocation(passThrough, 'uColor'), *color)
+    return passThrough
+
+
+def drawColorBufferToScreen(colorBuffer, viewport, color=(1.0, 1.0, 1.0, 1.0)):
+    FrameBuffer.clear()
+    glViewport(*viewport)
+
+    passThrough = usePassThroughProgram(color)
+    glActiveTexture(GL_TEXTURE0)
+    colorBuffer.use()
+    glUniform1i(glGetUniformLocation(passThrough, 'uImages[0]'), 0)
+
+    FullScreenRectSingleton.instance().draw()
 
 
 class Scene(PooledResource):
@@ -208,9 +247,12 @@ class Scene(PooledResource):
             self.pipeline = Pipeline.pool(json.load(fh)['pipeline'])
 
     def render(self, screenResolution, uniforms):
+        BufferPool.reset()
         renderBuffers = {}
         tail = self.pipeline.tail
-        self.renderNode(tail, screenResolution, uniforms, renderBuffers)
+        finalBuffer = self.renderNode(tail, screenResolution, uniforms, renderBuffers)
+        colorBuffer = finalBuffer.buffer.textures().next()
+        drawColorBufferToScreen(colorBuffer, [0, 0, screenResolution[0], screenResolution[1]])
 
     def renderNode(self, node, screenResolution, uniforms, renderBuffers):
         # recursively render dependencies
@@ -227,8 +269,8 @@ class Scene(PooledResource):
                 else:
                     inputBuffer = r[0]
                     refCount = r[1]
-                renderBuffers[node] = inputBuffer, refCount
-                inputs.append((inputBuffer, input.name, colorBufferIndex, node))
+                renderBuffers[source] = inputBuffer, refCount + 1
+                inputs.append((inputBuffer, input.name, colorBufferIndex, source))
 
         # TODO: cache the stitch paths in the scene & invalidate when the scene's pipeline changes (the pipeline itself, or which pipeline this scene uses)
         stitchPaths = []
@@ -247,23 +289,24 @@ class Scene(PooledResource):
         buffer.inUse = True
         buffer.buffer.use()
 
+        # forward resolution
+        uniforms['uResolution'] = float(w), float(h)
+
         glUseProgram(program)
 
         # bind inputs
         for i, entry in enumerate(inputs):
             glActiveTexture(GL_TEXTURE0 + i)
-            inputBuffer, name, colorBufferIndex, __ = entry
+            inputBuffer, name, colorBufferIndex, source = entry
             list(inputBuffer.buffer.textures())[colorBufferIndex].use()
-            glUniform1i(glGetUniformLocation(program, name), colorBufferIndex)
+            glUniform1i(glGetUniformLocation(program, name), i)
 
         # apply uniforms
         for key, value in uniforms.iteritems():
             if isinstance(value, float):
                 glUniform1f(glGetUniformLocation(program, key), value)
-
             elif isinstance(value, int):
                 glUniform1i(glGetUniformLocation(program, key), value)
-
             elif hasattr(value, '__iter__'):
                 if len(value) == 1:
                     glUniform1f(glGetUniformLocation(program, key), *value)
@@ -277,15 +320,15 @@ class Scene(PooledResource):
                     glUniformMatrix3fv(glGetUniformLocation(program, key), 1, False, value)
                 elif len(value) == 16:
                     glUniformMatrix4fv(glGetUniformLocation(program, key), 1, False, value)
-                #elif len(value) == 12:
-                #    glUniformMatrix4x3fv(glGetUniformLocation(program, key), 1, False, value)
+                elif len(value) == 12:
+                    glUniformMatrix4x3fv(glGetUniformLocation(program, key), 1, False, value)
 
         FullScreenRectSingleton.instance().draw()
 
         # free inputs
-        for inputBuffer, __, __, node in inputs:
-            refCount = renderBuffers[node][1] - 1
-            renderBuffers[node] = inputBuffer, refCount
+        for inputBuffer, __, __, source in inputs:
+            refCount = renderBuffers[source][1] - 1
+            renderBuffers[source] = inputBuffer, refCount
             if refCount <= 0:
                 inputBuffer.inUse = False
 

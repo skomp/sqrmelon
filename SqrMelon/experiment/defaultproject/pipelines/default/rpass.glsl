@@ -20,7 +20,7 @@ void main()
     vec2 nc=sat(vec2(n&32767,(n>>15)&32767)/16383.5-1);
     // Z component
     vec3 normal=normalize(vec3(nc,sqrt(1.0-dot(nc,nc))*((n>>30)==1?-1:1)));
-    ray=Ray(gbuf.xyz,reflect(ray.direction,normal));
+    ray=Ray(gbuf.xyz+ray.origin,reflect(ray.direction,normal));
     TraceAndShade(ray,REFL_NEAR,REFL_FAR,REFL_STEPS);
     // forward specular color and roughness
     outColor0.xyz *= specularColor_roughness.xyz;

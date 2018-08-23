@@ -4,10 +4,10 @@ from experiment.serializable import serializeObjects, deserializeObjects
 
 
 def deserializeGraph(fileHandle):
-    data = json.load(fileHandle)
-    return [node for node in deserializeObjects(data['graph']) if isinstance(node, Node)]
+    data = json.load(fileHandle)['graph']
+    return [node for node in deserializeObjects(data) if isinstance(node, Node)]
 
 
 def serializeGraph(graph, fileHandle):
-    data = serializeObjects(graph)
+    data = {'graph': serializeObjects(graph)}
     json.dump(data, fileHandle, indent=4, sort_keys=True)

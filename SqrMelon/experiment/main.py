@@ -26,6 +26,9 @@ class DemoModel(QStandardItemModel):
                         visibleShot = pyObj
                 if isinstance(pyObj, Event):
                     activeEvents.append(pyObj)
+        scene = None
+        if visibleShot:
+            scene = visibleShot.scene
 
         # sort events by inverse priority
         activeEvents.sort(key=lambda x: -x.track)
@@ -35,7 +38,7 @@ class DemoModel(QStandardItemModel):
         for event in activeEvents:
             evaluatedData.update(event.evaluate(time))
 
-        return visibleShot.scene, evaluatedData
+        return scene, evaluatedData
 
 
 def evalCamera(camera, model, timer):
@@ -52,7 +55,7 @@ def eventChanged(eventManager, curveUI):
 
 def run():
     app = QApplication([])
-    settings().setValue('currentproject', 'defaultproject')
+    settings().setValue('currentproject', r'C:\Users\Henk\Documents\git\SqrMelon\SqrMelon\experiment\defaultproject')
 
     undoStack = QUndoStack()
     undoView = QUndoView(undoStack)

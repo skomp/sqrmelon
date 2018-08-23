@@ -1,4 +1,5 @@
-from experiment.scenes import Scene
+import profileutil
+from experiment.scenes import Scene, BufferPool
 from qtutil import *
 from OpenGL.GL import *
 from math import tan
@@ -20,17 +21,23 @@ class View3D(QGLWidget):
         self.model = model
         self.timer = timer
 
+        self.setFocusPolicy(Qt.StrongFocus)
+
     def initializeGL(self):
         pass
 
     def resizeGL(self, w, h):
         glViewport(0, 0, w, h)
+        BufferPool.clear()
 
     def paintGL(self):
         glDisable(GL_DEPTH_TEST)
         glDisable(GL_BLEND)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         sceneName, snapshot = self.model.evaluate(self.timer.time)
+        if sceneName is None:
+            return
+
         uniforms = {}
 
         # convert camera to matrix
@@ -39,7 +46,12 @@ class View3D(QGLWidget):
                 del snapshot[key]
             except KeyError:
                 pass  # nothing to delete
-        uniforms['uV'] = Mat44.TRS(*self.camera.data().data)
+
+        cameraData = self.camera.data()
+        r = Mat44.rotateY(-cameraData.rotate[1]) * Mat44.rotateX(cameraData.rotate[0]) * Mat44.rotateZ(cameraData.rotate[2])
+        uniforms['uV'] = r[:]
+        uniforms['uV'][12:15] = cameraData.translate
+
         tfov = tan(uniforms.get('uFovBias', 0.5))
         aspect = self.width() / float(self.height())  # TODO: base off frame buffer
         xfov = tfov * aspect
