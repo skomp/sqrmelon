@@ -188,7 +188,7 @@ class CurveView(GridView):
         if self._event:
             if isinstance(self._event, Event):
                 left = self.tToX(self._event.roll)
-                right = self.tToX(self._event.roll + self._event.duration * self._event.speed)
+                right = self.tToX(self._event.roll + self._event.duration / self._event.speed)
             else:
                 left = self.tToX(0.0)
                 right = self.tToX(self._event.duration)
