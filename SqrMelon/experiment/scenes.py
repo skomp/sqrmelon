@@ -39,6 +39,7 @@ class SceneList(QWidget):
         main.addLayout(belt)
 
         self.view = QTreeView()
+        self.view.header().hide()
         self.view.setModel(QStandardItemModel())
         self.view.activated.connect(self.__onOpenFile)
         self.view.setEditTriggers(self.view.NoEditTriggers)

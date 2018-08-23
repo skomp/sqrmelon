@@ -100,7 +100,6 @@ def serializeAllObjects():
 
 
 def deserializeObjects(allData):
-    # TODO: serializable subclass registry so we can importlib the right dependencies
     def recursiveSubclasses(baseCls):
         for cls in baseCls.__subclasses__():
             for subCls in recursiveSubclasses(cls):
