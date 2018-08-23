@@ -5,7 +5,7 @@ from experiment.serializable import serializeObjects, deserializeObjects
 
 def deserializeGraph(fileHandle):
     data = json.load(fileHandle)
-    return [node for node in deserializeObjects(data) if isinstance(node, Node)]
+    return [node for node in deserializeObjects(data['graph']) if isinstance(node, Node)]
 
 
 def serializeGraph(graph, fileHandle):

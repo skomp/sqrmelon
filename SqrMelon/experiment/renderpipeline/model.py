@@ -82,6 +82,10 @@ class Node(Serializable):
 
     def postInitialize(self):
         self.layout()
+        for plug in self.inputs:
+            plug.node = self
+        for plug in self.outputs:
+            plug.node = self
 
     @classmethod
     def serializableProperties(cls):

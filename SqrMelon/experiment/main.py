@@ -69,7 +69,7 @@ def run():
 
     # TODO: Edits in these views are not undoable, but I would like to mass-edit in the future
     shotManager = FilteredView(undoStack, ShotModel(model))
-    shotManager.model().appendRow(Shot('New Shot', 'Scene 1', 0.0, 4.0, 0).items)
+    shotManager.model().appendRow(Shot('New Shot', 'example', 0.0, 4.0, 0).items)
 
     eventManager = FilteredView(undoStack, EventModel(model))
     eventManager.model().appendRow(Event('New event', clip0, 0.0, 4.0, 1.0, 0.0, 2).items)
