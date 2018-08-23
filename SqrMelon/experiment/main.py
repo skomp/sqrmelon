@@ -1,4 +1,7 @@
+import functools
+
 from experiment.scenes import SceneList
+from experiment.view3d import View3D
 from qtutil import *
 from experiment.curvemodel import HermiteCurve, HermiteKey, ELoopMode
 from experiment.model import Clip, Shot, Event
@@ -6,8 +9,48 @@ from experiment.timelineview import TimelineView
 from experiment.timer import Time
 from experiment.widgets import ClipManager, CurveUI, EventModel, ShotModel, FilteredView
 from experiment.projectutil import settings
+from experiment.camerawidget import Camera
 
-if __name__ == '__main__':
+
+class DemoModel(QStandardItemModel):
+    def evaluate(self, time):
+        # type: (float) -> dict[str, float]
+        # find things at this time
+        visibleShot = None
+        activeEvents = []
+        for row in xrange(self.rowCount()):
+            pyObj = self.item(row).data()
+            if pyObj.start <= time <= pyObj.end:
+                if isinstance(pyObj, Shot):
+                    if visibleShot is None or pyObj.track < visibleShot.track:
+                        visibleShot = pyObj
+                if isinstance(pyObj, Event):
+                    activeEvents.append(pyObj)
+
+        # sort events by inverse priority
+        activeEvents.sort(key=lambda x: -x.track)
+
+        # evaluate and overwrite (because things with priority are evaluated last)
+        evaluatedData = {}
+        for event in activeEvents:
+            evaluatedData.update(event.evaluate(time))
+
+        return visibleShot.scene, evaluatedData
+
+
+def evalCamera(camera, model, timer):
+    __, anim = model.evaluate(timer.time)
+    camera.setData(anim.get('uOrigin.x', 0.0), anim.get('uOrigin.y', 0.0), anim.get('uOrigin.z', 0.0), anim.get('uAngles.x', 0.0), anim.get('uAngles.y', 0.0), anim.get('uAngles.z', 0.0))
+
+
+def eventChanged(eventManager, curveUI):
+    for event in eventManager.selectionModel().selectedRows():
+        curveUI.setEvent(event.data(Qt.UserRole + 1))
+        return
+    curveUI.setEvent(None)
+
+
+def run():
     app = QApplication([])
     settings().setValue('currentproject', 'defaultproject')
 
@@ -22,7 +65,7 @@ if __name__ == '__main__':
     clip1.curves.appendRow(HermiteCurve('uOrigin.x', ELoopMode.Clamp, [HermiteKey(2.0, 0.0, 0.0, 0.0), HermiteKey(3.0, 1.0, 0.0, 0.0)]).items)
     clip1.curves.appendRow(HermiteCurve('uOrigin.y', ELoopMode.Clamp, [HermiteKey(0.0, 0.0, 1.0, 1.0), HermiteKey(1.0, 1.0, 1.0, 1.0)]).items)
 
-    model = QStandardItemModel()
+    model = DemoModel()
 
     # TODO: Edits in these views are not undoable, but I would like to mass-edit in the future
     shotManager = FilteredView(undoStack, ShotModel(model))
@@ -48,15 +91,16 @@ if __name__ == '__main__':
     timer = Time()
     # TODO: Curve renames and loop mode changes are not undoable
     curveUI = CurveUI(timer, eventManager, clipManager, undoStack)
-
-    def eventChanged():
-        for event in eventManager.selectionModel().selectedRows():
-            curveUI.setEvent(event.data(Qt.UserRole + 1))
-            return
-        curveUI.setEvent(None)
-
-    eventManager.selectionChange.connect(eventChanged)
+    eventManager.selectionChange.connect(functools.partial(eventChanged, eventManager, curveUI))
     eventTimeline = TimelineView(timer, undoStack, model, (shotManager.selectionModel(), eventManager.selectionModel()))
+
+    camera = Camera()
+    camera.requestAnimatedCameraPosition.connect(functools.partial(evalCamera, camera, model, timer))
+    timer.changed.connect(camera.followAnimation)
+
+    view = View3D(camera, model, timer)
+    camera.edited.connect(view.repaint)
+    timer.changed.connect(view.repaint)
 
     mainWindow = QMainWindowState(settings())
     mainWindow.setDockNestingEnabled(True)
@@ -67,9 +111,15 @@ if __name__ == '__main__':
     mainWindow.createDockWidget(eventManager, name='Events')
     mainWindow.createDockWidget(eventTimeline)
     mainWindow.createDockWidget(SceneList())
+    mainWindow.createDockWidget(camera)
+    mainWindow.createDockWidget(view)
 
     mainWindow.show()
     # makes sure qt cleans up & python stops after closing the main window; https://stackoverflow.com/questions/39304366/qobjectstarttimer-qtimer-can-only-be-used-with-threads-started-with-qthread
     mainWindow.setAttribute(Qt.WA_DeleteOnClose)
 
     app.exec_()
+
+
+if __name__ == '__main__':
+    run()

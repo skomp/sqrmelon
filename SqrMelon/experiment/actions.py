@@ -1,4 +1,3 @@
-from copy import deepcopy
 from experiment.model import Event, Shot
 from experiment.curvemodel import HermiteKey, EInsertMode, ETangentMode
 from qtutil import *
@@ -610,7 +609,7 @@ class DuplicateEventAction(Action):
         copiedEvents = []
 
         for event in self._events:
-            copy = deepcopy(event)
+            copy = event.copy()
             if self._copyCounter:
                 copy.name = '%s (Copy %s)' % (copy.name, self._copyCounter)
             else:
