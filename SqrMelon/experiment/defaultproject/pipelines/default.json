@@ -324,7 +324,7 @@
                 "84bb00d2-b8fa-427b-bba3-7ffccdc93284"
             ], 
             "x": 240, 
-            "y": 268
+            "y": 269
         }, 
         {
             "__class__": "Node", 
@@ -1578,7 +1578,7 @@
                 "9a18a51c-edc3-41d1-be57-24a7a57c4c51"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -4
         }, 
         {
             "__class__": "Stitch", 
@@ -1619,7 +1619,7 @@
                 "baa5c1be-d1d5-4cfd-b85c-f2965fa1b8ea"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -4
         }, 
         {
             "__class__": "Stitch", 
@@ -1660,7 +1660,7 @@
                 "2292ac21-08e8-46ab-a9e3-b9775c535039"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -4
         }, 
         {
             "__class__": "Stitch", 
@@ -1702,7 +1702,7 @@
                 "27970e94-2f93-4f42-b789-3ad3a0df0e1f"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -4
         }, 
         {
             "__class__": "Stitch", 
@@ -1766,7 +1766,7 @@
                 "e388cc58-8917-4ea9-ad29-0c5e34b7f421"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -8
         }, 
         {
             "__class__": "Stitch", 
@@ -1807,7 +1807,7 @@
                 "c381cbc9-ec60-4bd7-8913-31dd0b989442"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -8
         }, 
         {
             "__class__": "Stitch", 
@@ -1848,7 +1848,7 @@
                 "a853fc6c-1b8c-43ed-aff0-32780a24e411"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -8
         }, 
         {
             "__class__": "Stitch", 
@@ -1890,7 +1890,7 @@
                 "d251f5fa-5063-4562-93b5-4437d0de2b3b"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -8
         }, 
         {
             "__class__": "Stitch", 
@@ -2023,7 +2023,7 @@
                 "3dfcca16-910a-4686-a2b6-9fe8d8c3a7ef"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -16
         }, 
         {
             "__class__": "Stitch", 
@@ -2064,7 +2064,7 @@
                 "be8aad5b-17a2-4ab2-88fb-5fe7310bf715"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -32
         }, 
         {
             "__class__": "Stitch", 
@@ -2105,7 +2105,7 @@
                 "abdd74ef-bfdd-4714-9ad5-857f0f8e5890"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -2
         }, 
         {
             "__class__": "Stitch", 
@@ -2146,7 +2146,7 @@
                 "7de7439a-ba3d-47e3-8b5e-abf89816bb98"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -64
         }, 
         {
             "__class__": "Stitch", 
@@ -2187,7 +2187,7 @@
                 "2a39d629-5966-4e12-9172-e9e0832df035"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -2
         }, 
         {
             "__class__": "Stitch", 
@@ -2228,7 +2228,7 @@
                 "1be2c250-beac-47d5-a72d-4a2c7ae47481"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -16
         }, 
         {
             "__class__": "Stitch", 
@@ -2269,7 +2269,7 @@
                 "ee96fb1f-4d84-4f5f-a707-8e5530ff5575"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -32
         }, 
         {
             "__class__": "Stitch", 
@@ -2310,7 +2310,7 @@
                 "92895a19-7d4b-4019-95e1-9a122bc0004b"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -64
         }, 
         {
             "__class__": "Stitch", 
@@ -2351,7 +2351,7 @@
                 "52b3e170-d300-4c90-9ed0-1f904a139769"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -64
         }, 
         {
             "__class__": "Stitch", 
@@ -2392,7 +2392,7 @@
                 "83ac12ff-4a46-4589-8764-b015221e4e0d"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -2
         }, 
         {
             "__class__": "Stitch", 
@@ -2433,7 +2433,7 @@
                 "fa22bbd1-0fb0-4e27-b98d-213b80ac8d19"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -32
         }, 
         {
             "__class__": "Stitch", 
@@ -2474,7 +2474,7 @@
                 "87200ab2-9d98-4762-9802-e63c3564b4b1"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -16
         }, 
         {
             "__class__": "Stitch", 
@@ -2515,7 +2515,7 @@
                 "8f9914fd-1c1c-4d6c-a00e-3c35e39db1ac"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -64
         }, 
         {
             "__class__": "Stitch", 
@@ -2557,7 +2557,7 @@
                 "88eb7737-a8b9-4c95-9d27-f25d37a168e3"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -32
         }, 
         {
             "__class__": "Stitch", 
@@ -2599,7 +2599,7 @@
                 "3584a8a3-61f8-4b04-b9be-3b1b8f1ee90c"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -16
         }, 
         {
             "__class__": "Stitch", 
@@ -2641,7 +2641,7 @@
                 "009ab1cd-6879-4722-a4b8-8aa34edc0e3f"
             ], 
             "name": "output", 
-            "size": -1
+            "size": -2
         }, 
         {
             "__class__": "Stitch", 
