@@ -78,6 +78,7 @@ class Camera(QWidget):
         copyAnim.setToolTip('Copy anim')
         copyAnim.setStatusTip('Copy anim')
         copyAnim.clicked.connect(self.requestAnimatedCameraPosition.emit)
+        copyAnim.clicked.connect(self.edited.emit)
         self.layout().addWidget(copyAnim)
         copyAnim.setIconSize(QSize(24, 24))
 

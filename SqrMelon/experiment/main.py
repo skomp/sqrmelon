@@ -1,6 +1,6 @@
 import functools
 
-from experiment.scenes import SceneList
+from experiment.scenelist import SceneList
 from experiment.view3d import View3D
 from qtutil import *
 from experiment.curvemodel import HermiteCurve, HermiteKey, ELoopMode
@@ -99,10 +99,15 @@ def run():
 
     camera = Camera()
     camera.requestAnimatedCameraPosition.connect(functools.partial(evalCamera, camera, model, timer))
+    # when animating, the camera will see about animation
+    # if it is not set to follow animation it will do nothing
+    # else it will emit requestAnimatedCameraPosition, so that the internal state will match
     timer.changed.connect(camera.followAnimation)
 
     view = View3D(camera, model, timer)
+    # when the camera is changed  through flying (WASD, Mouse) or through the input widgets, it will emit an edited event, signaling repaint
     camera.edited.connect(view.repaint)
+    # when the time changes, the camera is connected first so animation is applied, then we still have to manually trigger a repaint here
     timer.changed.connect(view.repaint)
 
     mainWindow = QMainWindowState(settings())

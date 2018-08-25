@@ -1,10 +1,8 @@
-import profileutil
-from experiment.scenes import Scene, BufferPool
+from experiment.render import Scene, FrameBufferPool
 from qtutil import *
 from OpenGL.GL import *
 from math import tan
 from cgmath import Mat44
-
 
 
 class View3D(QGLWidget):
@@ -21,6 +19,8 @@ class View3D(QGLWidget):
         self.model = model
         self.timer = timer
 
+        self._lastRenderedScene = None  # track which scene is visible so we can respond to changes automatically
+
         self.setFocusPolicy(Qt.StrongFocus)
 
     def initializeGL(self):
@@ -28,7 +28,8 @@ class View3D(QGLWidget):
 
     def resizeGL(self, w, h):
         glViewport(0, 0, w, h)
-        BufferPool.clear()
+        # we must kill the existing framebuffers because they'll will the vram with wrongly sized buffers that we'll never use again
+        FrameBufferPool.clear()
 
     def paintGL(self):
         glDisable(GL_DEPTH_TEST)
@@ -36,6 +37,9 @@ class View3D(QGLWidget):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         sceneName, snapshot = self.model.evaluate(self.timer.time)
         if sceneName is None:
+            if self._lastRenderedScene is not None:
+                self._lastRenderedScene.changed.disconnect(self.repaint)
+                self._lastRenderedScene = None
             return
 
         uniforms = {}
@@ -89,6 +93,14 @@ class View3D(QGLWidget):
 
         # evaluate scene
         scene = Scene.pool(str(sceneName))
+
+        # if we switched scene, start watching the right scene for changes
+        if self._lastRenderedScene != scene:
+            if self._lastRenderedScene is not None:
+                self._lastRenderedScene.changed.disconnect(self.repaint)
+            self._lastRenderedScene = scene
+            if self._lastRenderedScene is not None:
+                self._lastRenderedScene.changed.connect(self.update)
 
         scene.render((self.width(), self.height()), uniforms)
 
