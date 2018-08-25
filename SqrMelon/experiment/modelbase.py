@@ -7,7 +7,7 @@ class Label(object):
     """ Utiliy to display a non-editable string in the ItemRow system. """
 
     def __init__(self, text):
-        self.text = text
+        self.text = str(text)
 
     def __str__(self):
         return self.text
@@ -63,7 +63,7 @@ class ItemRow(object):
         item.setData(value)
 
     def __str__(self):
-        return self.items[0].text()
+        return str(self.items[0].text())
 
     @classmethod
     def properties(cls):

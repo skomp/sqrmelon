@@ -346,7 +346,7 @@ class Mat44(object):
         return Mat44.frustum(-fW, fW, -fH, fH, near, far)
 
     @staticmethod
-    def translateRotateScale(x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0, sx=1.0, sy=1.0, sz=1.0):
+    def translateRotateScale(x=0.0, y=0.0, z=0.0, rx=0.0, ry=0.0, rz=0.0, zx=1.0, zy=1.0, zz=1.0):
         sx = sin(rx)
         sy = sin(ry)
         sz = sin(rz)
@@ -354,9 +354,9 @@ class Mat44(object):
         cy = cos(ry)
         cz = cos(rz)
         return Mat44([
-            sx * (cz * cy + sz * sx * sy), sx * sz * cx, sx * (cz * -sy + sz * sx * cy), 0.0,
-            sy * (-sz * cy + cz * sx * sy), sy * cz * cx, sy * (-sz * -sy + cz * sx * cy), 0.0,
-            sz * cx * sy, sz * -sx, sz * cx * cy, 0.0,
+            zx * (cz * cy + sz * sx * sy), zx * sz * cx, zx * (cz * -sy + sz * sx * cy), 0.0,
+            zy * (-sz * cy + cz * sx * sy), zy * cz * cx, zy * (-sz * -sy + cz * sx * cy), 0.0,
+            zz * cx * sy, zz * -sx, zz * cx * cy, 0.0,
             x, y, z, 1.0])
 
     TRS = translateRotateScale

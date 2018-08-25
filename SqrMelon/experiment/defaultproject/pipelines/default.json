@@ -1,2749 +1,2750 @@
 {
-  "graph": [
-    {
-      "__class__": "Node",
-      "__uuid__": "9a4e75b6-0517-465f-90c5-a7e44de88dee",
-      "inputs": [],
-      "name": "Lensdirt texture",
-      "outputs": [
-        "36542d37-261e-4dff-86b0-8393b7f78267"
-      ],
-      "stitches": [
-        "abaf2901-96fa-4252-ab53-51abb09238fb",
-        "87c157e5-25af-43fc-88c7-c2365a7fb0e8",
-        "443bb847-fd05-4d95-b84c-b932b97d7cce",
-        "cdd06894-de86-4982-9f86-ce3fdb3d1b79"
-      ],
-      "x": 640,
-      "y": 448
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "e121db46-398f-40c7-8fa5-bf99c0f7ae86",
-      "inputs": [
-        "2931f42c-674b-4c61-8d06-3e9712892ab8"
-      ],
-      "name": "Main",
-      "outputs": [
-        "baae3bf1-8ce1-422b-87d4-05a58b86c5b1",
-        "f081f789-cb55-4696-a9e8-1de7ffa9694f",
-        "94d1e191-c86f-42f0-9658-6e2c38e19463"
-      ],
-      "stitches": [
-        "ea09930f-1033-49c0-9aab-5f50ce2dbe39",
-        "8b2f5265-8469-4edd-847d-12e772cd1e5c",
-        "284f9ee7-7007-434d-b4de-6346bc6cc6ca",
-        "75b5fcfb-46cf-4996-96c8-2a248ed915dd",
-        "ba4fe5b3-505f-43b5-90bc-6a4c6433ce28",
-        "a70d5f5a-ef30-4cf3-b3ae-3fb7aaf0e024",
-        "8862f050-a8da-4dca-9b72-4d32d77a5623",
-        "949b3dd4-89aa-41fd-b87c-a3caf1399604",
-        "495dacff-dd62-480c-8483-57f534ab09d5"
-      ],
-      "x": 88,
-      "y": 111
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "e6c4e50b-befd-4ece-b3e2-fccc93ba6b86",
-      "inputs": [],
-      "name": "Noise LUT",
-      "outputs": [
-        "adc570fa-75db-4a36-b3d7-adabdebda244"
-      ],
-      "stitches": [
-        "87e3153d-1fcb-4218-95cf-a8d6101381b4",
-        "17fe6f9a-f251-4906-b22e-252d19e182b4",
-        "a801da74-2803-44f4-bb17-3f481323d37e"
-      ],
-      "x": 15,
-      "y": 74
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "f41214af-e8e5-4b71-ac00-ca328284d44f",
-      "inputs": [
-        "05ae4d0e-c9de-4572-be8f-1bffa924284a",
-        "739a1d59-16a0-49d1-9355-6bc00e943b02",
-        "4a30dfc0-a74d-44eb-a07c-b1997625e489",
-        "5842ec62-f320-4893-b473-6b2e2f5751e8"
-      ],
-      "name": "Reflections",
-      "outputs": [
-        "f20d06ef-4a6e-48fd-a22d-41cbf361b46f"
-      ],
-      "stitches": [
-        "72ffd004-f77f-48ed-bb8b-6c1af6860aa5",
-        "cc983a48-36f2-49b6-b921-7aeb78aa1d8a",
-        "fa65f818-759a-428b-aa14-20a1426c78c4",
-        "78ef3542-bc6e-4e5a-8363-169814c12e8f",
-        "66af51e5-7d43-4d52-afc5-d75a98c7f89d",
-        "ae4e729e-f611-48e7-be92-d783e4b7ff45",
-        "c341fae0-dea7-4859-a1fa-53deed32995c",
-        "d7a6dfe2-3d9b-4472-9d07-eff54608a5a8",
-        "5c67a6c8-020c-4c08-9176-b15bb9d2ea54"
-      ],
-      "x": 220,
-      "y": 22
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "bdcd1342-2e4b-47ac-8f6a-92ceedb62aee",
-      "inputs": [
-        "8266d263-a0d6-4582-b228-090fac9ea64c"
-      ],
-      "name": "hblur2 masked",
-      "outputs": [
-        "93d01477-321a-40c4-bf7c-581fb61726a9"
-      ],
-      "stitches": [
-        "77d2d61a-4ff6-4723-951a-f313067eb21f",
-        "a262e10b-634d-4bfc-8457-fdbe67391072",
-        "f449ebfc-ffbd-44f7-bd1d-a1942a922232",
-        "0c311da6-b847-47a7-8c18-0cf43482bc1f",
-        "071c0f2a-278c-4ec4-88b1-5a440c4d1d3f"
-      ],
-      "x": 352,
-      "y": 15
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "9ab5d9a6-65ed-434d-a94f-1872c20230bd",
-      "inputs": [
-        "c6992df8-a274-48ad-bf77-c4bd028b2f77"
-      ],
-      "name": "vblur2 masked",
-      "outputs": [
-        "18a64989-cd6b-4d61-8462-ccb7360d4b78"
-      ],
-      "stitches": [
-        "dd1db640-4c3f-4e64-b27e-16869152cbfa",
-        "696d6c45-8679-4aee-920f-d3917715656a",
-        "6303b10b-64a6-42a8-9b68-270a4134ebbd",
-        "f0f58574-b179-4469-8052-19f54b7e00d9",
-        "3f2c95c4-13a9-473c-8c30-7252f705945e"
-      ],
-      "x": 467,
-      "y": 24
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "a5fd13b5-b72a-4891-b411-5b3f3c36679b",
-      "inputs": [
-        "5a85dcbf-c868-45b2-8fe1-e48e9de3a3c7"
-      ],
-      "name": "hblur3 masked",
-      "outputs": [
-        "1fc00482-cd0c-4fed-a752-1ccacac1629e"
-      ],
-      "stitches": [
-        "0450ad27-7767-4536-9d23-e806a9effba8",
-        "410e758a-a41c-4226-98ee-5ac9b9099d27",
-        "b32482a7-8b0f-47c7-8b10-33a8a25662f1",
-        "037c8259-1274-4c53-b6b3-509c0acf72e9",
-        "4af10dc1-364a-4b35-a135-76cb112766a3"
-      ],
-      "x": 585,
-      "y": 32
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "9250bbd1-6fc5-4075-9745-21926b769633",
-      "inputs": [
-        "983d9594-73e8-4992-8340-1d82d8dba016"
-      ],
-      "name": "vblur3 masked",
-      "outputs": [
-        "074abdcb-4382-47c4-9061-e979dc8089b4"
-      ],
-      "stitches": [
-        "8dfb106e-e052-4c97-bbdf-0134a7fb2876",
-        "893a2bf3-ee43-4ae6-a32e-fac9f72d9eed",
-        "01c7fc67-da47-443b-9b24-5eea790083a2",
-        "48af2302-f2ed-4f56-8296-8674eca62128",
-        "948f1a38-1f53-4e65-ba96-eb3ad6180e0f"
-      ],
-      "x": 700,
-      "y": 39
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "8dc82aeb-9d76-4c09-acfa-e60e50947e93",
-      "inputs": [
-        "d5903cd9-5051-444c-ab9f-bb8fd367a18c",
-        "2fa9fb14-94ff-4623-8815-7c0f331a7599"
-      ],
-      "name": "Merge reflection into result",
-      "outputs": [
-        "6b29657f-d38f-4e51-81e3-4fd3c89f2c4b"
-      ],
-      "stitches": [
-        "c6d691df-f99b-4fed-bc14-2eae2cb37658",
-        "1a331e6a-a457-4d9d-8c1d-5d913e743cfe",
-        "0b9e2560-d6b5-47e3-ae0b-139957cb2d77",
-        "fb68fc42-554b-4722-a6fc-be899d3b44db"
-      ],
-      "x": 846,
-      "y": 111
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "5a3b7cd1-0856-40db-bba8-126eec3cbfca",
-      "inputs": [
-        "7b57d9d4-ba5c-4165-9032-917dbf99f86b"
-      ],
-      "name": "Overlays",
-      "outputs": [
-        "450a6408-5c21-424c-a688-0e57f38e9be7"
-      ],
-      "stitches": [
-        "6835fbb0-7c93-4cc5-85fa-255bb88db91c",
-        "389bfb36-6330-4cf2-b8ee-286ecc2d5f26",
-        "8a490171-2a09-42ac-a28c-61ff9c31c491",
-        "ebf90507-9ff7-4ae1-9654-361c740e2ae2",
-        "c7b503be-16a7-4788-8d9b-0984fbdc912a"
-      ],
-      "x": 1011,
-      "y": 66
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "b6962cc3-5093-41fa-92fa-369ed4ecd589",
-      "inputs": [
-        "a9ba17ec-ade3-40b4-87e5-1e1b16fc526f"
-      ],
-      "name": "Bokeh DoF first pass",
-      "outputs": [
-        "4eb7dd21-f3b5-4662-9c54-72a114cb4c8b"
-      ],
-      "stitches": [
-        "3b495bea-4d73-4f78-a6bc-06267e20205c",
-        "c1871807-1bed-48e4-be0e-612a668b3574"
-      ],
-      "x": 17,
-      "y": 192
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "3a16a625-0580-4e94-b0f3-bc681f673ea6",
-      "inputs": [
-        "f2fe929b-2b3d-4481-aab3-53acc7c0b9f6"
-      ],
-      "name": "Bokeh DoF second pass",
-      "outputs": [
-        "3b2ba62d-21e0-42d2-95d6-85f9af310516"
-      ],
-      "stitches": [
-        "79e2c9b1-4c56-4128-b360-a696373629b7",
-        "85b0ffcd-c699-4c77-9780-c80808566935"
-      ],
-      "x": 14,
-      "y": 240
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "acf19a9c-adb5-4534-8ad0-21dd6b8ef3aa",
-      "inputs": [
-        "24691ed2-5ccc-4b44-b1e0-cc5c8ec2ec78"
-      ],
-      "name": "ChromAb",
-      "outputs": [
-        "4111221b-b5d3-417e-a215-cd9240947a47"
-      ],
-      "stitches": [
-        "28a68c47-2e8a-4970-b62f-46dba9c7eb23"
-      ],
-      "x": 914,
-      "y": 261
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "5d7f96f9-75ba-4085-9707-b293f48a4cce",
-      "inputs": [
-        "39d5c388-ca3d-4ec3-9bff-6202f7f62d39"
-      ],
-      "name": "sRgb conversion",
-      "outputs": [
-        "c54d1347-fb9a-4e69-8d34-9e75bc024563"
-      ],
-      "stitches": [
-        "a4652591-bb0a-422b-9496-f4e2e10a62f8",
-        "5cd4e317-deaf-482d-93ad-b629783ca9e1",
-        "a7af33b6-9481-41e7-8677-036e25b02ebf",
-        "22da138d-a7d9-4d5b-8f92-8fe59e91689e"
-      ],
-      "x": 1022,
-      "y": 266
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "e7b43f17-98be-4d62-8164-f636adb05dba",
-      "inputs": [
-        "1c91067d-3544-4f1f-8133-0e9c32bfe0f6"
-      ],
-      "name": "FXAA3",
-      "outputs": [
-        "5d542ef0-a1e1-4b29-b4c0-0f4a0116887c"
-      ],
-      "stitches": [
-        "51421b11-4bfb-4674-a8b0-18eeceb99b21"
-      ],
-      "x": 1124,
-      "y": 283
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "9eac728d-0f86-4906-b1ec-b130590a72d2",
-      "inputs": [
-        "1b312e33-b160-4111-a746-94e6ddb63a87"
-      ],
-      "name": "downsample4",
-      "outputs": [
-        "a763f498-15f3-4eb0-be44-937945f7845f"
-      ],
-      "stitches": [
-        "7d2768bd-b6fd-4d79-83b6-45e3710c82c8"
-      ],
-      "x": 248,
-      "y": 217
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "2fa1a63b-5c15-4ffa-b00a-0671d26ae3e8",
-      "inputs": [
-        "c29e2d67-efe2-4efb-84eb-9d1d9b15a1e4"
-      ],
-      "name": "hblur2",
-      "outputs": [
-        "4ec7d6c5-6c1f-4188-9afa-09b1911886ae"
-      ],
-      "stitches": [
-        "82f23d0e-a563-4785-8628-2ae98ce9cca3",
-        "a3f47bb4-4b6a-47a6-9350-2f08eddaddec",
-        "9f8e3b51-e7a6-4731-89e5-eaea082b73e2",
-        "84bb00d2-b8fa-427b-bba3-7ffccdc93284"
-      ],
-      "x": 246,
-      "y": 269
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "bbfbe582-b2f8-4a19-8460-b491960d8233",
-      "inputs": [
-        "9a18a51c-edc3-41d1-be57-24a7a57c4c51"
-      ],
-      "name": "vblur2",
-      "outputs": [
-        "185b612f-4c3e-457e-8b9b-918c883c30fb"
-      ],
-      "stitches": [
-        "4dc93209-e785-458f-821a-63c55aacc74b",
-        "0a2fbf78-945e-4936-b22a-dccd22d467b8",
-        "e76cca07-2ace-414a-a69d-be72ea23ead8",
-        "2ddb70ed-ef57-4d1a-b9b5-0a3b6f990f05"
-      ],
-      "x": 256,
-      "y": 318
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "da4f3f48-ff9e-4ec5-993d-4ff74654bd74",
-      "inputs": [
-        "baa5c1be-d1d5-4cfd-b85c-f2965fa1b8ea"
-      ],
-      "name": "hblur3",
-      "outputs": [
-        "b5113bff-269d-4ce6-b4ee-da2459d80730"
-      ],
-      "stitches": [
-        "e20dc359-b4a2-4f26-83bd-5c8176c13720",
-        "504ec628-88f6-4475-b3a1-fb2b2d89a44b",
-        "23d89459-c807-47eb-bb15-07be375af95b",
-        "245e4d0d-7fc2-4b52-b29a-2de35dfb89d1"
-      ],
-      "x": 259,
-      "y": 369
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "f592b3ea-fc6c-4a9a-852e-068e7685e741",
-      "inputs": [
-        "2292ac21-08e8-46ab-a9e3-b9775c535039"
-      ],
-      "name": "vblur3",
-      "outputs": [
-        "53cf672e-0187-4671-9aeb-b642a8309dd7"
-      ],
-      "stitches": [
-        "a7e2ca84-8404-4538-ac02-b14979265fcb",
-        "df9393a2-812b-4387-8c5e-9da0c6342264",
-        "fb348272-bccb-4f1a-89d9-e46bd01ca675",
-        "0028692d-fd54-49ad-a7c5-03693e72eefc"
-      ],
-      "x": 254,
-      "y": 416
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "2cddbd79-d8b6-47cb-9312-4a9293bce6d7",
-      "inputs": [
-        "f38a9dcf-b77e-442e-9000-2e96eeccb89f"
-      ],
-      "name": "downsample8",
-      "outputs": [
-        "cdd1936e-3fe4-4bfc-a20b-cc9bc18ada36"
-      ],
-      "stitches": [
-        "7a7da3ab-c9db-49c4-b47b-10a07fecd469"
-      ],
-      "x": 349,
-      "y": 218
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "5215ea13-ea9c-4912-a4dd-034ccd50bd82",
-      "inputs": [
-        "f751482f-96cd-4045-88fd-9257f4e1a880"
-      ],
-      "name": "hblur2",
-      "outputs": [
-        "cc2db304-aa09-441a-a212-8070f3cb800f"
-      ],
-      "stitches": [
-        "6cf7a1b2-a35b-487f-84d7-61586a8deab4",
-        "e4c789de-99e5-432f-b837-1efb662ee28f",
-        "23750962-e6d2-42fb-bee1-47eca194eecb",
-        "d74bbbe9-8516-4543-902a-5022ed222a22"
-      ],
-      "x": 348,
-      "y": 270
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "89ac0830-f81e-4a37-b061-03b038bada27",
-      "inputs": [
-        "e388cc58-8917-4ea9-ad29-0c5e34b7f421"
-      ],
-      "name": "vblur2",
-      "outputs": [
-        "1542a4f5-0946-4694-b115-66e2cd73ab43"
-      ],
-      "stitches": [
-        "ff0adf8e-36cc-456a-adfb-470d58d89d54",
-        "462360f5-5e4b-4ba1-b81e-95324d779da3",
-        "c7391573-c22b-4a26-ab0a-c8b973fbd548",
-        "24f4eb7f-d136-4cc4-9b17-c44eb8bcfdba"
-      ],
-      "x": 352,
-      "y": 320
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "fdd4e7bf-37fe-4fff-955f-7dcbad63afc3",
-      "inputs": [
-        "c381cbc9-ec60-4bd7-8913-31dd0b989442"
-      ],
-      "name": "hblur3",
-      "outputs": [
-        "3843539c-ac02-47ee-a3bd-4b3ee1120240"
-      ],
-      "stitches": [
-        "29c03cff-8af6-495b-a58d-10a3e99db679",
-        "975e1538-587c-42b0-8fbb-b3b07f6fe582",
-        "3454bcf7-82da-4aa4-bbb9-a2e7474c8ccd",
-        "e59614e4-57e6-40fd-af01-135deeae860c"
-      ],
-      "x": 355,
-      "y": 372
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "86f8843d-3800-4f2d-a17d-85bc003670f1",
-      "inputs": [
-        "a853fc6c-1b8c-43ed-aff0-32780a24e411"
-      ],
-      "name": "vblur3",
-      "outputs": [
-        "c4805fe6-1cb4-4b23-baa4-f4dc4fee2673"
-      ],
-      "stitches": [
-        "745e759a-5114-47a8-9663-fc153e3130d5",
-        "416cb737-1902-4ac8-be76-763e7d3bbffa",
-        "14d137df-7076-4303-b4d3-3e90477f3535",
-        "f5b51d7e-4286-4cc2-afec-cf63ecfc4b93"
-      ],
-      "x": 355,
-      "y": 419
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "a2b73387-e5cd-4077-bde9-f5854b5cfbcb",
-      "inputs": [
-        "96d01263-bbec-4fa7-8004-26dadec91770"
-      ],
-      "name": "downsample16",
-      "outputs": [
-        "d9ad6f70-362d-4471-8a39-19605abc5d5a"
-      ],
-      "stitches": [
-        "5993f3fd-cd5f-4bb0-8bfc-b8f155220120"
-      ],
-      "x": 455,
-      "y": 211
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "301ef15a-c63e-4ab1-b10f-a441a5419dd6",
-      "inputs": [
-        "82e7fe02-8baa-4d04-a771-19e9f4600673"
-      ],
-      "name": "downsample32",
-      "outputs": [
-        "e3ccb6ed-cdac-4299-b651-ad6e67267d62"
-      ],
-      "stitches": [
-        "70b8c337-b921-49e5-aa95-cb202afa0380"
-      ],
-      "x": 564,
-      "y": 216
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "e446e08a-aedb-4afe-81a1-eca764a5ac15",
-      "inputs": [
-        "ee716ae8-3d82-4872-bf45-c2c57f4def5f"
-      ],
-      "name": "downsample64",
-      "outputs": [
-        "238cacc5-4391-4e14-8ea3-f455e81bf834"
-      ],
-      "stitches": [
-        "8726084d-9b18-42fa-a570-a7bc9c2ce8cb"
-      ],
-      "x": 670,
-      "y": 214
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "33cdf6d6-7205-4800-95c2-3b7ed5987c54",
-      "inputs": [
-        "cfe3a091-41d7-4dda-8898-5e771d220bc7"
-      ],
-      "name": "downsample2",
-      "outputs": [
-        "b7b94825-c27e-4043-b5fd-95987b2a03b5"
-      ],
-      "stitches": [
-        "6749d7da-fb08-49ed-ab68-9d9215e847c8"
-      ],
-      "x": 142,
-      "y": 218
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "f8f4e24f-fd34-42a3-83e6-1df49c5cc2d5",
-      "inputs": [
-        "8e3f55ca-6547-4c2c-b7df-a5811f6f9c0d"
-      ],
-      "name": "hblur2",
-      "outputs": [
-        "54663f40-484a-4512-b684-7687bbc081dd"
-      ],
-      "stitches": [
-        "e53da482-afcb-4871-a50e-14abdd187fb2",
-        "ebcea1de-07cb-4782-8ffa-0f6a5ad2107e",
-        "1fa77c7c-1d8d-4b67-999f-51ae577894da",
-        "b43dbfe2-f11c-4cd0-8aba-dc4a4cf2e7ac"
-      ],
-      "x": 456,
-      "y": 262
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "67408bc8-124e-4d0e-ac82-98c2b2a4c0b2",
-      "inputs": [
-        "48b1c12f-1465-4a5a-9c11-d7b1f46586e6"
-      ],
-      "name": "hblur2",
-      "outputs": [
-        "c2ad692d-3242-46ca-91f5-45a17abcd572"
-      ],
-      "stitches": [
-        "eed250cc-f1b4-426e-9a1a-c8470716da1b",
-        "6d60045f-f598-4a27-a929-8e40d2614d2b",
-        "e7078acf-19d3-44a8-b990-a9e68efa054b",
-        "6ab53995-1c68-4176-a1da-38ef5429e342"
-      ],
-      "x": 563,
-      "y": 265
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "a7c5aecd-0a22-45c2-943b-1a2bb6ad147a",
-      "inputs": [
-        "0cc7b578-f1ca-460b-8c80-246f035e3399"
-      ],
-      "name": "hblur2",
-      "outputs": [
-        "9d38993f-c9bf-417a-b6f5-3deed5ed9693"
-      ],
-      "stitches": [
-        "20616bb5-7138-46c0-ada4-fe3ba80ceb79",
-        "51788d67-1dc4-459a-85de-f5b564ad12ca",
-        "7f69930c-7bea-48c9-855d-47743f4e0e8e",
-        "30cdd742-c43e-4891-a5da-184d3d947532"
-      ],
-      "x": 145,
-      "y": 265
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "808b8d9e-3baf-4295-bc54-9c3ed18a605b",
-      "inputs": [
-        "e9c331c3-fa39-451d-b70c-731518f80bf1"
-      ],
-      "name": "hblur2",
-      "outputs": [
-        "b17e2159-1005-40f3-b3d9-19df073ff96a"
-      ],
-      "stitches": [
-        "f0aa06d5-dbd8-407a-b09c-3394b1c0b652",
-        "34823998-f2be-4c99-b8d5-ebad6889248d",
-        "e6ac27fa-074d-4bee-9ad9-6816e92c28bd",
-        "80806c87-28e1-4198-85d8-1057b5875ed3"
-      ],
-      "x": 678,
-      "y": 264
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "c5192079-f98d-4866-bb28-f1a2cf84eda9",
-      "inputs": [
-        "abdd74ef-bfdd-4714-9ad5-857f0f8e5890"
-      ],
-      "name": "vblur2",
-      "outputs": [
-        "68354aea-15fb-4db9-b2b9-2796aa9ce980"
-      ],
-      "stitches": [
-        "3db5dde6-bde6-4e86-8878-92fd462adcc2",
-        "528c8f17-d696-4c8a-9adb-fca5015a8efe",
-        "1476f9c4-5533-4370-af33-2191fc625b96",
-        "d423fb98-79ad-4e2a-9528-0c08f6f220ab"
-      ],
-      "x": 148,
-      "y": 313
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "5aede9af-05b6-4ea0-bdea-7e430ab8df8d",
-      "inputs": [
-        "3dfcca16-910a-4686-a2b6-9fe8d8c3a7ef"
-      ],
-      "name": "vblur2",
-      "outputs": [
-        "71d09009-ae97-4c5f-8cff-db5e645b165a"
-      ],
-      "stitches": [
-        "8260f8cd-2e96-482e-9f65-149ae75441f9",
-        "b55c19cf-3931-4a85-9d85-fad039ae70d4",
-        "6a8d0394-129e-44c8-a64b-7e3893103c8d",
-        "9f6cc33b-bf90-44a2-8fcc-a371cf13d8f9"
-      ],
-      "x": 464,
-      "y": 312
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "6e652534-baa5-45f0-b70a-c25da831fb24",
-      "inputs": [
-        "be8aad5b-17a2-4ab2-88fb-5fe7310bf715"
-      ],
-      "name": "vblur2",
-      "outputs": [
-        "b53e7c5b-ffcd-4a5b-b8d8-f49482b52daa"
-      ],
-      "stitches": [
-        "ee6637bc-cbe0-47a1-86ef-32defd44c353",
-        "21e8a937-e936-48a6-a320-76d551f0b3a2",
-        "d23c0e25-f4e8-47e6-a474-0fc42382ea2c",
-        "91d47e2c-4a38-415b-b91b-e2d072e3b2e2"
-      ],
-      "x": 574,
-      "y": 311
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "962e5513-0e8b-4a00-9a4e-173182a2e844",
-      "inputs": [
-        "7de7439a-ba3d-47e3-8b5e-abf89816bb98"
-      ],
-      "name": "vblur2",
-      "outputs": [
-        "f051502c-52a3-4402-949f-6248d43f0bed"
-      ],
-      "stitches": [
-        "7ccf4ea3-73fb-43e6-ad71-bb750905f3b4",
-        "60e1564c-5e65-48cd-bbb3-403362ead102",
-        "20ebd321-af15-48a7-a07c-76ae019506ca",
-        "6c00a454-3fb7-49aa-bb00-af4df01ade52"
-      ],
-      "x": 688,
-      "y": 309
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "a0daa86f-3649-435d-b552-c27678ff9499",
-      "inputs": [
-        "92895a19-7d4b-4019-95e1-9a122bc0004b"
-      ],
-      "name": "hblur3",
-      "outputs": [
-        "c7cd90e8-bb5c-4221-80f2-74182cf62906"
-      ],
-      "stitches": [
-        "b79a326c-6a8f-4f3b-9cf8-7b702767fd16",
-        "418afcd2-7d0a-4518-a705-48247371d103",
-        "e6da2da1-891a-44d3-9b0f-803b678e03b8",
-        "f406a8b6-e165-443a-8858-be1a694456d0"
-      ],
-      "x": 690,
-      "y": 355
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "5c8c557d-ebd4-4973-beb4-4f784feeecfa",
-      "inputs": [
-        "2a39d629-5966-4e12-9172-e9e0832df035"
-      ],
-      "name": "hblur3",
-      "outputs": [
-        "bcdbd215-ce69-4106-a0bb-3f4abd72f1e5"
-      ],
-      "stitches": [
-        "e91f7a5b-6349-4dba-a0b5-f5280673bbed",
-        "467e21ee-d09a-4bae-9c77-d93d8ef1db1b",
-        "3475c4fc-7e41-4495-878d-90630a578080",
-        "8dccf277-6b30-4a1f-89d0-cb1aead37b09"
-      ],
-      "x": 152,
-      "y": 361
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "f14b0938-ca88-4664-9038-a073a585b436",
-      "inputs": [
-        "ee96fb1f-4d84-4f5f-a707-8e5530ff5575"
-      ],
-      "name": "hblur3",
-      "outputs": [
-        "ebd76194-1a4b-4d99-935f-6afa059d8d1f"
-      ],
-      "stitches": [
-        "2a087848-3650-4632-8d71-1a2eb4fa9fc4",
-        "cba934c6-ce25-4644-8bdb-f572d67382b7",
-        "cf1a974d-f73e-4533-bdd7-ff738c36d113",
-        "1389ce09-e000-4778-a309-6aa46dc30ba7"
-      ],
-      "x": 576,
-      "y": 357
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "a702f51b-aad1-456f-add2-b74f46b57906",
-      "inputs": [
-        "1be2c250-beac-47d5-a72d-4a2c7ae47481"
-      ],
-      "name": "hblur3",
-      "outputs": [
-        "21584053-04d7-4814-81f0-de1edc75103c"
-      ],
-      "stitches": [
-        "31de320e-9dc6-4830-abb8-79e499f58fa7",
-        "bfac147c-d0e6-497a-8712-67b14fed3e21",
-        "97a19f11-c21b-49f1-87cd-19ea4049c665",
-        "67373bad-04bd-492a-9a48-7ee52b6b75d9"
-      ],
-      "x": 470,
-      "y": 362
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "0842ca80-d5a8-4448-8902-1f92f209a2c5",
-      "inputs": [
-        "52b3e170-d300-4c90-9ed0-1f904a139769"
-      ],
-      "name": "vblur3",
-      "outputs": [
-        "cab3a778-ef98-4c6a-ab42-828bf9f81cbb"
-      ],
-      "stitches": [
-        "617d3743-a20c-4d11-a623-2c20bd8f1f10",
-        "4f585c83-80cc-431f-8dee-081d93c3fa46",
-        "011ad3cb-e39a-4c1d-8b65-1323bcb083ee",
-        "458c2773-bd25-48a5-bff8-348e3e0e919b"
-      ],
-      "x": 693,
-      "y": 401
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "95e0c661-b19f-4334-85b4-d305abb53976",
-      "inputs": [
-        "fa22bbd1-0fb0-4e27-b98d-213b80ac8d19"
-      ],
-      "name": "vblur3",
-      "outputs": [
-        "43f70b60-6cd5-4770-ba96-738a9cbc20e0"
-      ],
-      "stitches": [
-        "284912dd-5d5f-4c4d-899a-00417c08339e",
-        "3245301b-bc10-4c7f-8592-6cddb18f59ec",
-        "5cec36fc-5ba6-4273-88db-c3440bd4850b",
-        "421b5aa7-ba58-4764-b3c4-0697e5f0c4df"
-      ],
-      "x": 580,
-      "y": 408
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "a57b52fe-436f-45f1-9d00-9f6605e51207",
-      "inputs": [
-        "87200ab2-9d98-4762-9802-e63c3564b4b1"
-      ],
-      "name": "vblur3",
-      "outputs": [
-        "f44663f8-000b-4fa8-aa0c-6d7df5fd76db"
-      ],
-      "stitches": [
-        "fa62d047-53e6-438e-8611-4ee80d1a1bde",
-        "343f5559-6603-46d6-8424-d2b1d9b46ea0",
-        "4f9ffd9d-97d4-4837-a29f-eeb1c1d56118",
-        "0cdd7009-7e64-4043-9d67-9567958915d0"
-      ],
-      "x": 468,
-      "y": 411
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "85f10a31-0ca1-47e9-ac07-eab5bfcb1df6",
-      "inputs": [
-        "83ac12ff-4a46-4589-8764-b015221e4e0d"
-      ],
-      "name": "vblur3",
-      "outputs": [
-        "296aa323-3405-4d73-8947-1e1ee74fa1c7"
-      ],
-      "stitches": [
-        "9f1f7bff-aa2f-4c1e-b6be-8dedcd36f292",
-        "2c48c7be-52a8-49fb-b6ed-ee462357d81e",
-        "ab37a45a-fab6-4781-8eb7-a69994f60bd7",
-        "65671334-e9c7-4821-8eff-7c88506a3a03"
-      ],
-      "x": 152,
-      "y": 411
-    },
-    {
-      "__class__": "Node",
-      "__uuid__": "c022535b-52ce-4dfc-add0-0d2119e86006",
-      "inputs": [
-        "a929e09c-a629-45a1-b32a-6189038beac1",
-        "009ab1cd-6879-4722-a4b8-8aa34edc0e3f",
-        "27970e94-2f93-4f42-b789-3ad3a0df0e1f",
-        "d251f5fa-5063-4562-93b5-4437d0de2b3b",
-        "3584a8a3-61f8-4b04-b9be-3b1b8f1ee90c",
-        "88eb7737-a8b9-4c95-9d27-f25d37a168e3",
-        "8f9914fd-1c1c-4d6c-a00e-3c35e39db1ac",
-        "51099924-16bd-4fa9-8aca-6531059ad397"
-      ],
-      "name": "bloom",
-      "outputs": [
-        "ca1c2687-2e86-408b-af96-1d7f3b9e5ad5"
-      ],
-      "stitches": [
-        "5b5f756e-37a3-4280-8192-cda904a7f607"
-      ],
-      "x": 796,
-      "y": 265
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "36542d37-261e-4dff-86b0-8393b7f78267",
-      "connections": [
-        "51099924-16bd-4fa9-8aca-6531059ad397"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "abaf2901-96fa-4252-ab53-51abb09238fb",
-      "name": "header",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "87c157e5-25af-43fc-88c7-c2365a7fb0e8",
-      "name": "noiselib",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "443bb847-fd05-4d95-b84c-b932b97d7cce",
-      "name": "sdf",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "cdd06894-de86-4982-9f86-ce3fdb3d1b79",
-      "name": "lensdirt",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "2931f42c-674b-4c61-8d06-3e9712892ab8",
-      "connections": [
-        "adc570fa-75db-4a36-b3d7-adabdebda244"
-      ],
-      "name": "noise"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "baae3bf1-8ce1-422b-87d4-05a58b86c5b1",
-      "connections": [
-        "05ae4d0e-c9de-4572-be8f-1bffa924284a",
-        "d5903cd9-5051-444c-ab9f-bb8fd367a18c"
-      ],
-      "name": "gbuffer0",
-      "size": -1
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "f081f789-cb55-4696-a9e8-1de7ffa9694f",
-      "connections": [
-        "739a1d59-16a0-49d1-9355-6bc00e943b02"
-      ],
-      "name": "gbuffer1",
-      "size": -1
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "94d1e191-c86f-42f0-9658-6e2c38e19463",
-      "connections": [
-        "4a30dfc0-a74d-44eb-a07c-b1997625e489"
-      ],
-      "name": "gbuffer2",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "ea09930f-1033-49c0-9aab-5f50ce2dbe39",
-      "name": "header",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "8b2f5265-8469-4edd-847d-12e772cd1e5c",
-      "name": "settings",
-      "scope": "Scene"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "284f9ee7-7007-434d-b4de-6346bc6cc6ca",
-      "name": "noiselib",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "75b5fcfb-46cf-4996-96c8-2a248ed915dd",
-      "name": "sdf",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "ba4fe5b3-505f-43b5-90bc-6a4c6433ce28",
-      "name": "lighting",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "a70d5f5a-ef30-4cf3-b3ae-3fb7aaf0e024",
-      "name": "fogremap",
-      "scope": "Scene"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "8862f050-a8da-4dca-9b72-4d32d77a5623",
-      "name": "content",
-      "scope": "Scene"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "949b3dd4-89aa-41fd-b87c-a3caf1399604",
-      "name": "tracer",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "495dacff-dd62-480c-8483-57f534ab09d5",
-      "name": "main",
-      "scope": "Private"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "adc570fa-75db-4a36-b3d7-adabdebda244",
-      "connections": [
-        "2931f42c-674b-4c61-8d06-3e9712892ab8",
-        "5842ec62-f320-4893-b473-6b2e2f5751e8"
-      ],
-      "name": "output",
-      "size": 1024
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "87e3153d-1fcb-4218-95cf-a8d6101381b4",
-      "name": "header",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "17fe6f9a-f251-4906-b22e-252d19e182b4",
-      "name": "noiselib",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "a801da74-2803-44f4-bb17-3f481323d37e",
-      "name": "noise",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "05ae4d0e-c9de-4572-be8f-1bffa924284a",
-      "connections": [
-        "baae3bf1-8ce1-422b-87d4-05a58b86c5b1"
-      ],
-      "name": "gbuffer0"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "739a1d59-16a0-49d1-9355-6bc00e943b02",
-      "connections": [
-        "f081f789-cb55-4696-a9e8-1de7ffa9694f"
-      ],
-      "name": "gbuffer1"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "4a30dfc0-a74d-44eb-a07c-b1997625e489",
-      "connections": [
-        "94d1e191-c86f-42f0-9658-6e2c38e19463"
-      ],
-      "name": "gbuffer2"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "5842ec62-f320-4893-b473-6b2e2f5751e8",
-      "connections": [
-        "adc570fa-75db-4a36-b3d7-adabdebda244"
-      ],
-      "name": "noise"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "f20d06ef-4a6e-48fd-a22d-41cbf361b46f",
-      "connections": [
-        "8266d263-a0d6-4582-b228-090fac9ea64c"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "72ffd004-f77f-48ed-bb8b-6c1af6860aa5",
-      "name": "header",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "cc983a48-36f2-49b6-b921-7aeb78aa1d8a",
-      "name": "settings",
-      "scope": "Scene"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "fa65f818-759a-428b-aa14-20a1426c78c4",
-      "name": "noiselib",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "78ef3542-bc6e-4e5a-8363-169814c12e8f",
-      "name": "sdf",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "66af51e5-7d43-4d52-afc5-d75a98c7f89d",
-      "name": "lighting",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "ae4e729e-f611-48e7-be92-d783e4b7ff45",
-      "name": "fogremap",
-      "scope": "Scene"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "c341fae0-dea7-4859-a1fa-53deed32995c",
-      "name": "content",
-      "scope": "Scene"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "d7a6dfe2-3d9b-4472-9d07-eff54608a5a8",
-      "name": "tracer",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "5c67a6c8-020c-4c08-9176-b15bb9d2ea54",
-      "name": "rpass",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "8266d263-a0d6-4582-b228-090fac9ea64c",
-      "connections": [
-        "f20d06ef-4a6e-48fd-a22d-41cbf361b46f"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "93d01477-321a-40c4-bf7c-581fb61726a9",
-      "connections": [
-        "c6992df8-a274-48ad-bf77-c4bd028b2f77"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "77d2d61a-4ff6-4723-951a-f313067eb21f",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "a262e10b-634d-4bfc-8457-fdbe67391072",
-      "name": "blurhorizontal",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "f449ebfc-ffbd-44f7-bd1d-a1942a922232",
-      "name": "blur2",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "0c311da6-b847-47a7-8c18-0cf43482bc1f",
-      "name": "blurrefl",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "071c0f2a-278c-4ec4-88b1-5a440c4d1d3f",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "c6992df8-a274-48ad-bf77-c4bd028b2f77",
-      "connections": [
-        "93d01477-321a-40c4-bf7c-581fb61726a9"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "18a64989-cd6b-4d61-8462-ccb7360d4b78",
-      "connections": [
-        "5a85dcbf-c868-45b2-8fe1-e48e9de3a3c7"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "dd1db640-4c3f-4e64-b27e-16869152cbfa",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "696d6c45-8679-4aee-920f-d3917715656a",
-      "name": "blurvertical",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "6303b10b-64a6-42a8-9b68-270a4134ebbd",
-      "name": "blur2",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "f0f58574-b179-4469-8052-19f54b7e00d9",
-      "name": "blurrefl",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "3f2c95c4-13a9-473c-8c30-7252f705945e",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "5a85dcbf-c868-45b2-8fe1-e48e9de3a3c7",
-      "connections": [
-        "18a64989-cd6b-4d61-8462-ccb7360d4b78"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "1fc00482-cd0c-4fed-a752-1ccacac1629e",
-      "connections": [
-        "983d9594-73e8-4992-8340-1d82d8dba016"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "0450ad27-7767-4536-9d23-e806a9effba8",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "410e758a-a41c-4226-98ee-5ac9b9099d27",
-      "name": "blurhorizontal",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "b32482a7-8b0f-47c7-8b10-33a8a25662f1",
-      "name": "blur3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "037c8259-1274-4c53-b6b3-509c0acf72e9",
-      "name": "blurrefl",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "4af10dc1-364a-4b35-a135-76cb112766a3",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "983d9594-73e8-4992-8340-1d82d8dba016",
-      "connections": [
-        "1fc00482-cd0c-4fed-a752-1ccacac1629e"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "074abdcb-4382-47c4-9061-e979dc8089b4",
-      "connections": [
-        "2fa9fb14-94ff-4623-8815-7c0f331a7599"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "8dfb106e-e052-4c97-bbdf-0134a7fb2876",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "893a2bf3-ee43-4ae6-a32e-fac9f72d9eed",
-      "name": "blurvertical",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "01c7fc67-da47-443b-9b24-5eea790083a2",
-      "name": "blur3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "48af2302-f2ed-4f56-8296-8674eca62128",
-      "name": "blurrefl",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "948f1a38-1f53-4e65-ba96-eb3ad6180e0f",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "d5903cd9-5051-444c-ab9f-bb8fd367a18c",
-      "connections": [
-        "baae3bf1-8ce1-422b-87d4-05a58b86c5b1"
-      ],
-      "name": "main"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "2fa9fb14-94ff-4623-8815-7c0f331a7599",
-      "connections": [
-        "074abdcb-4382-47c4-9061-e979dc8089b4"
-      ],
-      "name": "reflection"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "6b29657f-d38f-4e51-81e3-4fd3c89f2c4b",
-      "connections": [
-        "7b57d9d4-ba5c-4165-9032-917dbf99f86b"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "c6d691df-f99b-4fed-bc14-2eae2cb37658",
-      "name": "header",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "1a331e6a-a457-4d9d-8c1d-5d913e743cfe",
-      "name": "settings",
-      "scope": "Scene"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "0b9e2560-d6b5-47e3-ae0b-139957cb2d77",
-      "name": "fogremap",
-      "scope": "Scene"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "fb68fc42-554b-4722-a6fc-be899d3b44db",
-      "name": "merge",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "7b57d9d4-ba5c-4165-9032-917dbf99f86b",
-      "connections": [
-        "6b29657f-d38f-4e51-81e3-4fd3c89f2c4b"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "450a6408-5c21-424c-a688-0e57f38e9be7",
-      "connections": [
-        "a9ba17ec-ade3-40b4-87e5-1e1b16fc526f"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "6835fbb0-7c93-4cc5-85fa-255bb88db91c",
-      "name": "header",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "389bfb36-6330-4cf2-b8ee-286ecc2d5f26",
-      "name": "settings",
-      "scope": "Scene"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "8a490171-2a09-42ac-a28c-61ff9c31c491",
-      "name": "noiselib",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "ebf90507-9ff7-4ae1-9654-361c740e2ae2",
-      "name": "sdf",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "c7b503be-16a7-4788-8d9b-0984fbdc912a",
-      "name": "prefxoverlay",
-      "scope": "Scene"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "a9ba17ec-ade3-40b4-87e5-1e1b16fc526f",
-      "connections": [
-        "450a6408-5c21-424c-a688-0e57f38e9be7"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "4eb7dd21-f3b5-4662-9c54-72a114cb4c8b",
-      "connections": [
-        "f2fe929b-2b3d-4481-aab3-53acc7c0b9f6"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "3b495bea-4d73-4f78-a6bc-06267e20205c",
-      "name": "bokehheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "c1871807-1bed-48e4-be0e-612a668b3574",
-      "name": "bokehfirst",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "f2fe929b-2b3d-4481-aab3-53acc7c0b9f6",
-      "connections": [
-        "4eb7dd21-f3b5-4662-9c54-72a114cb4c8b"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "3b2ba62d-21e0-42d2-95d6-85f9af310516",
-      "connections": [
-        "cfe3a091-41d7-4dda-8898-5e771d220bc7",
-        "a929e09c-a629-45a1-b32a-6189038beac1"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "79e2c9b1-4c56-4128-b360-a696373629b7",
-      "name": "bokehheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "85b0ffcd-c699-4c77-9780-c80808566935",
-      "name": "bokehsecond",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "24691ed2-5ccc-4b44-b1e0-cc5c8ec2ec78",
-      "connections": [
-        "ca1c2687-2e86-408b-af96-1d7f3b9e5ad5"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "4111221b-b5d3-417e-a215-cd9240947a47",
-      "connections": [
-        "39d5c388-ca3d-4ec3-9bff-6202f7f62d39"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "28a68c47-2e8a-4970-b62f-46dba9c7eb23",
-      "name": "chromab",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "39d5c388-ca3d-4ec3-9bff-6202f7f62d39",
-      "connections": [
-        "4111221b-b5d3-417e-a215-cd9240947a47"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "c54d1347-fb9a-4e69-8d34-9e75bc024563",
-      "connections": [
-        "1c91067d-3544-4f1f-8133-0e9c32bfe0f6"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "a4652591-bb0a-422b-9496-f4e2e10a62f8",
-      "name": "header",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "5cd4e317-deaf-482d-93ad-b629783ca9e1",
-      "name": "noiselib",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "a7af33b6-9481-41e7-8677-036e25b02ebf",
-      "name": "sdf",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "22da138d-a7d9-4d5b-8f92-8fe59e91689e",
-      "name": "present",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "1c91067d-3544-4f1f-8133-0e9c32bfe0f6",
-      "connections": [
-        "c54d1347-fb9a-4e69-8d34-9e75bc024563"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "5d542ef0-a1e1-4b29-b4c0-0f4a0116887c",
-      "connections": [],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "51421b11-4bfb-4674-a8b0-18eeceb99b21",
-      "name": "fxaa3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "1b312e33-b160-4111-a746-94e6ddb63a87",
-      "connections": [
-        "296aa323-3405-4d73-8947-1e1ee74fa1c7"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "a763f498-15f3-4eb0-be44-937945f7845f",
-      "connections": [
-        "c29e2d67-efe2-4efb-84eb-9d1d9b15a1e4",
-        "27970e94-2f93-4f42-b789-3ad3a0df0e1f"
-      ],
-      "name": "output",
-      "size": -4
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "7d2768bd-b6fd-4d79-83b6-45e3710c82c8",
-      "name": "downsample",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "c29e2d67-efe2-4efb-84eb-9d1d9b15a1e4",
-      "connections": [
-        "a763f498-15f3-4eb0-be44-937945f7845f"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "4ec7d6c5-6c1f-4188-9afa-09b1911886ae",
-      "connections": [
-        "9a18a51c-edc3-41d1-be57-24a7a57c4c51"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "82f23d0e-a563-4785-8628-2ae98ce9cca3",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "a3f47bb4-4b6a-47a6-9350-2f08eddaddec",
-      "name": "blurhorizontal",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "9f8e3b51-e7a6-4731-89e5-eaea082b73e2",
-      "name": "blur2",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "84bb00d2-b8fa-427b-bba3-7ffccdc93284",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "9a18a51c-edc3-41d1-be57-24a7a57c4c51",
-      "connections": [
-        "4ec7d6c5-6c1f-4188-9afa-09b1911886ae"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "185b612f-4c3e-457e-8b9b-918c883c30fb",
-      "connections": [
-        "baa5c1be-d1d5-4cfd-b85c-f2965fa1b8ea"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "4dc93209-e785-458f-821a-63c55aacc74b",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "0a2fbf78-945e-4936-b22a-dccd22d467b8",
-      "name": "blurvertical",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "e76cca07-2ace-414a-a69d-be72ea23ead8",
-      "name": "blur2",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "2ddb70ed-ef57-4d1a-b9b5-0a3b6f990f05",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "baa5c1be-d1d5-4cfd-b85c-f2965fa1b8ea",
-      "connections": [
-        "185b612f-4c3e-457e-8b9b-918c883c30fb"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "b5113bff-269d-4ce6-b4ee-da2459d80730",
-      "connections": [
-        "2292ac21-08e8-46ab-a9e3-b9775c535039"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "e20dc359-b4a2-4f26-83bd-5c8176c13720",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "504ec628-88f6-4475-b3a1-fb2b2d89a44b",
-      "name": "blurhorizontal",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "23d89459-c807-47eb-bb15-07be375af95b",
-      "name": "blur3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "245e4d0d-7fc2-4b52-b29a-2de35dfb89d1",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "2292ac21-08e8-46ab-a9e3-b9775c535039",
-      "connections": [
-        "b5113bff-269d-4ce6-b4ee-da2459d80730"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "53cf672e-0187-4671-9aeb-b642a8309dd7",
-      "connections": [
-        "f38a9dcf-b77e-442e-9000-2e96eeccb89f"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "a7e2ca84-8404-4538-ac02-b14979265fcb",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "df9393a2-812b-4387-8c5e-9da0c6342264",
-      "name": "blurvertical",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "fb348272-bccb-4f1a-89d9-e46bd01ca675",
-      "name": "blur3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "0028692d-fd54-49ad-a7c5-03693e72eefc",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "f38a9dcf-b77e-442e-9000-2e96eeccb89f",
-      "connections": [
-        "53cf672e-0187-4671-9aeb-b642a8309dd7"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "cdd1936e-3fe4-4bfc-a20b-cc9bc18ada36",
-      "connections": [
-        "f751482f-96cd-4045-88fd-9257f4e1a880",
-        "d251f5fa-5063-4562-93b5-4437d0de2b3b"
-      ],
-      "name": "output",
-      "size": -8
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "7a7da3ab-c9db-49c4-b47b-10a07fecd469",
-      "name": "downsample",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "f751482f-96cd-4045-88fd-9257f4e1a880",
-      "connections": [
-        "cdd1936e-3fe4-4bfc-a20b-cc9bc18ada36"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "cc2db304-aa09-441a-a212-8070f3cb800f",
-      "connections": [
-        "e388cc58-8917-4ea9-ad29-0c5e34b7f421"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "6cf7a1b2-a35b-487f-84d7-61586a8deab4",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "e4c789de-99e5-432f-b837-1efb662ee28f",
-      "name": "blurhorizontal",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "23750962-e6d2-42fb-bee1-47eca194eecb",
-      "name": "blur2",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "d74bbbe9-8516-4543-902a-5022ed222a22",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "e388cc58-8917-4ea9-ad29-0c5e34b7f421",
-      "connections": [
-        "cc2db304-aa09-441a-a212-8070f3cb800f"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "1542a4f5-0946-4694-b115-66e2cd73ab43",
-      "connections": [
-        "c381cbc9-ec60-4bd7-8913-31dd0b989442"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "ff0adf8e-36cc-456a-adfb-470d58d89d54",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "462360f5-5e4b-4ba1-b81e-95324d779da3",
-      "name": "blurvertical",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "c7391573-c22b-4a26-ab0a-c8b973fbd548",
-      "name": "blur2",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "24f4eb7f-d136-4cc4-9b17-c44eb8bcfdba",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "c381cbc9-ec60-4bd7-8913-31dd0b989442",
-      "connections": [
-        "1542a4f5-0946-4694-b115-66e2cd73ab43"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "3843539c-ac02-47ee-a3bd-4b3ee1120240",
-      "connections": [
-        "a853fc6c-1b8c-43ed-aff0-32780a24e411"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "29c03cff-8af6-495b-a58d-10a3e99db679",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "975e1538-587c-42b0-8fbb-b3b07f6fe582",
-      "name": "blurhorizontal",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "3454bcf7-82da-4aa4-bbb9-a2e7474c8ccd",
-      "name": "blur3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "e59614e4-57e6-40fd-af01-135deeae860c",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "a853fc6c-1b8c-43ed-aff0-32780a24e411",
-      "connections": [
-        "3843539c-ac02-47ee-a3bd-4b3ee1120240"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "c4805fe6-1cb4-4b23-baa4-f4dc4fee2673",
-      "connections": [
-        "96d01263-bbec-4fa7-8004-26dadec91770"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "745e759a-5114-47a8-9663-fc153e3130d5",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "416cb737-1902-4ac8-be76-763e7d3bbffa",
-      "name": "blurvertical",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "14d137df-7076-4303-b4d3-3e90477f3535",
-      "name": "blur3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "f5b51d7e-4286-4cc2-afec-cf63ecfc4b93",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "96d01263-bbec-4fa7-8004-26dadec91770",
-      "connections": [
-        "c4805fe6-1cb4-4b23-baa4-f4dc4fee2673"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "d9ad6f70-362d-4471-8a39-19605abc5d5a",
-      "connections": [
-        "8e3f55ca-6547-4c2c-b7df-a5811f6f9c0d",
-        "3584a8a3-61f8-4b04-b9be-3b1b8f1ee90c"
-      ],
-      "name": "output",
-      "size": -16
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "5993f3fd-cd5f-4bb0-8bfc-b8f155220120",
-      "name": "downsample",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "82e7fe02-8baa-4d04-a771-19e9f4600673",
-      "connections": [
-        "f44663f8-000b-4fa8-aa0c-6d7df5fd76db"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "e3ccb6ed-cdac-4299-b651-ad6e67267d62",
-      "connections": [
-        "48b1c12f-1465-4a5a-9c11-d7b1f46586e6",
-        "88eb7737-a8b9-4c95-9d27-f25d37a168e3"
-      ],
-      "name": "output",
-      "size": -32
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "70b8c337-b921-49e5-aa95-cb202afa0380",
-      "name": "downsample",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "ee716ae8-3d82-4872-bf45-c2c57f4def5f",
-      "connections": [
-        "43f70b60-6cd5-4770-ba96-738a9cbc20e0"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "238cacc5-4391-4e14-8ea3-f455e81bf834",
-      "connections": [
-        "e9c331c3-fa39-451d-b70c-731518f80bf1",
-        "8f9914fd-1c1c-4d6c-a00e-3c35e39db1ac"
-      ],
-      "name": "output",
-      "size": -64
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "8726084d-9b18-42fa-a570-a7bc9c2ce8cb",
-      "name": "downsample",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "cfe3a091-41d7-4dda-8898-5e771d220bc7",
-      "connections": [
-        "3b2ba62d-21e0-42d2-95d6-85f9af310516"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "b7b94825-c27e-4043-b5fd-95987b2a03b5",
-      "connections": [
-        "0cc7b578-f1ca-460b-8c80-246f035e3399",
-        "009ab1cd-6879-4722-a4b8-8aa34edc0e3f"
-      ],
-      "name": "output",
-      "size": -2
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "6749d7da-fb08-49ed-ab68-9d9215e847c8",
-      "name": "downsample",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "8e3f55ca-6547-4c2c-b7df-a5811f6f9c0d",
-      "connections": [
-        "d9ad6f70-362d-4471-8a39-19605abc5d5a"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "54663f40-484a-4512-b684-7687bbc081dd",
-      "connections": [
-        "3dfcca16-910a-4686-a2b6-9fe8d8c3a7ef"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "e53da482-afcb-4871-a50e-14abdd187fb2",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "ebcea1de-07cb-4782-8ffa-0f6a5ad2107e",
-      "name": "blurhorizontal",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "1fa77c7c-1d8d-4b67-999f-51ae577894da",
-      "name": "blur2",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "b43dbfe2-f11c-4cd0-8aba-dc4a4cf2e7ac",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "48b1c12f-1465-4a5a-9c11-d7b1f46586e6",
-      "connections": [
-        "e3ccb6ed-cdac-4299-b651-ad6e67267d62"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "c2ad692d-3242-46ca-91f5-45a17abcd572",
-      "connections": [
-        "be8aad5b-17a2-4ab2-88fb-5fe7310bf715"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "eed250cc-f1b4-426e-9a1a-c8470716da1b",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "6d60045f-f598-4a27-a929-8e40d2614d2b",
-      "name": "blurhorizontal",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "e7078acf-19d3-44a8-b990-a9e68efa054b",
-      "name": "blur2",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "6ab53995-1c68-4176-a1da-38ef5429e342",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "0cc7b578-f1ca-460b-8c80-246f035e3399",
-      "connections": [
-        "b7b94825-c27e-4043-b5fd-95987b2a03b5"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "9d38993f-c9bf-417a-b6f5-3deed5ed9693",
-      "connections": [
-        "abdd74ef-bfdd-4714-9ad5-857f0f8e5890"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "20616bb5-7138-46c0-ada4-fe3ba80ceb79",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "51788d67-1dc4-459a-85de-f5b564ad12ca",
-      "name": "blurhorizontal",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "7f69930c-7bea-48c9-855d-47743f4e0e8e",
-      "name": "blur2",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "30cdd742-c43e-4891-a5da-184d3d947532",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "e9c331c3-fa39-451d-b70c-731518f80bf1",
-      "connections": [
-        "238cacc5-4391-4e14-8ea3-f455e81bf834"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "b17e2159-1005-40f3-b3d9-19df073ff96a",
-      "connections": [
-        "7de7439a-ba3d-47e3-8b5e-abf89816bb98"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "f0aa06d5-dbd8-407a-b09c-3394b1c0b652",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "34823998-f2be-4c99-b8d5-ebad6889248d",
-      "name": "blurhorizontal",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "e6ac27fa-074d-4bee-9ad9-6816e92c28bd",
-      "name": "blur2",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "80806c87-28e1-4198-85d8-1057b5875ed3",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "abdd74ef-bfdd-4714-9ad5-857f0f8e5890",
-      "connections": [
-        "9d38993f-c9bf-417a-b6f5-3deed5ed9693"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "68354aea-15fb-4db9-b2b9-2796aa9ce980",
-      "connections": [
-        "2a39d629-5966-4e12-9172-e9e0832df035"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "3db5dde6-bde6-4e86-8878-92fd462adcc2",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "528c8f17-d696-4c8a-9adb-fca5015a8efe",
-      "name": "blurvertical",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "1476f9c4-5533-4370-af33-2191fc625b96",
-      "name": "blur2",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "d423fb98-79ad-4e2a-9528-0c08f6f220ab",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "3dfcca16-910a-4686-a2b6-9fe8d8c3a7ef",
-      "connections": [
-        "54663f40-484a-4512-b684-7687bbc081dd"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "71d09009-ae97-4c5f-8cff-db5e645b165a",
-      "connections": [
-        "1be2c250-beac-47d5-a72d-4a2c7ae47481"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "8260f8cd-2e96-482e-9f65-149ae75441f9",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "b55c19cf-3931-4a85-9d85-fad039ae70d4",
-      "name": "blurvertical",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "6a8d0394-129e-44c8-a64b-7e3893103c8d",
-      "name": "blur2",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "9f6cc33b-bf90-44a2-8fcc-a371cf13d8f9",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "be8aad5b-17a2-4ab2-88fb-5fe7310bf715",
-      "connections": [
-        "c2ad692d-3242-46ca-91f5-45a17abcd572"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "b53e7c5b-ffcd-4a5b-b8d8-f49482b52daa",
-      "connections": [
-        "ee96fb1f-4d84-4f5f-a707-8e5530ff5575"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "ee6637bc-cbe0-47a1-86ef-32defd44c353",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "21e8a937-e936-48a6-a320-76d551f0b3a2",
-      "name": "blurvertical",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "d23c0e25-f4e8-47e6-a474-0fc42382ea2c",
-      "name": "blur2",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "91d47e2c-4a38-415b-b91b-e2d072e3b2e2",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "7de7439a-ba3d-47e3-8b5e-abf89816bb98",
-      "connections": [
-        "b17e2159-1005-40f3-b3d9-19df073ff96a"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "f051502c-52a3-4402-949f-6248d43f0bed",
-      "connections": [
-        "92895a19-7d4b-4019-95e1-9a122bc0004b"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "7ccf4ea3-73fb-43e6-ad71-bb750905f3b4",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "60e1564c-5e65-48cd-bbb3-403362ead102",
-      "name": "blurvertical",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "20ebd321-af15-48a7-a07c-76ae019506ca",
-      "name": "blur2",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "6c00a454-3fb7-49aa-bb00-af4df01ade52",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "92895a19-7d4b-4019-95e1-9a122bc0004b",
-      "connections": [
-        "f051502c-52a3-4402-949f-6248d43f0bed"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "c7cd90e8-bb5c-4221-80f2-74182cf62906",
-      "connections": [
-        "52b3e170-d300-4c90-9ed0-1f904a139769"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "b79a326c-6a8f-4f3b-9cf8-7b702767fd16",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "418afcd2-7d0a-4518-a705-48247371d103",
-      "name": "blurhorizontal",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "e6da2da1-891a-44d3-9b0f-803b678e03b8",
-      "name": "blur3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "f406a8b6-e165-443a-8858-be1a694456d0",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "2a39d629-5966-4e12-9172-e9e0832df035",
-      "connections": [
-        "68354aea-15fb-4db9-b2b9-2796aa9ce980"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "bcdbd215-ce69-4106-a0bb-3f4abd72f1e5",
-      "connections": [
-        "83ac12ff-4a46-4589-8764-b015221e4e0d"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "e91f7a5b-6349-4dba-a0b5-f5280673bbed",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "467e21ee-d09a-4bae-9c77-d93d8ef1db1b",
-      "name": "blurhorizontal",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "3475c4fc-7e41-4495-878d-90630a578080",
-      "name": "blur3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "8dccf277-6b30-4a1f-89d0-cb1aead37b09",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "ee96fb1f-4d84-4f5f-a707-8e5530ff5575",
-      "connections": [
-        "b53e7c5b-ffcd-4a5b-b8d8-f49482b52daa"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "ebd76194-1a4b-4d99-935f-6afa059d8d1f",
-      "connections": [
-        "fa22bbd1-0fb0-4e27-b98d-213b80ac8d19"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "2a087848-3650-4632-8d71-1a2eb4fa9fc4",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "cba934c6-ce25-4644-8bdb-f572d67382b7",
-      "name": "blurhorizontal",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "cf1a974d-f73e-4533-bdd7-ff738c36d113",
-      "name": "blur3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "1389ce09-e000-4778-a309-6aa46dc30ba7",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "1be2c250-beac-47d5-a72d-4a2c7ae47481",
-      "connections": [
-        "71d09009-ae97-4c5f-8cff-db5e645b165a"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "21584053-04d7-4814-81f0-de1edc75103c",
-      "connections": [
-        "87200ab2-9d98-4762-9802-e63c3564b4b1"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "31de320e-9dc6-4830-abb8-79e499f58fa7",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "bfac147c-d0e6-497a-8712-67b14fed3e21",
-      "name": "blurhorizontal",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "97a19f11-c21b-49f1-87cd-19ea4049c665",
-      "name": "blur3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "67373bad-04bd-492a-9a48-7ee52b6b75d9",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "52b3e170-d300-4c90-9ed0-1f904a139769",
-      "connections": [
-        "c7cd90e8-bb5c-4221-80f2-74182cf62906"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "cab3a778-ef98-4c6a-ab42-828bf9f81cbb",
-      "connections": [],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "617d3743-a20c-4d11-a623-2c20bd8f1f10",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "4f585c83-80cc-431f-8dee-081d93c3fa46",
-      "name": "blurvertical",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "011ad3cb-e39a-4c1d-8b65-1323bcb083ee",
-      "name": "blur3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "458c2773-bd25-48a5-bff8-348e3e0e919b",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "fa22bbd1-0fb0-4e27-b98d-213b80ac8d19",
-      "connections": [
-        "ebd76194-1a4b-4d99-935f-6afa059d8d1f"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "43f70b60-6cd5-4770-ba96-738a9cbc20e0",
-      "connections": [
-        "ee716ae8-3d82-4872-bf45-c2c57f4def5f"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "284912dd-5d5f-4c4d-899a-00417c08339e",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "3245301b-bc10-4c7f-8592-6cddb18f59ec",
-      "name": "blurvertical",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "5cec36fc-5ba6-4273-88db-c3440bd4850b",
-      "name": "blur3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "421b5aa7-ba58-4764-b3c4-0697e5f0c4df",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "87200ab2-9d98-4762-9802-e63c3564b4b1",
-      "connections": [
-        "21584053-04d7-4814-81f0-de1edc75103c"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "f44663f8-000b-4fa8-aa0c-6d7df5fd76db",
-      "connections": [
-        "82e7fe02-8baa-4d04-a771-19e9f4600673"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "fa62d047-53e6-438e-8611-4ee80d1a1bde",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "343f5559-6603-46d6-8424-d2b1d9b46ea0",
-      "name": "blurvertical",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "4f9ffd9d-97d4-4837-a29f-eeb1c1d56118",
-      "name": "blur3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "0cdd7009-7e64-4043-9d67-9567958915d0",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "83ac12ff-4a46-4589-8764-b015221e4e0d",
-      "connections": [
-        "bcdbd215-ce69-4106-a0bb-3f4abd72f1e5"
-      ],
-      "name": "input"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "296aa323-3405-4d73-8947-1e1ee74fa1c7",
-      "connections": [
-        "1b312e33-b160-4111-a746-94e6ddb63a87"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "9f1f7bff-aa2f-4c1e-b6be-8dedcd36f292",
-      "name": "blurheader",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "2c48c7be-52a8-49fb-b6ed-ee462357d81e",
-      "name": "blurvertical",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "ab37a45a-fab6-4781-8eb7-a69994f60bd7",
-      "name": "blur3",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "65671334-e9c7-4821-8eff-7c88506a3a03",
-      "name": "blurfooter",
-      "scope": "Private"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "a929e09c-a629-45a1-b32a-6189038beac1",
-      "connections": [
-        "3b2ba62d-21e0-42d2-95d6-85f9af310516"
-      ],
-      "name": "input1"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "009ab1cd-6879-4722-a4b8-8aa34edc0e3f",
-      "connections": [
-        "b7b94825-c27e-4043-b5fd-95987b2a03b5"
-      ],
-      "name": "input2"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "27970e94-2f93-4f42-b789-3ad3a0df0e1f",
-      "connections": [
-        "a763f498-15f3-4eb0-be44-937945f7845f"
-      ],
-      "name": "input4"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "d251f5fa-5063-4562-93b5-4437d0de2b3b",
-      "connections": [
-        "cdd1936e-3fe4-4bfc-a20b-cc9bc18ada36"
-      ],
-      "name": "input8"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "3584a8a3-61f8-4b04-b9be-3b1b8f1ee90c",
-      "connections": [
-        "d9ad6f70-362d-4471-8a39-19605abc5d5a"
-      ],
-      "name": "input16"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "88eb7737-a8b9-4c95-9d27-f25d37a168e3",
-      "connections": [
-        "e3ccb6ed-cdac-4299-b651-ad6e67267d62"
-      ],
-      "name": "input32"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "8f9914fd-1c1c-4d6c-a00e-3c35e39db1ac",
-      "connections": [
-        "238cacc5-4391-4e14-8ea3-f455e81bf834"
-      ],
-      "name": "input64"
-    },
-    {
-      "__class__": "Plug",
-      "__uuid__": "51099924-16bd-4fa9-8aca-6531059ad397",
-      "connections": [
-        "36542d37-261e-4dff-86b0-8393b7f78267"
-      ],
-      "name": "lensdirt"
-    },
-    {
-      "__class__": "OutputPlug",
-      "__uuid__": "ca1c2687-2e86-408b-af96-1d7f3b9e5ad5",
-      "connections": [
-        "24691ed2-5ccc-4b44-b1e0-cc5c8ec2ec78"
-      ],
-      "name": "output",
-      "size": -1
-    },
-    {
-      "__class__": "Stitch",
-      "__uuid__": "5b5f756e-37a3-4280-8192-cda904a7f607",
-      "name": "bloom",
-      "scope": "Private"
-    }
-  ]
+    "graph": [
+        {
+            "__class__": "Node", 
+            "__uuid__": "9a4e75b6-0517-465f-90c5-a7e44de88dee", 
+            "inputs": [], 
+            "name": "Lensdirt texture", 
+            "outputs": [
+                "36542d37-261e-4dff-86b0-8393b7f78267"
+            ], 
+            "stitches": [
+                "abaf2901-96fa-4252-ab53-51abb09238fb", 
+                "87c157e5-25af-43fc-88c7-c2365a7fb0e8", 
+                "443bb847-fd05-4d95-b84c-b932b97d7cce", 
+                "cdd06894-de86-4982-9f86-ce3fdb3d1b79"
+            ], 
+            "x": 789, 
+            "y": 454
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "e121db46-398f-40c7-8fa5-bf99c0f7ae86", 
+            "inputs": [
+                "2931f42c-674b-4c61-8d06-3e9712892ab8"
+            ], 
+            "name": "Main", 
+            "outputs": [
+                "baae3bf1-8ce1-422b-87d4-05a58b86c5b1", 
+                "f081f789-cb55-4696-a9e8-1de7ffa9694f", 
+                "94d1e191-c86f-42f0-9658-6e2c38e19463"
+            ], 
+            "stitches": [
+                "ea09930f-1033-49c0-9aab-5f50ce2dbe39", 
+                "8b2f5265-8469-4edd-847d-12e772cd1e5c", 
+                "284f9ee7-7007-434d-b4de-6346bc6cc6ca", 
+                "75b5fcfb-46cf-4996-96c8-2a248ed915dd", 
+                "ba4fe5b3-505f-43b5-90bc-6a4c6433ce28", 
+                "a70d5f5a-ef30-4cf3-b3ae-3fb7aaf0e024", 
+                "8862f050-a8da-4dca-9b72-4d32d77a5623", 
+                "949b3dd4-89aa-41fd-b87c-a3caf1399604", 
+                "495dacff-dd62-480c-8483-57f534ab09d5"
+            ], 
+            "x": 104, 
+            "y": 106
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "e6c4e50b-befd-4ece-b3e2-fccc93ba6b86", 
+            "inputs": [], 
+            "name": "Noise LUT", 
+            "outputs": [
+                "adc570fa-75db-4a36-b3d7-adabdebda244"
+            ], 
+            "stitches": [
+                "87e3153d-1fcb-4218-95cf-a8d6101381b4", 
+                "17fe6f9a-f251-4906-b22e-252d19e182b4", 
+                "a801da74-2803-44f4-bb17-3f481323d37e"
+            ], 
+            "x": 24, 
+            "y": 55
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "f41214af-e8e5-4b71-ac00-ca328284d44f", 
+            "inputs": [
+                "05ae4d0e-c9de-4572-be8f-1bffa924284a", 
+                "739a1d59-16a0-49d1-9355-6bc00e943b02", 
+                "4a30dfc0-a74d-44eb-a07c-b1997625e489", 
+                "5842ec62-f320-4893-b473-6b2e2f5751e8"
+            ], 
+            "name": "Reflections", 
+            "outputs": [
+                "f20d06ef-4a6e-48fd-a22d-41cbf361b46f"
+            ], 
+            "stitches": [
+                "72ffd004-f77f-48ed-bb8b-6c1af6860aa5", 
+                "cc983a48-36f2-49b6-b921-7aeb78aa1d8a", 
+                "fa65f818-759a-428b-aa14-20a1426c78c4", 
+                "78ef3542-bc6e-4e5a-8363-169814c12e8f", 
+                "66af51e5-7d43-4d52-afc5-d75a98c7f89d", 
+                "ae4e729e-f611-48e7-be92-d783e4b7ff45", 
+                "c341fae0-dea7-4859-a1fa-53deed32995c", 
+                "d7a6dfe2-3d9b-4472-9d07-eff54608a5a8", 
+                "5c67a6c8-020c-4c08-9176-b15bb9d2ea54"
+            ], 
+            "x": 283, 
+            "y": 50
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "bdcd1342-2e4b-47ac-8f6a-92ceedb62aee", 
+            "inputs": [
+                "8266d263-a0d6-4582-b228-090fac9ea64c"
+            ], 
+            "name": "hblur2 masked", 
+            "outputs": [
+                "93d01477-321a-40c4-bf7c-581fb61726a9"
+            ], 
+            "stitches": [
+                "77d2d61a-4ff6-4723-951a-f313067eb21f", 
+                "a262e10b-634d-4bfc-8457-fdbe67391072", 
+                "f449ebfc-ffbd-44f7-bd1d-a1942a922232", 
+                "0c311da6-b847-47a7-8c18-0cf43482bc1f", 
+                "071c0f2a-278c-4ec4-88b1-5a440c4d1d3f"
+            ], 
+            "x": 455, 
+            "y": 49
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "9ab5d9a6-65ed-434d-a94f-1872c20230bd", 
+            "inputs": [
+                "c6992df8-a274-48ad-bf77-c4bd028b2f77"
+            ], 
+            "name": "vblur2 masked", 
+            "outputs": [
+                "18a64989-cd6b-4d61-8462-ccb7360d4b78"
+            ], 
+            "stitches": [
+                "dd1db640-4c3f-4e64-b27e-16869152cbfa", 
+                "696d6c45-8679-4aee-920f-d3917715656a", 
+                "6303b10b-64a6-42a8-9b68-270a4134ebbd", 
+                "f0f58574-b179-4469-8052-19f54b7e00d9", 
+                "3f2c95c4-13a9-473c-8c30-7252f705945e"
+            ], 
+            "x": 456, 
+            "y": 98
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "a5fd13b5-b72a-4891-b411-5b3f3c36679b", 
+            "inputs": [
+                "5a85dcbf-c868-45b2-8fe1-e48e9de3a3c7"
+            ], 
+            "name": "hblur3 masked", 
+            "outputs": [
+                "1fc00482-cd0c-4fed-a752-1ccacac1629e"
+            ], 
+            "stitches": [
+                "0450ad27-7767-4536-9d23-e806a9effba8", 
+                "410e758a-a41c-4226-98ee-5ac9b9099d27", 
+                "b32482a7-8b0f-47c7-8b10-33a8a25662f1", 
+                "037c8259-1274-4c53-b6b3-509c0acf72e9", 
+                "4af10dc1-364a-4b35-a135-76cb112766a3"
+            ], 
+            "x": 620, 
+            "y": 47
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "9250bbd1-6fc5-4075-9745-21926b769633", 
+            "inputs": [
+                "983d9594-73e8-4992-8340-1d82d8dba016"
+            ], 
+            "name": "vblur3 masked", 
+            "outputs": [
+                "074abdcb-4382-47c4-9061-e979dc8089b4"
+            ], 
+            "stitches": [
+                "8dfb106e-e052-4c97-bbdf-0134a7fb2876", 
+                "893a2bf3-ee43-4ae6-a32e-fac9f72d9eed", 
+                "01c7fc67-da47-443b-9b24-5eea790083a2", 
+                "48af2302-f2ed-4f56-8296-8674eca62128", 
+                "948f1a38-1f53-4e65-ba96-eb3ad6180e0f"
+            ], 
+            "x": 620, 
+            "y": 99
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "8dc82aeb-9d76-4c09-acfa-e60e50947e93", 
+            "inputs": [
+                "d5903cd9-5051-444c-ab9f-bb8fd367a18c", 
+                "2fa9fb14-94ff-4623-8815-7c0f331a7599"
+            ], 
+            "name": "Merge reflection into result", 
+            "outputs": [
+                "6b29657f-d38f-4e51-81e3-4fd3c89f2c4b"
+            ], 
+            "stitches": [
+                "c6d691df-f99b-4fed-bc14-2eae2cb37658", 
+                "1a331e6a-a457-4d9d-8c1d-5d913e743cfe", 
+                "0b9e2560-d6b5-47e3-ae0b-139957cb2d77", 
+                "fb68fc42-554b-4722-a6fc-be899d3b44db"
+            ], 
+            "x": 815, 
+            "y": 60
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "5a3b7cd1-0856-40db-bba8-126eec3cbfca", 
+            "inputs": [
+                "7b57d9d4-ba5c-4165-9032-917dbf99f86b"
+            ], 
+            "name": "Overlays", 
+            "outputs": [
+                "450a6408-5c21-424c-a688-0e57f38e9be7"
+            ], 
+            "stitches": [
+                "6835fbb0-7c93-4cc5-85fa-255bb88db91c", 
+                "389bfb36-6330-4cf2-b8ee-286ecc2d5f26", 
+                "8a490171-2a09-42ac-a28c-61ff9c31c491", 
+                "ebf90507-9ff7-4ae1-9654-361c740e2ae2", 
+                "c7b503be-16a7-4788-8d9b-0984fbdc912a"
+            ], 
+            "x": 1018, 
+            "y": 42
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "b6962cc3-5093-41fa-92fa-369ed4ecd589", 
+            "inputs": [
+                "a9ba17ec-ade3-40b4-87e5-1e1b16fc526f"
+            ], 
+            "name": "Bokeh DoF first pass", 
+            "outputs": [
+                "4eb7dd21-f3b5-4662-9c54-72a114cb4c8b"
+            ], 
+            "stitches": [
+                "3b495bea-4d73-4f78-a6bc-06267e20205c", 
+                "c1871807-1bed-48e4-be0e-612a668b3574"
+            ], 
+            "x": 1019, 
+            "y": 91
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "3a16a625-0580-4e94-b0f3-bc681f673ea6", 
+            "inputs": [
+                "f2fe929b-2b3d-4481-aab3-53acc7c0b9f6"
+            ], 
+            "name": "Bokeh DoF second pass", 
+            "outputs": [
+                "3b2ba62d-21e0-42d2-95d6-85f9af310516"
+            ], 
+            "stitches": [
+                "79e2c9b1-4c56-4128-b360-a696373629b7", 
+                "85b0ffcd-c699-4c77-9780-c80808566935"
+            ], 
+            "x": 1015, 
+            "y": 140
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "acf19a9c-adb5-4534-8ad0-21dd6b8ef3aa", 
+            "inputs": [
+                "24691ed2-5ccc-4b44-b1e0-cc5c8ec2ec78"
+            ], 
+            "name": "ChromAb", 
+            "outputs": [
+                "4111221b-b5d3-417e-a215-cd9240947a47"
+            ], 
+            "stitches": [
+                "28a68c47-2e8a-4970-b62f-46dba9c7eb23"
+            ], 
+            "x": 1073, 
+            "y": 263
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "5d7f96f9-75ba-4085-9707-b293f48a4cce", 
+            "inputs": [
+                "39d5c388-ca3d-4ec3-9bff-6202f7f62d39"
+            ], 
+            "name": "sRgb conversion", 
+            "outputs": [
+                "c54d1347-fb9a-4e69-8d34-9e75bc024563"
+            ], 
+            "stitches": [
+                "a4652591-bb0a-422b-9496-f4e2e10a62f8", 
+                "5cd4e317-deaf-482d-93ad-b629783ca9e1", 
+                "a7af33b6-9481-41e7-8677-036e25b02ebf", 
+                "22da138d-a7d9-4d5b-8f92-8fe59e91689e"
+            ], 
+            "x": 1076, 
+            "y": 313
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "e7b43f17-98be-4d62-8164-f636adb05dba", 
+            "inputs": [
+                "1c91067d-3544-4f1f-8133-0e9c32bfe0f6"
+            ], 
+            "name": "FXAA3", 
+            "outputs": [
+                "5d542ef0-a1e1-4b29-b4c0-0f4a0116887c"
+            ], 
+            "stitches": [
+                "51421b11-4bfb-4674-a8b0-18eeceb99b21"
+            ], 
+            "x": 1081, 
+            "y": 363
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "9eac728d-0f86-4906-b1ec-b130590a72d2", 
+            "inputs": [
+                "1b312e33-b160-4111-a746-94e6ddb63a87"
+            ], 
+            "name": "downsample4", 
+            "outputs": [
+                "a763f498-15f3-4eb0-be44-937945f7845f"
+            ], 
+            "stitches": [
+                "7d2768bd-b6fd-4d79-83b6-45e3710c82c8"
+            ], 
+            "x": 236, 
+            "y": 218
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "2fa1a63b-5c15-4ffa-b00a-0671d26ae3e8", 
+            "inputs": [
+                "c29e2d67-efe2-4efb-84eb-9d1d9b15a1e4"
+            ], 
+            "name": "hblur2", 
+            "outputs": [
+                "4ec7d6c5-6c1f-4188-9afa-09b1911886ae"
+            ], 
+            "stitches": [
+                "82f23d0e-a563-4785-8628-2ae98ce9cca3", 
+                "a3f47bb4-4b6a-47a6-9350-2f08eddaddec", 
+                "9f8e3b51-e7a6-4731-89e5-eaea082b73e2", 
+                "84bb00d2-b8fa-427b-bba3-7ffccdc93284"
+            ], 
+            "x": 240, 
+            "y": 269
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "bbfbe582-b2f8-4a19-8460-b491960d8233", 
+            "inputs": [
+                "9a18a51c-edc3-41d1-be57-24a7a57c4c51"
+            ], 
+            "name": "vblur2", 
+            "outputs": [
+                "185b612f-4c3e-457e-8b9b-918c883c30fb"
+            ], 
+            "stitches": [
+                "4dc93209-e785-458f-821a-63c55aacc74b", 
+                "0a2fbf78-945e-4936-b22a-dccd22d467b8", 
+                "e76cca07-2ace-414a-a69d-be72ea23ead8", 
+                "2ddb70ed-ef57-4d1a-b9b5-0a3b6f990f05"
+            ], 
+            "x": 239, 
+            "y": 316
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "da4f3f48-ff9e-4ec5-993d-4ff74654bd74", 
+            "inputs": [
+                "baa5c1be-d1d5-4cfd-b85c-f2965fa1b8ea"
+            ], 
+            "name": "hblur3", 
+            "outputs": [
+                "b5113bff-269d-4ce6-b4ee-da2459d80730"
+            ], 
+            "stitches": [
+                "e20dc359-b4a2-4f26-83bd-5c8176c13720", 
+                "504ec628-88f6-4475-b3a1-fb2b2d89a44b", 
+                "23d89459-c807-47eb-bb15-07be375af95b", 
+                "245e4d0d-7fc2-4b52-b29a-2de35dfb89d1"
+            ], 
+            "x": 240, 
+            "y": 368
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "f592b3ea-fc6c-4a9a-852e-068e7685e741", 
+            "inputs": [
+                "2292ac21-08e8-46ab-a9e3-b9775c535039"
+            ], 
+            "name": "vblur3", 
+            "outputs": [
+                "53cf672e-0187-4671-9aeb-b642a8309dd7"
+            ], 
+            "stitches": [
+                "a7e2ca84-8404-4538-ac02-b14979265fcb", 
+                "df9393a2-812b-4387-8c5e-9da0c6342264", 
+                "fb348272-bccb-4f1a-89d9-e46bd01ca675", 
+                "0028692d-fd54-49ad-a7c5-03693e72eefc"
+            ], 
+            "x": 241, 
+            "y": 418
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "2cddbd79-d8b6-47cb-9312-4a9293bce6d7", 
+            "inputs": [
+                "f38a9dcf-b77e-442e-9000-2e96eeccb89f"
+            ], 
+            "name": "downsample8", 
+            "outputs": [
+                "cdd1936e-3fe4-4bfc-a20b-cc9bc18ada36"
+            ], 
+            "stitches": [
+                "7a7da3ab-c9db-49c4-b47b-10a07fecd469"
+            ], 
+            "x": 368, 
+            "y": 214
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "5215ea13-ea9c-4912-a4dd-034ccd50bd82", 
+            "inputs": [
+                "f751482f-96cd-4045-88fd-9257f4e1a880"
+            ], 
+            "name": "hblur2", 
+            "outputs": [
+                "cc2db304-aa09-441a-a212-8070f3cb800f"
+            ], 
+            "stitches": [
+                "6cf7a1b2-a35b-487f-84d7-61586a8deab4", 
+                "e4c789de-99e5-432f-b837-1efb662ee28f", 
+                "23750962-e6d2-42fb-bee1-47eca194eecb", 
+                "d74bbbe9-8516-4543-902a-5022ed222a22"
+            ], 
+            "x": 374, 
+            "y": 264
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "89ac0830-f81e-4a37-b061-03b038bada27", 
+            "inputs": [
+                "e388cc58-8917-4ea9-ad29-0c5e34b7f421"
+            ], 
+            "name": "vblur2", 
+            "outputs": [
+                "1542a4f5-0946-4694-b115-66e2cd73ab43"
+            ], 
+            "stitches": [
+                "ff0adf8e-36cc-456a-adfb-470d58d89d54", 
+                "462360f5-5e4b-4ba1-b81e-95324d779da3", 
+                "c7391573-c22b-4a26-ab0a-c8b973fbd548", 
+                "24f4eb7f-d136-4cc4-9b17-c44eb8bcfdba"
+            ], 
+            "x": 371, 
+            "y": 315
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "fdd4e7bf-37fe-4fff-955f-7dcbad63afc3", 
+            "inputs": [
+                "c381cbc9-ec60-4bd7-8913-31dd0b989442"
+            ], 
+            "name": "hblur3", 
+            "outputs": [
+                "3843539c-ac02-47ee-a3bd-4b3ee1120240"
+            ], 
+            "stitches": [
+                "29c03cff-8af6-495b-a58d-10a3e99db679", 
+                "975e1538-587c-42b0-8fbb-b3b07f6fe582", 
+                "3454bcf7-82da-4aa4-bbb9-a2e7474c8ccd", 
+                "e59614e4-57e6-40fd-af01-135deeae860c"
+            ], 
+            "x": 371, 
+            "y": 364
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "86f8843d-3800-4f2d-a17d-85bc003670f1", 
+            "inputs": [
+                "a853fc6c-1b8c-43ed-aff0-32780a24e411"
+            ], 
+            "name": "vblur3", 
+            "outputs": [
+                "c4805fe6-1cb4-4b23-baa4-f4dc4fee2673"
+            ], 
+            "stitches": [
+                "745e759a-5114-47a8-9663-fc153e3130d5", 
+                "416cb737-1902-4ac8-be76-763e7d3bbffa", 
+                "14d137df-7076-4303-b4d3-3e90477f3535", 
+                "f5b51d7e-4286-4cc2-afec-cf63ecfc4b93"
+            ], 
+            "x": 372, 
+            "y": 409
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "a2b73387-e5cd-4077-bde9-f5854b5cfbcb", 
+            "inputs": [
+                "96d01263-bbec-4fa7-8004-26dadec91770"
+            ], 
+            "name": "downsample16", 
+            "outputs": [
+                "d9ad6f70-362d-4471-8a39-19605abc5d5a"
+            ], 
+            "stitches": [
+                "5993f3fd-cd5f-4bb0-8bfc-b8f155220120"
+            ], 
+            "x": 497, 
+            "y": 203
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "301ef15a-c63e-4ab1-b10f-a441a5419dd6", 
+            "inputs": [
+                "82e7fe02-8baa-4d04-a771-19e9f4600673"
+            ], 
+            "name": "downsample32", 
+            "outputs": [
+                "e3ccb6ed-cdac-4299-b651-ad6e67267d62"
+            ], 
+            "stitches": [
+                "70b8c337-b921-49e5-aa95-cb202afa0380"
+            ], 
+            "x": 633, 
+            "y": 203
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "e446e08a-aedb-4afe-81a1-eca764a5ac15", 
+            "inputs": [
+                "ee716ae8-3d82-4872-bf45-c2c57f4def5f"
+            ], 
+            "name": "downsample64", 
+            "outputs": [
+                "238cacc5-4391-4e14-8ea3-f455e81bf834"
+            ], 
+            "stitches": [
+                "8726084d-9b18-42fa-a570-a7bc9c2ce8cb"
+            ], 
+            "x": 777, 
+            "y": 200
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "33cdf6d6-7205-4800-95c2-3b7ed5987c54", 
+            "inputs": [
+                "cfe3a091-41d7-4dda-8898-5e771d220bc7"
+            ], 
+            "name": "downsample2", 
+            "outputs": [
+                "b7b94825-c27e-4043-b5fd-95987b2a03b5"
+            ], 
+            "stitches": [
+                "6749d7da-fb08-49ed-ab68-9d9215e847c8"
+            ], 
+            "x": 105, 
+            "y": 219
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "f8f4e24f-fd34-42a3-83e6-1df49c5cc2d5", 
+            "inputs": [
+                "8e3f55ca-6547-4c2c-b7df-a5811f6f9c0d"
+            ], 
+            "name": "hblur2", 
+            "outputs": [
+                "54663f40-484a-4512-b684-7687bbc081dd"
+            ], 
+            "stitches": [
+                "e53da482-afcb-4871-a50e-14abdd187fb2", 
+                "ebcea1de-07cb-4782-8ffa-0f6a5ad2107e", 
+                "1fa77c7c-1d8d-4b67-999f-51ae577894da", 
+                "b43dbfe2-f11c-4cd0-8aba-dc4a4cf2e7ac"
+            ], 
+            "x": 504, 
+            "y": 251
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "67408bc8-124e-4d0e-ac82-98c2b2a4c0b2", 
+            "inputs": [
+                "48b1c12f-1465-4a5a-9c11-d7b1f46586e6"
+            ], 
+            "name": "hblur2", 
+            "outputs": [
+                "c2ad692d-3242-46ca-91f5-45a17abcd572"
+            ], 
+            "stitches": [
+                "eed250cc-f1b4-426e-9a1a-c8470716da1b", 
+                "6d60045f-f598-4a27-a929-8e40d2614d2b", 
+                "e7078acf-19d3-44a8-b990-a9e68efa054b", 
+                "6ab53995-1c68-4176-a1da-38ef5429e342"
+            ], 
+            "x": 636, 
+            "y": 252
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "a7c5aecd-0a22-45c2-943b-1a2bb6ad147a", 
+            "inputs": [
+                "0cc7b578-f1ca-460b-8c80-246f035e3399"
+            ], 
+            "name": "hblur2", 
+            "outputs": [
+                "9d38993f-c9bf-417a-b6f5-3deed5ed9693"
+            ], 
+            "stitches": [
+                "20616bb5-7138-46c0-ada4-fe3ba80ceb79", 
+                "51788d67-1dc4-459a-85de-f5b564ad12ca", 
+                "7f69930c-7bea-48c9-855d-47743f4e0e8e", 
+                "30cdd742-c43e-4891-a5da-184d3d947532"
+            ], 
+            "x": 100, 
+            "y": 270
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "808b8d9e-3baf-4295-bc54-9c3ed18a605b", 
+            "inputs": [
+                "e9c331c3-fa39-451d-b70c-731518f80bf1"
+            ], 
+            "name": "hblur2", 
+            "outputs": [
+                "b17e2159-1005-40f3-b3d9-19df073ff96a"
+            ], 
+            "stitches": [
+                "f0aa06d5-dbd8-407a-b09c-3394b1c0b652", 
+                "34823998-f2be-4c99-b8d5-ebad6889248d", 
+                "e6ac27fa-074d-4bee-9ad9-6816e92c28bd", 
+                "80806c87-28e1-4198-85d8-1057b5875ed3"
+            ], 
+            "x": 777, 
+            "y": 250
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "c5192079-f98d-4866-bb28-f1a2cf84eda9", 
+            "inputs": [
+                "abdd74ef-bfdd-4714-9ad5-857f0f8e5890"
+            ], 
+            "name": "vblur2", 
+            "outputs": [
+                "68354aea-15fb-4db9-b2b9-2796aa9ce980"
+            ], 
+            "stitches": [
+                "3db5dde6-bde6-4e86-8878-92fd462adcc2", 
+                "528c8f17-d696-4c8a-9adb-fca5015a8efe", 
+                "1476f9c4-5533-4370-af33-2191fc625b96", 
+                "d423fb98-79ad-4e2a-9528-0c08f6f220ab"
+            ], 
+            "x": 109, 
+            "y": 318
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "5aede9af-05b6-4ea0-bdea-7e430ab8df8d", 
+            "inputs": [
+                "3dfcca16-910a-4686-a2b6-9fe8d8c3a7ef"
+            ], 
+            "name": "vblur2", 
+            "outputs": [
+                "71d09009-ae97-4c5f-8cff-db5e645b165a"
+            ], 
+            "stitches": [
+                "8260f8cd-2e96-482e-9f65-149ae75441f9", 
+                "b55c19cf-3931-4a85-9d85-fad039ae70d4", 
+                "6a8d0394-129e-44c8-a64b-7e3893103c8d", 
+                "9f6cc33b-bf90-44a2-8fcc-a371cf13d8f9"
+            ], 
+            "x": 502, 
+            "y": 302
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "6e652534-baa5-45f0-b70a-c25da831fb24", 
+            "inputs": [
+                "be8aad5b-17a2-4ab2-88fb-5fe7310bf715"
+            ], 
+            "name": "vblur2", 
+            "outputs": [
+                "b53e7c5b-ffcd-4a5b-b8d8-f49482b52daa"
+            ], 
+            "stitches": [
+                "ee6637bc-cbe0-47a1-86ef-32defd44c353", 
+                "21e8a937-e936-48a6-a320-76d551f0b3a2", 
+                "d23c0e25-f4e8-47e6-a474-0fc42382ea2c", 
+                "91d47e2c-4a38-415b-b91b-e2d072e3b2e2"
+            ], 
+            "x": 637, 
+            "y": 300
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "962e5513-0e8b-4a00-9a4e-173182a2e844", 
+            "inputs": [
+                "7de7439a-ba3d-47e3-8b5e-abf89816bb98"
+            ], 
+            "name": "vblur2", 
+            "outputs": [
+                "f051502c-52a3-4402-949f-6248d43f0bed"
+            ], 
+            "stitches": [
+                "7ccf4ea3-73fb-43e6-ad71-bb750905f3b4", 
+                "60e1564c-5e65-48cd-bbb3-403362ead102", 
+                "20ebd321-af15-48a7-a07c-76ae019506ca", 
+                "6c00a454-3fb7-49aa-bb00-af4df01ade52"
+            ], 
+            "x": 776, 
+            "y": 300
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "a0daa86f-3649-435d-b552-c27678ff9499", 
+            "inputs": [
+                "92895a19-7d4b-4019-95e1-9a122bc0004b"
+            ], 
+            "name": "hblur3", 
+            "outputs": [
+                "c7cd90e8-bb5c-4221-80f2-74182cf62906"
+            ], 
+            "stitches": [
+                "b79a326c-6a8f-4f3b-9cf8-7b702767fd16", 
+                "418afcd2-7d0a-4518-a705-48247371d103", 
+                "e6da2da1-891a-44d3-9b0f-803b678e03b8", 
+                "f406a8b6-e165-443a-8858-be1a694456d0"
+            ], 
+            "x": 778, 
+            "y": 348
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "5c8c557d-ebd4-4973-beb4-4f784feeecfa", 
+            "inputs": [
+                "2a39d629-5966-4e12-9172-e9e0832df035"
+            ], 
+            "name": "hblur3", 
+            "outputs": [
+                "bcdbd215-ce69-4106-a0bb-3f4abd72f1e5"
+            ], 
+            "stitches": [
+                "e91f7a5b-6349-4dba-a0b5-f5280673bbed", 
+                "467e21ee-d09a-4bae-9c77-d93d8ef1db1b", 
+                "3475c4fc-7e41-4495-878d-90630a578080", 
+                "8dccf277-6b30-4a1f-89d0-cb1aead37b09"
+            ], 
+            "x": 105, 
+            "y": 372
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "f14b0938-ca88-4664-9038-a073a585b436", 
+            "inputs": [
+                "ee96fb1f-4d84-4f5f-a707-8e5530ff5575"
+            ], 
+            "name": "hblur3", 
+            "outputs": [
+                "ebd76194-1a4b-4d99-935f-6afa059d8d1f"
+            ], 
+            "stitches": [
+                "2a087848-3650-4632-8d71-1a2eb4fa9fc4", 
+                "cba934c6-ce25-4644-8bdb-f572d67382b7", 
+                "cf1a974d-f73e-4533-bdd7-ff738c36d113", 
+                "1389ce09-e000-4778-a309-6aa46dc30ba7"
+            ], 
+            "x": 636, 
+            "y": 350
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "a702f51b-aad1-456f-add2-b74f46b57906", 
+            "inputs": [
+                "1be2c250-beac-47d5-a72d-4a2c7ae47481"
+            ], 
+            "name": "hblur3", 
+            "outputs": [
+                "21584053-04d7-4814-81f0-de1edc75103c"
+            ], 
+            "stitches": [
+                "31de320e-9dc6-4830-abb8-79e499f58fa7", 
+                "bfac147c-d0e6-497a-8712-67b14fed3e21", 
+                "97a19f11-c21b-49f1-87cd-19ea4049c665", 
+                "67373bad-04bd-492a-9a48-7ee52b6b75d9"
+            ], 
+            "x": 505, 
+            "y": 351
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "0842ca80-d5a8-4448-8902-1f92f209a2c5", 
+            "inputs": [
+                "52b3e170-d300-4c90-9ed0-1f904a139769"
+            ], 
+            "name": "vblur3", 
+            "outputs": [
+                "cab3a778-ef98-4c6a-ab42-828bf9f81cbb"
+            ], 
+            "stitches": [
+                "617d3743-a20c-4d11-a623-2c20bd8f1f10", 
+                "4f585c83-80cc-431f-8dee-081d93c3fa46", 
+                "011ad3cb-e39a-4c1d-8b65-1323bcb083ee", 
+                "458c2773-bd25-48a5-bff8-348e3e0e919b"
+            ], 
+            "x": 778, 
+            "y": 400
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "95e0c661-b19f-4334-85b4-d305abb53976", 
+            "inputs": [
+                "fa22bbd1-0fb0-4e27-b98d-213b80ac8d19"
+            ], 
+            "name": "vblur3", 
+            "outputs": [
+                "43f70b60-6cd5-4770-ba96-738a9cbc20e0"
+            ], 
+            "stitches": [
+                "284912dd-5d5f-4c4d-899a-00417c08339e", 
+                "3245301b-bc10-4c7f-8592-6cddb18f59ec", 
+                "5cec36fc-5ba6-4273-88db-c3440bd4850b", 
+                "421b5aa7-ba58-4764-b3c4-0697e5f0c4df"
+            ], 
+            "x": 638, 
+            "y": 400
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "a57b52fe-436f-45f1-9d00-9f6605e51207", 
+            "inputs": [
+                "87200ab2-9d98-4762-9802-e63c3564b4b1"
+            ], 
+            "name": "vblur3", 
+            "outputs": [
+                "f44663f8-000b-4fa8-aa0c-6d7df5fd76db"
+            ], 
+            "stitches": [
+                "fa62d047-53e6-438e-8611-4ee80d1a1bde", 
+                "343f5559-6603-46d6-8424-d2b1d9b46ea0", 
+                "4f9ffd9d-97d4-4837-a29f-eeb1c1d56118", 
+                "0cdd7009-7e64-4043-9d67-9567958915d0"
+            ], 
+            "x": 504, 
+            "y": 401
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "85f10a31-0ca1-47e9-ac07-eab5bfcb1df6", 
+            "inputs": [
+                "83ac12ff-4a46-4589-8764-b015221e4e0d"
+            ], 
+            "name": "vblur3", 
+            "outputs": [
+                "296aa323-3405-4d73-8947-1e1ee74fa1c7"
+            ], 
+            "stitches": [
+                "9f1f7bff-aa2f-4c1e-b6be-8dedcd36f292", 
+                "2c48c7be-52a8-49fb-b6ed-ee462357d81e", 
+                "ab37a45a-fab6-4781-8eb7-a69994f60bd7", 
+                "65671334-e9c7-4821-8eff-7c88506a3a03"
+            ], 
+            "x": 103, 
+            "y": 420
+        }, 
+        {
+            "__class__": "Node", 
+            "__uuid__": "c022535b-52ce-4dfc-add0-0d2119e86006", 
+            "inputs": [
+                "a929e09c-a629-45a1-b32a-6189038beac1", 
+                "009ab1cd-6879-4722-a4b8-8aa34edc0e3f", 
+                "27970e94-2f93-4f42-b789-3ad3a0df0e1f", 
+                "d251f5fa-5063-4562-93b5-4437d0de2b3b", 
+                "3584a8a3-61f8-4b04-b9be-3b1b8f1ee90c", 
+                "88eb7737-a8b9-4c95-9d27-f25d37a168e3", 
+                "8f9914fd-1c1c-4d6c-a00e-3c35e39db1ac", 
+                "51099924-16bd-4fa9-8aca-6531059ad397"
+            ], 
+            "name": "bloom", 
+            "outputs": [
+                "ca1c2687-2e86-408b-af96-1d7f3b9e5ad5"
+            ], 
+            "stitches": [
+                "5b5f756e-37a3-4280-8192-cda904a7f607"
+            ], 
+            "x": 929, 
+            "y": 270
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "36542d37-261e-4dff-86b0-8393b7f78267", 
+            "connections": [
+                "51099924-16bd-4fa9-8aca-6531059ad397"
+            ], 
+            "name": "output", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "abaf2901-96fa-4252-ab53-51abb09238fb", 
+            "name": "header", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "87c157e5-25af-43fc-88c7-c2365a7fb0e8", 
+            "name": "noiselib", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "443bb847-fd05-4d95-b84c-b932b97d7cce", 
+            "name": "sdf", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "cdd06894-de86-4982-9f86-ce3fdb3d1b79", 
+            "name": "lensdirt", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "2931f42c-674b-4c61-8d06-3e9712892ab8", 
+            "connections": [
+                "adc570fa-75db-4a36-b3d7-adabdebda244"
+            ], 
+            "name": "uImages[3]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "baae3bf1-8ce1-422b-87d4-05a58b86c5b1", 
+            "connections": [
+                "05ae4d0e-c9de-4572-be8f-1bffa924284a", 
+                "d5903cd9-5051-444c-ab9f-bb8fd367a18c"
+            ], 
+            "name": "gbuffer0", 
+            "size": -1
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "f081f789-cb55-4696-a9e8-1de7ffa9694f", 
+            "connections": [
+                "739a1d59-16a0-49d1-9355-6bc00e943b02"
+            ], 
+            "name": "gbuffer1", 
+            "size": -1
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "94d1e191-c86f-42f0-9658-6e2c38e19463", 
+            "connections": [
+                "4a30dfc0-a74d-44eb-a07c-b1997625e489"
+            ], 
+            "name": "gbuffer2", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "ea09930f-1033-49c0-9aab-5f50ce2dbe39", 
+            "name": "header", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "8b2f5265-8469-4edd-847d-12e772cd1e5c", 
+            "name": "settings", 
+            "scope": "Scene"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "284f9ee7-7007-434d-b4de-6346bc6cc6ca", 
+            "name": "noiselib", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "75b5fcfb-46cf-4996-96c8-2a248ed915dd", 
+            "name": "sdf", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "ba4fe5b3-505f-43b5-90bc-6a4c6433ce28", 
+            "name": "lighting", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "a70d5f5a-ef30-4cf3-b3ae-3fb7aaf0e024", 
+            "name": "fogremap", 
+            "scope": "Scene"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "8862f050-a8da-4dca-9b72-4d32d77a5623", 
+            "name": "content", 
+            "scope": "Scene"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "949b3dd4-89aa-41fd-b87c-a3caf1399604", 
+            "name": "tracer", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "495dacff-dd62-480c-8483-57f534ab09d5", 
+            "name": "main", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "adc570fa-75db-4a36-b3d7-adabdebda244", 
+            "connections": [
+                "2931f42c-674b-4c61-8d06-3e9712892ab8", 
+                "5842ec62-f320-4893-b473-6b2e2f5751e8"
+            ], 
+            "name": "output", 
+            "size": 1024
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "87e3153d-1fcb-4218-95cf-a8d6101381b4", 
+            "name": "header", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "17fe6f9a-f251-4906-b22e-252d19e182b4", 
+            "name": "noiselib", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "a801da74-2803-44f4-bb17-3f481323d37e", 
+            "name": "noise", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "05ae4d0e-c9de-4572-be8f-1bffa924284a", 
+            "connections": [
+                "baae3bf1-8ce1-422b-87d4-05a58b86c5b1"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "739a1d59-16a0-49d1-9355-6bc00e943b02", 
+            "connections": [
+                "f081f789-cb55-4696-a9e8-1de7ffa9694f"
+            ], 
+            "name": "uImages[1]"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "4a30dfc0-a74d-44eb-a07c-b1997625e489", 
+            "connections": [
+                "94d1e191-c86f-42f0-9658-6e2c38e19463"
+            ], 
+            "name": "uImages[2]"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "5842ec62-f320-4893-b473-6b2e2f5751e8", 
+            "connections": [
+                "adc570fa-75db-4a36-b3d7-adabdebda244"
+            ], 
+            "name": "uImages[3]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "f20d06ef-4a6e-48fd-a22d-41cbf361b46f", 
+            "connections": [
+                "8266d263-a0d6-4582-b228-090fac9ea64c"
+            ], 
+            "name": "output", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "72ffd004-f77f-48ed-bb8b-6c1af6860aa5", 
+            "name": "header", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "cc983a48-36f2-49b6-b921-7aeb78aa1d8a", 
+            "name": "settings", 
+            "scope": "Scene"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "fa65f818-759a-428b-aa14-20a1426c78c4", 
+            "name": "noiselib", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "78ef3542-bc6e-4e5a-8363-169814c12e8f", 
+            "name": "sdf", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "66af51e5-7d43-4d52-afc5-d75a98c7f89d", 
+            "name": "lighting", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "ae4e729e-f611-48e7-be92-d783e4b7ff45", 
+            "name": "fogremap", 
+            "scope": "Scene"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "c341fae0-dea7-4859-a1fa-53deed32995c", 
+            "name": "content", 
+            "scope": "Scene"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "d7a6dfe2-3d9b-4472-9d07-eff54608a5a8", 
+            "name": "tracer", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "5c67a6c8-020c-4c08-9176-b15bb9d2ea54", 
+            "name": "rpass", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "8266d263-a0d6-4582-b228-090fac9ea64c", 
+            "connections": [
+                "f20d06ef-4a6e-48fd-a22d-41cbf361b46f"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "93d01477-321a-40c4-bf7c-581fb61726a9", 
+            "connections": [
+                "c6992df8-a274-48ad-bf77-c4bd028b2f77"
+            ], 
+            "name": "output", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "77d2d61a-4ff6-4723-951a-f313067eb21f", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "a262e10b-634d-4bfc-8457-fdbe67391072", 
+            "name": "blurhorizontal", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "f449ebfc-ffbd-44f7-bd1d-a1942a922232", 
+            "name": "blur2", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "0c311da6-b847-47a7-8c18-0cf43482bc1f", 
+            "name": "blurrefl", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "071c0f2a-278c-4ec4-88b1-5a440c4d1d3f", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "c6992df8-a274-48ad-bf77-c4bd028b2f77", 
+            "connections": [
+                "93d01477-321a-40c4-bf7c-581fb61726a9"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "18a64989-cd6b-4d61-8462-ccb7360d4b78", 
+            "connections": [
+                "5a85dcbf-c868-45b2-8fe1-e48e9de3a3c7"
+            ], 
+            "name": "output", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "dd1db640-4c3f-4e64-b27e-16869152cbfa", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "696d6c45-8679-4aee-920f-d3917715656a", 
+            "name": "blurvertical", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "6303b10b-64a6-42a8-9b68-270a4134ebbd", 
+            "name": "blur2", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "f0f58574-b179-4469-8052-19f54b7e00d9", 
+            "name": "blurrefl", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "3f2c95c4-13a9-473c-8c30-7252f705945e", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "5a85dcbf-c868-45b2-8fe1-e48e9de3a3c7", 
+            "connections": [
+                "18a64989-cd6b-4d61-8462-ccb7360d4b78"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "1fc00482-cd0c-4fed-a752-1ccacac1629e", 
+            "connections": [
+                "983d9594-73e8-4992-8340-1d82d8dba016"
+            ], 
+            "name": "output", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "0450ad27-7767-4536-9d23-e806a9effba8", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "410e758a-a41c-4226-98ee-5ac9b9099d27", 
+            "name": "blurhorizontal", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "b32482a7-8b0f-47c7-8b10-33a8a25662f1", 
+            "name": "blur3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "037c8259-1274-4c53-b6b3-509c0acf72e9", 
+            "name": "blurrefl", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "4af10dc1-364a-4b35-a135-76cb112766a3", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "983d9594-73e8-4992-8340-1d82d8dba016", 
+            "connections": [
+                "1fc00482-cd0c-4fed-a752-1ccacac1629e"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "074abdcb-4382-47c4-9061-e979dc8089b4", 
+            "connections": [
+                "2fa9fb14-94ff-4623-8815-7c0f331a7599"
+            ], 
+            "name": "output", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "8dfb106e-e052-4c97-bbdf-0134a7fb2876", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "893a2bf3-ee43-4ae6-a32e-fac9f72d9eed", 
+            "name": "blurvertical", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "01c7fc67-da47-443b-9b24-5eea790083a2", 
+            "name": "blur3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "48af2302-f2ed-4f56-8296-8674eca62128", 
+            "name": "blurrefl", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "948f1a38-1f53-4e65-ba96-eb3ad6180e0f", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "d5903cd9-5051-444c-ab9f-bb8fd367a18c", 
+            "connections": [
+                "baae3bf1-8ce1-422b-87d4-05a58b86c5b1"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "2fa9fb14-94ff-4623-8815-7c0f331a7599", 
+            "connections": [
+                "074abdcb-4382-47c4-9061-e979dc8089b4"
+            ], 
+            "name": "uImages[1]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "6b29657f-d38f-4e51-81e3-4fd3c89f2c4b", 
+            "connections": [
+                "7b57d9d4-ba5c-4165-9032-917dbf99f86b"
+            ], 
+            "name": "output", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "c6d691df-f99b-4fed-bc14-2eae2cb37658", 
+            "name": "header", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "1a331e6a-a457-4d9d-8c1d-5d913e743cfe", 
+            "name": "settings", 
+            "scope": "Scene"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "0b9e2560-d6b5-47e3-ae0b-139957cb2d77", 
+            "name": "fogremap", 
+            "scope": "Scene"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "fb68fc42-554b-4722-a6fc-be899d3b44db", 
+            "name": "merge", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "7b57d9d4-ba5c-4165-9032-917dbf99f86b", 
+            "connections": [
+                "6b29657f-d38f-4e51-81e3-4fd3c89f2c4b"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "450a6408-5c21-424c-a688-0e57f38e9be7", 
+            "connections": [
+                "a9ba17ec-ade3-40b4-87e5-1e1b16fc526f"
+            ], 
+            "name": "output", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "6835fbb0-7c93-4cc5-85fa-255bb88db91c", 
+            "name": "header", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "389bfb36-6330-4cf2-b8ee-286ecc2d5f26", 
+            "name": "settings", 
+            "scope": "Scene"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "8a490171-2a09-42ac-a28c-61ff9c31c491", 
+            "name": "noiselib", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "ebf90507-9ff7-4ae1-9654-361c740e2ae2", 
+            "name": "sdf", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "c7b503be-16a7-4788-8d9b-0984fbdc912a", 
+            "name": "prefxoverlay", 
+            "scope": "Scene"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "a9ba17ec-ade3-40b4-87e5-1e1b16fc526f", 
+            "connections": [
+                "450a6408-5c21-424c-a688-0e57f38e9be7"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "4eb7dd21-f3b5-4662-9c54-72a114cb4c8b", 
+            "connections": [
+                "f2fe929b-2b3d-4481-aab3-53acc7c0b9f6"
+            ], 
+            "name": "output", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "3b495bea-4d73-4f78-a6bc-06267e20205c", 
+            "name": "bokehheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "c1871807-1bed-48e4-be0e-612a668b3574", 
+            "name": "bokehfirst", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "f2fe929b-2b3d-4481-aab3-53acc7c0b9f6", 
+            "connections": [
+                "4eb7dd21-f3b5-4662-9c54-72a114cb4c8b"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "3b2ba62d-21e0-42d2-95d6-85f9af310516", 
+            "connections": [
+                "cfe3a091-41d7-4dda-8898-5e771d220bc7", 
+                "a929e09c-a629-45a1-b32a-6189038beac1"
+            ], 
+            "name": "output", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "79e2c9b1-4c56-4128-b360-a696373629b7", 
+            "name": "bokehheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "85b0ffcd-c699-4c77-9780-c80808566935", 
+            "name": "bokehsecond", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "24691ed2-5ccc-4b44-b1e0-cc5c8ec2ec78", 
+            "connections": [
+                "ca1c2687-2e86-408b-af96-1d7f3b9e5ad5"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "4111221b-b5d3-417e-a215-cd9240947a47", 
+            "connections": [
+                "39d5c388-ca3d-4ec3-9bff-6202f7f62d39"
+            ], 
+            "name": "output", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "28a68c47-2e8a-4970-b62f-46dba9c7eb23", 
+            "name": "chromab", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "39d5c388-ca3d-4ec3-9bff-6202f7f62d39", 
+            "connections": [
+                "4111221b-b5d3-417e-a215-cd9240947a47"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "c54d1347-fb9a-4e69-8d34-9e75bc024563", 
+            "connections": [
+                "1c91067d-3544-4f1f-8133-0e9c32bfe0f6"
+            ], 
+            "name": "output", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "a4652591-bb0a-422b-9496-f4e2e10a62f8", 
+            "name": "header", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "5cd4e317-deaf-482d-93ad-b629783ca9e1", 
+            "name": "noiselib", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "a7af33b6-9481-41e7-8677-036e25b02ebf", 
+            "name": "sdf", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "22da138d-a7d9-4d5b-8f92-8fe59e91689e", 
+            "name": "present", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "1c91067d-3544-4f1f-8133-0e9c32bfe0f6", 
+            "connections": [
+                "c54d1347-fb9a-4e69-8d34-9e75bc024563"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "5d542ef0-a1e1-4b29-b4c0-0f4a0116887c", 
+            "connections": [], 
+            "name": "output", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "51421b11-4bfb-4674-a8b0-18eeceb99b21", 
+            "name": "fxaa3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "1b312e33-b160-4111-a746-94e6ddb63a87", 
+            "connections": [
+                "296aa323-3405-4d73-8947-1e1ee74fa1c7"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "a763f498-15f3-4eb0-be44-937945f7845f", 
+            "connections": [
+                "c29e2d67-efe2-4efb-84eb-9d1d9b15a1e4"
+            ], 
+            "name": "output", 
+            "size": -4
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "7d2768bd-b6fd-4d79-83b6-45e3710c82c8", 
+            "name": "downsample", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "c29e2d67-efe2-4efb-84eb-9d1d9b15a1e4", 
+            "connections": [
+                "a763f498-15f3-4eb0-be44-937945f7845f"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "4ec7d6c5-6c1f-4188-9afa-09b1911886ae", 
+            "connections": [
+                "9a18a51c-edc3-41d1-be57-24a7a57c4c51"
+            ], 
+            "name": "output", 
+            "size": -4
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "82f23d0e-a563-4785-8628-2ae98ce9cca3", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "a3f47bb4-4b6a-47a6-9350-2f08eddaddec", 
+            "name": "blurhorizontal", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "9f8e3b51-e7a6-4731-89e5-eaea082b73e2", 
+            "name": "blur2", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "84bb00d2-b8fa-427b-bba3-7ffccdc93284", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "9a18a51c-edc3-41d1-be57-24a7a57c4c51", 
+            "connections": [
+                "4ec7d6c5-6c1f-4188-9afa-09b1911886ae"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "185b612f-4c3e-457e-8b9b-918c883c30fb", 
+            "connections": [
+                "baa5c1be-d1d5-4cfd-b85c-f2965fa1b8ea"
+            ], 
+            "name": "output", 
+            "size": -4
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "4dc93209-e785-458f-821a-63c55aacc74b", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "0a2fbf78-945e-4936-b22a-dccd22d467b8", 
+            "name": "blurvertical", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "e76cca07-2ace-414a-a69d-be72ea23ead8", 
+            "name": "blur2", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "2ddb70ed-ef57-4d1a-b9b5-0a3b6f990f05", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "baa5c1be-d1d5-4cfd-b85c-f2965fa1b8ea", 
+            "connections": [
+                "185b612f-4c3e-457e-8b9b-918c883c30fb"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "b5113bff-269d-4ce6-b4ee-da2459d80730", 
+            "connections": [
+                "2292ac21-08e8-46ab-a9e3-b9775c535039"
+            ], 
+            "name": "output", 
+            "size": -4
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "e20dc359-b4a2-4f26-83bd-5c8176c13720", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "504ec628-88f6-4475-b3a1-fb2b2d89a44b", 
+            "name": "blurhorizontal", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "23d89459-c807-47eb-bb15-07be375af95b", 
+            "name": "blur3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "245e4d0d-7fc2-4b52-b29a-2de35dfb89d1", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "2292ac21-08e8-46ab-a9e3-b9775c535039", 
+            "connections": [
+                "b5113bff-269d-4ce6-b4ee-da2459d80730"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "53cf672e-0187-4671-9aeb-b642a8309dd7", 
+            "connections": [
+                "f38a9dcf-b77e-442e-9000-2e96eeccb89f", 
+                "27970e94-2f93-4f42-b789-3ad3a0df0e1f"
+            ], 
+            "name": "output", 
+            "size": -4
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "a7e2ca84-8404-4538-ac02-b14979265fcb", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "df9393a2-812b-4387-8c5e-9da0c6342264", 
+            "name": "blurvertical", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "fb348272-bccb-4f1a-89d9-e46bd01ca675", 
+            "name": "blur3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "0028692d-fd54-49ad-a7c5-03693e72eefc", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "f38a9dcf-b77e-442e-9000-2e96eeccb89f", 
+            "connections": [
+                "53cf672e-0187-4671-9aeb-b642a8309dd7"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "cdd1936e-3fe4-4bfc-a20b-cc9bc18ada36", 
+            "connections": [
+                "f751482f-96cd-4045-88fd-9257f4e1a880"
+            ], 
+            "name": "output", 
+            "size": -8
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "7a7da3ab-c9db-49c4-b47b-10a07fecd469", 
+            "name": "downsample", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "f751482f-96cd-4045-88fd-9257f4e1a880", 
+            "connections": [
+                "cdd1936e-3fe4-4bfc-a20b-cc9bc18ada36"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "cc2db304-aa09-441a-a212-8070f3cb800f", 
+            "connections": [
+                "e388cc58-8917-4ea9-ad29-0c5e34b7f421"
+            ], 
+            "name": "output", 
+            "size": -8
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "6cf7a1b2-a35b-487f-84d7-61586a8deab4", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "e4c789de-99e5-432f-b837-1efb662ee28f", 
+            "name": "blurhorizontal", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "23750962-e6d2-42fb-bee1-47eca194eecb", 
+            "name": "blur2", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "d74bbbe9-8516-4543-902a-5022ed222a22", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "e388cc58-8917-4ea9-ad29-0c5e34b7f421", 
+            "connections": [
+                "cc2db304-aa09-441a-a212-8070f3cb800f"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "1542a4f5-0946-4694-b115-66e2cd73ab43", 
+            "connections": [
+                "c381cbc9-ec60-4bd7-8913-31dd0b989442"
+            ], 
+            "name": "output", 
+            "size": -8
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "ff0adf8e-36cc-456a-adfb-470d58d89d54", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "462360f5-5e4b-4ba1-b81e-95324d779da3", 
+            "name": "blurvertical", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "c7391573-c22b-4a26-ab0a-c8b973fbd548", 
+            "name": "blur2", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "24f4eb7f-d136-4cc4-9b17-c44eb8bcfdba", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "c381cbc9-ec60-4bd7-8913-31dd0b989442", 
+            "connections": [
+                "1542a4f5-0946-4694-b115-66e2cd73ab43"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "3843539c-ac02-47ee-a3bd-4b3ee1120240", 
+            "connections": [
+                "a853fc6c-1b8c-43ed-aff0-32780a24e411"
+            ], 
+            "name": "output", 
+            "size": -8
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "29c03cff-8af6-495b-a58d-10a3e99db679", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "975e1538-587c-42b0-8fbb-b3b07f6fe582", 
+            "name": "blurhorizontal", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "3454bcf7-82da-4aa4-bbb9-a2e7474c8ccd", 
+            "name": "blur3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "e59614e4-57e6-40fd-af01-135deeae860c", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "a853fc6c-1b8c-43ed-aff0-32780a24e411", 
+            "connections": [
+                "3843539c-ac02-47ee-a3bd-4b3ee1120240"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "c4805fe6-1cb4-4b23-baa4-f4dc4fee2673", 
+            "connections": [
+                "96d01263-bbec-4fa7-8004-26dadec91770", 
+                "d251f5fa-5063-4562-93b5-4437d0de2b3b"
+            ], 
+            "name": "output", 
+            "size": -8
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "745e759a-5114-47a8-9663-fc153e3130d5", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "416cb737-1902-4ac8-be76-763e7d3bbffa", 
+            "name": "blurvertical", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "14d137df-7076-4303-b4d3-3e90477f3535", 
+            "name": "blur3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "f5b51d7e-4286-4cc2-afec-cf63ecfc4b93", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "96d01263-bbec-4fa7-8004-26dadec91770", 
+            "connections": [
+                "c4805fe6-1cb4-4b23-baa4-f4dc4fee2673"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "d9ad6f70-362d-4471-8a39-19605abc5d5a", 
+            "connections": [
+                "8e3f55ca-6547-4c2c-b7df-a5811f6f9c0d"
+            ], 
+            "name": "output", 
+            "size": -16
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "5993f3fd-cd5f-4bb0-8bfc-b8f155220120", 
+            "name": "downsample", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "82e7fe02-8baa-4d04-a771-19e9f4600673", 
+            "connections": [
+                "f44663f8-000b-4fa8-aa0c-6d7df5fd76db"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "e3ccb6ed-cdac-4299-b651-ad6e67267d62", 
+            "connections": [
+                "48b1c12f-1465-4a5a-9c11-d7b1f46586e6"
+            ], 
+            "name": "output", 
+            "size": -32
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "70b8c337-b921-49e5-aa95-cb202afa0380", 
+            "name": "downsample", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "ee716ae8-3d82-4872-bf45-c2c57f4def5f", 
+            "connections": [
+                "43f70b60-6cd5-4770-ba96-738a9cbc20e0"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "238cacc5-4391-4e14-8ea3-f455e81bf834", 
+            "connections": [
+                "e9c331c3-fa39-451d-b70c-731518f80bf1"
+            ], 
+            "name": "output", 
+            "size": -64
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "8726084d-9b18-42fa-a570-a7bc9c2ce8cb", 
+            "name": "downsample", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "cfe3a091-41d7-4dda-8898-5e771d220bc7", 
+            "connections": [
+                "3b2ba62d-21e0-42d2-95d6-85f9af310516"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "b7b94825-c27e-4043-b5fd-95987b2a03b5", 
+            "connections": [
+                "0cc7b578-f1ca-460b-8c80-246f035e3399"
+            ], 
+            "name": "output", 
+            "size": -2
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "6749d7da-fb08-49ed-ab68-9d9215e847c8", 
+            "name": "downsample", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "8e3f55ca-6547-4c2c-b7df-a5811f6f9c0d", 
+            "connections": [
+                "d9ad6f70-362d-4471-8a39-19605abc5d5a"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "54663f40-484a-4512-b684-7687bbc081dd", 
+            "connections": [
+                "3dfcca16-910a-4686-a2b6-9fe8d8c3a7ef"
+            ], 
+            "name": "output", 
+            "size": -16
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "e53da482-afcb-4871-a50e-14abdd187fb2", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "ebcea1de-07cb-4782-8ffa-0f6a5ad2107e", 
+            "name": "blurhorizontal", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "1fa77c7c-1d8d-4b67-999f-51ae577894da", 
+            "name": "blur2", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "b43dbfe2-f11c-4cd0-8aba-dc4a4cf2e7ac", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "48b1c12f-1465-4a5a-9c11-d7b1f46586e6", 
+            "connections": [
+                "e3ccb6ed-cdac-4299-b651-ad6e67267d62"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "c2ad692d-3242-46ca-91f5-45a17abcd572", 
+            "connections": [
+                "be8aad5b-17a2-4ab2-88fb-5fe7310bf715"
+            ], 
+            "name": "output", 
+            "size": -32
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "eed250cc-f1b4-426e-9a1a-c8470716da1b", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "6d60045f-f598-4a27-a929-8e40d2614d2b", 
+            "name": "blurhorizontal", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "e7078acf-19d3-44a8-b990-a9e68efa054b", 
+            "name": "blur2", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "6ab53995-1c68-4176-a1da-38ef5429e342", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "0cc7b578-f1ca-460b-8c80-246f035e3399", 
+            "connections": [
+                "b7b94825-c27e-4043-b5fd-95987b2a03b5"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "9d38993f-c9bf-417a-b6f5-3deed5ed9693", 
+            "connections": [
+                "abdd74ef-bfdd-4714-9ad5-857f0f8e5890"
+            ], 
+            "name": "output", 
+            "size": -2
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "20616bb5-7138-46c0-ada4-fe3ba80ceb79", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "51788d67-1dc4-459a-85de-f5b564ad12ca", 
+            "name": "blurhorizontal", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "7f69930c-7bea-48c9-855d-47743f4e0e8e", 
+            "name": "blur2", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "30cdd742-c43e-4891-a5da-184d3d947532", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "e9c331c3-fa39-451d-b70c-731518f80bf1", 
+            "connections": [
+                "238cacc5-4391-4e14-8ea3-f455e81bf834"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "b17e2159-1005-40f3-b3d9-19df073ff96a", 
+            "connections": [
+                "7de7439a-ba3d-47e3-8b5e-abf89816bb98"
+            ], 
+            "name": "output", 
+            "size": -64
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "f0aa06d5-dbd8-407a-b09c-3394b1c0b652", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "34823998-f2be-4c99-b8d5-ebad6889248d", 
+            "name": "blurhorizontal", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "e6ac27fa-074d-4bee-9ad9-6816e92c28bd", 
+            "name": "blur2", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "80806c87-28e1-4198-85d8-1057b5875ed3", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "abdd74ef-bfdd-4714-9ad5-857f0f8e5890", 
+            "connections": [
+                "9d38993f-c9bf-417a-b6f5-3deed5ed9693"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "68354aea-15fb-4db9-b2b9-2796aa9ce980", 
+            "connections": [
+                "2a39d629-5966-4e12-9172-e9e0832df035"
+            ], 
+            "name": "output", 
+            "size": -2
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "3db5dde6-bde6-4e86-8878-92fd462adcc2", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "528c8f17-d696-4c8a-9adb-fca5015a8efe", 
+            "name": "blurvertical", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "1476f9c4-5533-4370-af33-2191fc625b96", 
+            "name": "blur2", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "d423fb98-79ad-4e2a-9528-0c08f6f220ab", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "3dfcca16-910a-4686-a2b6-9fe8d8c3a7ef", 
+            "connections": [
+                "54663f40-484a-4512-b684-7687bbc081dd"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "71d09009-ae97-4c5f-8cff-db5e645b165a", 
+            "connections": [
+                "1be2c250-beac-47d5-a72d-4a2c7ae47481"
+            ], 
+            "name": "output", 
+            "size": -16
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "8260f8cd-2e96-482e-9f65-149ae75441f9", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "b55c19cf-3931-4a85-9d85-fad039ae70d4", 
+            "name": "blurvertical", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "6a8d0394-129e-44c8-a64b-7e3893103c8d", 
+            "name": "blur2", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "9f6cc33b-bf90-44a2-8fcc-a371cf13d8f9", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "be8aad5b-17a2-4ab2-88fb-5fe7310bf715", 
+            "connections": [
+                "c2ad692d-3242-46ca-91f5-45a17abcd572"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "b53e7c5b-ffcd-4a5b-b8d8-f49482b52daa", 
+            "connections": [
+                "ee96fb1f-4d84-4f5f-a707-8e5530ff5575"
+            ], 
+            "name": "output", 
+            "size": -32
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "ee6637bc-cbe0-47a1-86ef-32defd44c353", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "21e8a937-e936-48a6-a320-76d551f0b3a2", 
+            "name": "blurvertical", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "d23c0e25-f4e8-47e6-a474-0fc42382ea2c", 
+            "name": "blur2", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "91d47e2c-4a38-415b-b91b-e2d072e3b2e2", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "7de7439a-ba3d-47e3-8b5e-abf89816bb98", 
+            "connections": [
+                "b17e2159-1005-40f3-b3d9-19df073ff96a"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "f051502c-52a3-4402-949f-6248d43f0bed", 
+            "connections": [
+                "92895a19-7d4b-4019-95e1-9a122bc0004b"
+            ], 
+            "name": "output", 
+            "size": -64
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "7ccf4ea3-73fb-43e6-ad71-bb750905f3b4", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "60e1564c-5e65-48cd-bbb3-403362ead102", 
+            "name": "blurvertical", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "20ebd321-af15-48a7-a07c-76ae019506ca", 
+            "name": "blur2", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "6c00a454-3fb7-49aa-bb00-af4df01ade52", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "92895a19-7d4b-4019-95e1-9a122bc0004b", 
+            "connections": [
+                "f051502c-52a3-4402-949f-6248d43f0bed"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "c7cd90e8-bb5c-4221-80f2-74182cf62906", 
+            "connections": [
+                "52b3e170-d300-4c90-9ed0-1f904a139769"
+            ], 
+            "name": "output", 
+            "size": -64
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "b79a326c-6a8f-4f3b-9cf8-7b702767fd16", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "418afcd2-7d0a-4518-a705-48247371d103", 
+            "name": "blurhorizontal", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "e6da2da1-891a-44d3-9b0f-803b678e03b8", 
+            "name": "blur3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "f406a8b6-e165-443a-8858-be1a694456d0", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "2a39d629-5966-4e12-9172-e9e0832df035", 
+            "connections": [
+                "68354aea-15fb-4db9-b2b9-2796aa9ce980"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "bcdbd215-ce69-4106-a0bb-3f4abd72f1e5", 
+            "connections": [
+                "83ac12ff-4a46-4589-8764-b015221e4e0d"
+            ], 
+            "name": "output", 
+            "size": -2
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "e91f7a5b-6349-4dba-a0b5-f5280673bbed", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "467e21ee-d09a-4bae-9c77-d93d8ef1db1b", 
+            "name": "blurhorizontal", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "3475c4fc-7e41-4495-878d-90630a578080", 
+            "name": "blur3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "8dccf277-6b30-4a1f-89d0-cb1aead37b09", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "ee96fb1f-4d84-4f5f-a707-8e5530ff5575", 
+            "connections": [
+                "b53e7c5b-ffcd-4a5b-b8d8-f49482b52daa"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "ebd76194-1a4b-4d99-935f-6afa059d8d1f", 
+            "connections": [
+                "fa22bbd1-0fb0-4e27-b98d-213b80ac8d19"
+            ], 
+            "name": "output", 
+            "size": -32
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "2a087848-3650-4632-8d71-1a2eb4fa9fc4", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "cba934c6-ce25-4644-8bdb-f572d67382b7", 
+            "name": "blurhorizontal", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "cf1a974d-f73e-4533-bdd7-ff738c36d113", 
+            "name": "blur3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "1389ce09-e000-4778-a309-6aa46dc30ba7", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "1be2c250-beac-47d5-a72d-4a2c7ae47481", 
+            "connections": [
+                "71d09009-ae97-4c5f-8cff-db5e645b165a"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "21584053-04d7-4814-81f0-de1edc75103c", 
+            "connections": [
+                "87200ab2-9d98-4762-9802-e63c3564b4b1"
+            ], 
+            "name": "output", 
+            "size": -16
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "31de320e-9dc6-4830-abb8-79e499f58fa7", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "bfac147c-d0e6-497a-8712-67b14fed3e21", 
+            "name": "blurhorizontal", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "97a19f11-c21b-49f1-87cd-19ea4049c665", 
+            "name": "blur3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "67373bad-04bd-492a-9a48-7ee52b6b75d9", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "52b3e170-d300-4c90-9ed0-1f904a139769", 
+            "connections": [
+                "c7cd90e8-bb5c-4221-80f2-74182cf62906"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "cab3a778-ef98-4c6a-ab42-828bf9f81cbb", 
+            "connections": [
+                "8f9914fd-1c1c-4d6c-a00e-3c35e39db1ac"
+            ], 
+            "name": "output", 
+            "size": -64
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "617d3743-a20c-4d11-a623-2c20bd8f1f10", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "4f585c83-80cc-431f-8dee-081d93c3fa46", 
+            "name": "blurvertical", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "011ad3cb-e39a-4c1d-8b65-1323bcb083ee", 
+            "name": "blur3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "458c2773-bd25-48a5-bff8-348e3e0e919b", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "fa22bbd1-0fb0-4e27-b98d-213b80ac8d19", 
+            "connections": [
+                "ebd76194-1a4b-4d99-935f-6afa059d8d1f"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "43f70b60-6cd5-4770-ba96-738a9cbc20e0", 
+            "connections": [
+                "ee716ae8-3d82-4872-bf45-c2c57f4def5f", 
+                "88eb7737-a8b9-4c95-9d27-f25d37a168e3"
+            ], 
+            "name": "output", 
+            "size": -32
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "284912dd-5d5f-4c4d-899a-00417c08339e", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "3245301b-bc10-4c7f-8592-6cddb18f59ec", 
+            "name": "blurvertical", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "5cec36fc-5ba6-4273-88db-c3440bd4850b", 
+            "name": "blur3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "421b5aa7-ba58-4764-b3c4-0697e5f0c4df", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "87200ab2-9d98-4762-9802-e63c3564b4b1", 
+            "connections": [
+                "21584053-04d7-4814-81f0-de1edc75103c"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "f44663f8-000b-4fa8-aa0c-6d7df5fd76db", 
+            "connections": [
+                "82e7fe02-8baa-4d04-a771-19e9f4600673", 
+                "3584a8a3-61f8-4b04-b9be-3b1b8f1ee90c"
+            ], 
+            "name": "output", 
+            "size": -16
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "fa62d047-53e6-438e-8611-4ee80d1a1bde", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "343f5559-6603-46d6-8424-d2b1d9b46ea0", 
+            "name": "blurvertical", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "4f9ffd9d-97d4-4837-a29f-eeb1c1d56118", 
+            "name": "blur3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "0cdd7009-7e64-4043-9d67-9567958915d0", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "83ac12ff-4a46-4589-8764-b015221e4e0d", 
+            "connections": [
+                "bcdbd215-ce69-4106-a0bb-3f4abd72f1e5"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "296aa323-3405-4d73-8947-1e1ee74fa1c7", 
+            "connections": [
+                "1b312e33-b160-4111-a746-94e6ddb63a87", 
+                "009ab1cd-6879-4722-a4b8-8aa34edc0e3f"
+            ], 
+            "name": "output", 
+            "size": -2
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "9f1f7bff-aa2f-4c1e-b6be-8dedcd36f292", 
+            "name": "blurheader", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "2c48c7be-52a8-49fb-b6ed-ee462357d81e", 
+            "name": "blurvertical", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "ab37a45a-fab6-4781-8eb7-a69994f60bd7", 
+            "name": "blur3", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "65671334-e9c7-4821-8eff-7c88506a3a03", 
+            "name": "blurfooter", 
+            "scope": "Private"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "a929e09c-a629-45a1-b32a-6189038beac1", 
+            "connections": [
+                "3b2ba62d-21e0-42d2-95d6-85f9af310516"
+            ], 
+            "name": "uImages[0]"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "009ab1cd-6879-4722-a4b8-8aa34edc0e3f", 
+            "connections": [
+                "296aa323-3405-4d73-8947-1e1ee74fa1c7"
+            ], 
+            "name": "uImages[1]"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "27970e94-2f93-4f42-b789-3ad3a0df0e1f", 
+            "connections": [
+                "53cf672e-0187-4671-9aeb-b642a8309dd7"
+            ], 
+            "name": "uImages[2]"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "d251f5fa-5063-4562-93b5-4437d0de2b3b", 
+            "connections": [
+                "c4805fe6-1cb4-4b23-baa4-f4dc4fee2673"
+            ], 
+            "name": "uImages[3]"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "3584a8a3-61f8-4b04-b9be-3b1b8f1ee90c", 
+            "connections": [
+                "f44663f8-000b-4fa8-aa0c-6d7df5fd76db"
+            ], 
+            "name": "uImages[4]"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "88eb7737-a8b9-4c95-9d27-f25d37a168e3", 
+            "connections": [
+                "43f70b60-6cd5-4770-ba96-738a9cbc20e0"
+            ], 
+            "name": "uImages[5]"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "8f9914fd-1c1c-4d6c-a00e-3c35e39db1ac", 
+            "connections": [
+                "cab3a778-ef98-4c6a-ab42-828bf9f81cbb"
+            ], 
+            "name": "uImages[6]"
+        }, 
+        {
+            "__class__": "Plug", 
+            "__uuid__": "51099924-16bd-4fa9-8aca-6531059ad397", 
+            "connections": [
+                "36542d37-261e-4dff-86b0-8393b7f78267"
+            ], 
+            "name": "uImages[7]"
+        }, 
+        {
+            "__class__": "OutputPlug", 
+            "__uuid__": "ca1c2687-2e86-408b-af96-1d7f3b9e5ad5", 
+            "connections": [
+                "24691ed2-5ccc-4b44-b1e0-cc5c8ec2ec78"
+            ], 
+            "name": "output", 
+            "size": -1
+        }, 
+        {
+            "__class__": "Stitch", 
+            "__uuid__": "5b5f756e-37a3-4280-8192-cda904a7f607", 
+            "name": "bloom", 
+            "scope": "Private"
+        }
+    ]
 }

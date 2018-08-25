@@ -16,7 +16,7 @@ float fField(vec3 p, out vec4 m)
     vec3 op=p;
     float ir, r = fEmissive(p, m);
 
-    ir = length(p - vec3(0.0, 0.0, 10.0)) - 0.5;
+    ir = length(p) - 0.5;
     fOpUnion(r,ir,m,vec4(p,1));
 
     return r;

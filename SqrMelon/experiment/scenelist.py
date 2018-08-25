@@ -1,13 +1,10 @@
 import json
-
 import fileutil
-from experiment.projectutil import iterSceneNames, scenesFolder, iterPipelineNames, publicStitches, sceneStitches, pipelineFolder, sceneStitchesSource
+from experiment.projectutil import pipelineFolder, sceneStitchesSource, scenesFolder, iterPipelineNames, sceneStitches, publicStitches, iterSceneNames
 from qtutil import *
 import icons
 from send2trash import send2trash
 import subprocess
-
-SCENE_EXT = '.json'
 
 
 class SceneList(QWidget):

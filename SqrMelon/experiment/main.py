@@ -1,6 +1,6 @@
 import functools
 
-from experiment.scenes import SceneList
+from experiment.scenelist import SceneList
 from experiment.view3d import View3D
 from qtutil import *
 from experiment.curvemodel import HermiteCurve, HermiteKey, ELoopMode
@@ -26,6 +26,9 @@ class DemoModel(QStandardItemModel):
                         visibleShot = pyObj
                 if isinstance(pyObj, Event):
                     activeEvents.append(pyObj)
+        scene = None
+        if visibleShot:
+            scene = visibleShot.scene
 
         # sort events by inverse priority
         activeEvents.sort(key=lambda x: -x.track)
@@ -35,7 +38,7 @@ class DemoModel(QStandardItemModel):
         for event in activeEvents:
             evaluatedData.update(event.evaluate(time))
 
-        return visibleShot.scene, evaluatedData
+        return scene, evaluatedData
 
 
 def evalCamera(camera, model, timer):
@@ -52,7 +55,7 @@ def eventChanged(eventManager, curveUI):
 
 def run():
     app = QApplication([])
-    settings().setValue('currentproject', 'defaultproject')
+    settings().setValue('currentproject', r'C:\Users\Henk\Documents\git\SqrMelon\SqrMelon\experiment\defaultproject')
 
     undoStack = QUndoStack()
     undoView = QUndoView(undoStack)
@@ -69,7 +72,7 @@ def run():
 
     # TODO: Edits in these views are not undoable, but I would like to mass-edit in the future
     shotManager = FilteredView(undoStack, ShotModel(model))
-    shotManager.model().appendRow(Shot('New Shot', 'Scene 1', 0.0, 4.0, 0).items)
+    shotManager.model().appendRow(Shot('New Shot', 'example', 0.0, 4.0, 0).items)
 
     eventManager = FilteredView(undoStack, EventModel(model))
     eventManager.model().appendRow(Event('New event', clip0, 0.0, 4.0, 1.0, 0.0, 2).items)
@@ -96,10 +99,15 @@ def run():
 
     camera = Camera()
     camera.requestAnimatedCameraPosition.connect(functools.partial(evalCamera, camera, model, timer))
+    # when animating, the camera will see about animation
+    # if it is not set to follow animation it will do nothing
+    # else it will emit requestAnimatedCameraPosition, so that the internal state will match
     timer.changed.connect(camera.followAnimation)
 
     view = View3D(camera, model, timer)
+    # when the camera is changed  through flying (WASD, Mouse) or through the input widgets, it will emit an edited event, signaling repaint
     camera.edited.connect(view.repaint)
+    # when the time changes, the camera is connected first so animation is applied, then we still have to manually trigger a repaint here
     timer.changed.connect(view.repaint)
 
     mainWindow = QMainWindowState(settings())

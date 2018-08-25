@@ -241,7 +241,7 @@ class MoveTimeAction(object):
         self.__undoable = undoable
 
     def mousePressEvent(self, event):
-        pass
+        self.mouseMoveEvent(event)
 
     def mouseMoveEvent(self, event):
         self.__newTime = self.__xToT(event.x())

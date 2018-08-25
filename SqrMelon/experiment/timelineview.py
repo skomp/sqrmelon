@@ -3,7 +3,6 @@ import functools
 from experiment.actions import MarqueeActionBase, MoveTimeAction, MoveEventAction, DuplicateEventAction
 from experiment.gridview import GridView
 from experiment.model import Shot
-from experiment.model import Event
 from experiment.timer import drawPlayhead
 
 from qtutil import *

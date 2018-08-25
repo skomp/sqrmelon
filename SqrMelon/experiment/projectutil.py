@@ -2,6 +2,8 @@ import json
 
 from qtutil import *
 
+SCENE_EXT = '.json'
+
 
 def settings():
     return QSettings('PB', 'SqrMelon2')

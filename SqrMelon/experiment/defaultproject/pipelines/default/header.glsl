@@ -19,7 +19,7 @@ uniform float uSeconds;
 uniform mat4 uV;
 
 // Frustum is precomputed from the field of view
-uniform mat4 uFrustum;
+uniform mat4x3 uFrustum;
 
 // First output buffer
 out vec4 outColor0;
@@ -61,13 +61,13 @@ Material MixMaterial(Material a, Material b, float w)
 }
 
 // Shoots a ray through the current pixel based on uV and uFrustum
-uniform vec3 uShake;
-uniform float uFishEye;
+uniform vec3 uShake=vec3(0.);
+uniform float uFishEye=0.;
 const float PI=3.1415926535897;
 Ray ScreenRayUV(vec2 uv)
 {
     vec2 suv=vec2(uBeats*uShake.x,uShake.y);
-    vec3 direction = mix(mix(uFrustum[0].xyz, uFrustum[1].xyz, uv.x), mix(uFrustum[2].xyz, uFrustum[3].xyz, uv.x), uv.y);
+    vec3 direction = mix(mix(uFrustum[0], uFrustum[1], uv.x), mix(uFrustum[2], uFrustum[3], uv.x), uv.y);
     return Ray(uV[3].xyz
              + uV[0].xyz*(texture(uImages[3],suv).y-.5)*uShake.z
              + uV[1].xyz*(texture(uImages[3],suv+.5).y-.5)*uShake.z,

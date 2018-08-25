@@ -13,8 +13,8 @@ void main()
     // since normals are in range -1 to 1 we can map to fixed 15-bit range
     ivec2 xy=ivec2(data.hit.normal.xy*16383.5+16383.5)&32767;
     int z=sign(data.hit.normal.z)<0?1<<30:0;
-    outColor1=vec4(data.hit.point,intBitsToFloat(z|xy.y<<15|xy.x));
+    outColor1=vec4(data.hit.point-ray.origin,intBitsToFloat(z|xy.y<<15|xy.x));
 
     // specular color (after baking reflectivity & metallicity) & roughness output
-    outColor2 = vec4(mix(vec3(1), data.material.albedo, data.material.metallicity) * data.material.reflectivity, data.material.blur);
+    outColor2=vec4(mix(vec3(1),data.material.albedo,data.material.metallicity)*data.material.reflectivity,data.material.blur);
 }
