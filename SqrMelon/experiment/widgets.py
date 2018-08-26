@@ -1,7 +1,7 @@
 import re
 import functools
 import icons
-from experiment.actions import KeyEdit, CurveModelEdit
+from experiment.actions import KeyEdit, ModelEdit
 from experiment.curvemodel import HermiteCurve, ETangentMode, ELoopMode
 from experiment.curveview import CurveView
 from experiment.delegates import UndoableSelectionView
@@ -256,7 +256,7 @@ class CurveUI(QWidget):
             newCurves.append(HermiteCurve(channelName, ELoopMode.Clamp, []))
         if not newCurves:
             return
-        self._undoStack.push(CurveModelEdit(mdl, newCurves, []))
+        self._undoStack.push(ModelEdit(mdl, newCurves, []))
 
     def __deleteChannels(self):
         rows = []
@@ -265,7 +265,7 @@ class CurveUI(QWidget):
         if not rows:
             return
         mdl = self._curveList.model()
-        self._undoStack.push(CurveModelEdit(mdl, [], rows))
+        self._undoStack.push(ModelEdit(mdl, [], rows))
 
     def __copyCameraPosition(self):
         # TODO
@@ -350,23 +350,23 @@ class FilteredView(UndoableSelectionView):
 
 
 class EventView(FilteredView):
+    def firstSelectedEvent(self):
+        for container in self.selectionModel().selectedRows():
+            return container.data(Qt.UserRole + 1)
+
     def firstSelectedEventWithClip(self, clip):
-        pyObj = None
         for container in self.selectionModel().selectedRows():
             pyObj = container.data(Qt.UserRole + 1)
-            if pyObj.clip != clip:
-                pyObj = None
-            else:
-                break
-        return pyObj
+            if pyObj.clip == clip:
+                return pyObj
 
 
 class ClipManager(UndoableSelectionView):
-    def __init__(self, source, undoStack, parent=None):
+    def __init__(self, selectionChange, firstSelectedEvent, undoStack, parent=None):
         super(ClipManager, self).__init__(undoStack, parent)
         self.setModel(QStandardItemModel())
-        self._source = source
-        source.selectionChange.connect(self._pull)
+        self._firstSelectedEvent = firstSelectedEvent
+        selectionChange.connect(self._pull)
 
     def firstSelectedItem(self):
         clip = None
@@ -377,10 +377,7 @@ class ClipManager(UndoableSelectionView):
 
     def _pull(self, *args):
         # get first selected container
-        pyObj = None  # empty stub
-        for container in self._source.selectionModel().selectedRows():
-            pyObj = container.data(Qt.UserRole + 1)
-            break
+        pyObj = self._firstSelectedEvent()
         if pyObj is None:
             return
         items = self.model().findItems(str(pyObj.clip))
@@ -394,13 +391,40 @@ class ClipManager(UndoableSelectionView):
 
 
 class ClipUI(QWidget):
-    def __init__(self, source, undoStack, parent=None):
+    def __init__(self, selectionChange, firstSelectedEvent, undoStack, parent=None):
         super(ClipUI, self).__init__(parent)
         main = vlayout()
         self.setLayout(main)
         hbar = hlayout()
-        hbar.addWidget(createToolButton('Add Node-48', 'Create clip', hbar))
-        hbar.addWidget(createToolButton('Delete Node-48', 'Delete selected clips', hbar))
+
+        btn = createToolButton('Add Node-48', 'Create clip', hbar)
+        btn.clicked.connect(self.__createClip)
+        hbar.addWidget(btn)
+
+        btn = createToolButton('Delete Node-48', 'Delete selected clips', hbar)
+        hbar.addWidget(btn)
+        btn.clicked.connect(self.__deleteSelectedClips)
+
         main.addLayout(hbar)
-        self.manager = ClipManager(source, undoStack)
+        self.manager = ClipManager(selectionChange, firstSelectedEvent, undoStack)
         main.addWidget(self.manager)
+
+        self.undoStack = undoStack
+
+    def __createClip(self):
+        result = QInputDialog.getText(self, 'Create clip', 'Clip name')
+        if not result[0] or not result[1]:
+            return
+        name = result[0]
+        # ensure name is unique
+        if self.manager.model().findItems(name):
+            QMessageBox.critical(self, 'Error creating clip', ' A clip named %s already exists' % name)
+            return
+        clip = Clip(name)
+        self.undoStack.push(ModelEdit(self.manager.model(), [clip], []))
+
+    def __deleteSelectedClips(self):
+        rows = [idx.row() for idx in self.manager.selectionModel().selectedRows()]
+        if not rows:
+            return
+        self.undoStack.push(ModelEdit(self.manager.model(), [], rows))

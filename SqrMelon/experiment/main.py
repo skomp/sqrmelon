@@ -87,7 +87,7 @@ def run():
 
     eventManager.model().appendRow(Event('New event', clip0, 2.0, 4.0, 0.25, 0.0, 1).items)
 
-    clips = ClipUI(eventManager, undoStack)
+    clips = ClipUI(eventManager.selectionChange, eventManager.firstSelectedEvent, undoStack)
     clips.manager.model().appendRow(clip0.items)
     clips.manager.model().appendRow(clip1.items)
 

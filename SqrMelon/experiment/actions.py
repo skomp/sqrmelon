@@ -183,9 +183,9 @@ class KeyEdit(QUndoCommand):
         self.triggerRepaint()
 
 
-class CurveModelEdit(QUndoCommand):
+class ModelEdit(QUndoCommand):
     def __init__(self, model, pyObjsToAppend, rowIndicesToRemove, parent=None):
-        super(CurveModelEdit, self).__init__('Create / delete curves', parent)
+        super(ModelEdit, self).__init__('Create / delete model items', parent)
         self.model = model
         self.pyObjsToAppend = pyObjsToAppend
         self.rowIndicesToRemove = sorted(rowIndicesToRemove)
