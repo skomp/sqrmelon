@@ -7,7 +7,7 @@ from experiment.curvemodel import HermiteCurve, HermiteKey, ELoopMode
 from experiment.model import Clip, Shot, Event
 from experiment.timelineview import TimelineView
 from experiment.timer import Time
-from experiment.widgets import ClipManager, CurveUI, EventModel, ShotModel, FilteredView
+from experiment.widgets import ClipManager, CurveUI, EventModel, ShotModel, FilteredView, ClipUI, EventView
 from experiment.projectutil import settings
 from experiment.camerawidget import Camera
 
@@ -74,7 +74,7 @@ def run():
     shotManager = FilteredView(undoStack, ShotModel(model))
     shotManager.model().appendRow(Shot('New Shot', 'example', 0.0, 4.0, 0).items)
 
-    eventManager = FilteredView(undoStack, EventModel(model))
+    eventManager = EventView(undoStack, EventModel(model))
     eventManager.model().appendRow(Event('New event', clip0, 0.0, 4.0, 1.0, 0.0, 2).items)
     eventManager.model().appendRow(Event('New event', clip0, 0.0, 1.0, 1.0, 0.0, 1).items)
     eventManager.model().appendRow(Event('New event', clip1, 1.0, 2.0, 0.5, 0.0, 1).items)
@@ -87,13 +87,13 @@ def run():
 
     eventManager.model().appendRow(Event('New event', clip0, 2.0, 4.0, 0.25, 0.0, 1).items)
 
-    clipManager = ClipManager(eventManager, undoStack)
-    clipManager.model().appendRow(clip0.items)
-    clipManager.model().appendRow(clip1.items)
+    clips = ClipUI(eventManager, undoStack)
+    clips.manager.model().appendRow(clip0.items)
+    clips.manager.model().appendRow(clip1.items)
 
     timer = Time()
     # TODO: Curve renames and loop mode changes are not undoable
-    curveUI = CurveUI(timer, eventManager, clipManager, undoStack)
+    curveUI = CurveUI(timer, clips.manager.selectionChange, clips.manager.firstSelectedItem, eventManager.firstSelectedEventWithClip, undoStack)
     eventManager.selectionChange.connect(functools.partial(eventChanged, eventManager, curveUI))
     eventTimeline = TimelineView(timer, undoStack, model, (shotManager.selectionModel(), eventManager.selectionModel()))
 
@@ -113,7 +113,7 @@ def run():
     mainWindow = QMainWindowState(settings())
     mainWindow.setDockNestingEnabled(True)
     mainWindow.createDockWidget(undoView)
-    mainWindow.createDockWidget(clipManager)
+    mainWindow.createDockWidget(clips)
     mainWindow.createDockWidget(curveUI)
     mainWindow.createDockWidget(shotManager, name='Shots')
     mainWindow.createDockWidget(eventManager, name='Events')

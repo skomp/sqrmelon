@@ -13,11 +13,16 @@ def sign(x): return -1 if x < 0 else 1
 
 
 class CurveList(UndoableSelectionView):
-    def __init__(self, source, undoStack, parent=None):
+    def __init__(self, clipManagerSelectionChange, firstSelectedClip, undoStack, parent=None):
+        # TODO: Instead of passing in a ClipManager instance (source) perhaps we can get a selectionChange signal & a "getFirstSelectedItem" callable that returns an ItemRow instance
         super(CurveList, self).__init__(undoStack, parent)
         self.setModel(QStandardItemModel())
-        self._source = source
-        source.selectionChange.connect(self._pull)
+        self._firstSelectedItem = firstSelectedClip
+        clipManagerSelectionChange.connect(self._pull)
+
+    def dataChanged(self, firstIndex, lastIndex):
+        # there
+        pass
 
     @staticmethod
     def columnNames():
@@ -25,12 +30,10 @@ class CurveList(UndoableSelectionView):
 
     def _pull(self, *args):
         # get first selected container
-        clip = None  # empty stub
+        clip = self._firstSelectedItem()
         curves = None
-        for container in self._source.selectionModel().selectedRows():
-            clip = container.data(Qt.UserRole + 1)
+        if clip:
             curves = clip.curves
-            break
         if self.model() == curves:
             return
         if curves is None:
@@ -50,7 +53,7 @@ def createToolButton(iconName, toolTip, parent):
 
 class CurveUI(QWidget):
     # TODO: Show which clip / shot is active somehow (window title?)
-    def __init__(self, timer, eventManager, clipManager, undoStack):
+    def __init__(self, timer, clipManagerSelectionChange, firstSelectedClip, firstSelectedEventWithClip, undoStack):
         super(CurveUI, self).__init__()
         self._undoStack = undoStack
 
@@ -113,11 +116,11 @@ class CurveUI(QWidget):
         toolBar.addStretch(1)
 
         splitter = QSplitter(Qt.Horizontal)
-        clipManager.selectionChange.connect(self.__activeClipChanged)
-        self._clipManager = clipManager
-        self._eventManager = eventManager
+        clipManagerSelectionChange.connect(self.__activeClipChanged)
+        self._firstSelectedClip = firstSelectedClip
+        self._firstSelectedEventWithClip = firstSelectedEventWithClip
 
-        self._curveList = CurveList(clipManager, undoStack)
+        self._curveList = CurveList(clipManagerSelectionChange, firstSelectedClip, undoStack)
         self._curveList.selectionChange.connect(self.__visibleCurvesChanged)
 
         self._curveView = CurveView(timer, self._curveList, undoStack)
@@ -144,19 +147,11 @@ class CurveUI(QWidget):
         self._curveView.setEvent(event)
 
     def __activeClipChanged(self):
-        pyObj = None
-        for container in self._clipManager.selectionModel().selectedRows():
-            pyObj = container.data(Qt.UserRole + 1)
-            break
-        self._toolBar.setEnabled(bool(pyObj))
-        pyObj2 = None
-        for container in self._eventManager.selectionModel().selectedRows():
-            pyObj2 = container.data(Qt.UserRole + 1)
-            if pyObj2.clip != pyObj:
-                pyObj2 = None
-            else:
-                break
-        self._curveView.setEvent(pyObj2)
+        clip = self._firstSelectedClip()
+        self._toolBar.setEnabled(bool(clip))
+
+        event = self._firstSelectedEventWithClip(clip)
+        self._curveView.setEvent(event)
 
     def __visibleCurvesChanged(self):
         state = self._curveView.hasVisibleCurves()
@@ -354,12 +349,31 @@ class FilteredView(UndoableSelectionView):
         return self.model().filterClass().properties()
 
 
+class EventView(FilteredView):
+    def firstSelectedEventWithClip(self, clip):
+        pyObj = None
+        for container in self.selectionModel().selectedRows():
+            pyObj = container.data(Qt.UserRole + 1)
+            if pyObj.clip != clip:
+                pyObj = None
+            else:
+                break
+        return pyObj
+
+
 class ClipManager(UndoableSelectionView):
     def __init__(self, source, undoStack, parent=None):
         super(ClipManager, self).__init__(undoStack, parent)
         self.setModel(QStandardItemModel())
         self._source = source
         source.selectionChange.connect(self._pull)
+
+    def firstSelectedItem(self):
+        clip = None
+        for container in self.selectionModel().selectedRows():
+            clip = container.data(Qt.UserRole + 1)
+            break
+        return clip
 
     def _pull(self, *args):
         # get first selected container
@@ -377,3 +391,16 @@ class ClipManager(UndoableSelectionView):
     @staticmethod
     def columnNames():
         return Clip.properties()
+
+
+class ClipUI(QWidget):
+    def __init__(self, source, undoStack, parent=None):
+        super(ClipUI, self).__init__(parent)
+        main = vlayout()
+        self.setLayout(main)
+        hbar = hlayout()
+        hbar.addWidget(createToolButton('Add Node-48', 'Create clip', hbar))
+        hbar.addWidget(createToolButton('Delete Node-48', 'Delete selected clips', hbar))
+        main.addLayout(hbar)
+        self.manager = ClipManager(source, undoStack)
+        main.addWidget(self.manager)
