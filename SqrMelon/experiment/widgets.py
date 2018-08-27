@@ -14,15 +14,10 @@ def sign(x): return -1 if x < 0 else 1
 
 class CurveList(UndoableSelectionView):
     def __init__(self, clipManagerSelectionChange, firstSelectedClip, undoStack, parent=None):
-        # TODO: Instead of passing in a ClipManager instance (source) perhaps we can get a selectionChange signal & a "getFirstSelectedItem" callable that returns an ItemRow instance
         super(CurveList, self).__init__(undoStack, parent)
         self.setModel(QStandardItemModel())
         self._firstSelectedItem = firstSelectedClip
         clipManagerSelectionChange.connect(self._pull)
-
-    def dataChanged(self, firstIndex, lastIndex):
-        # there
-        pass
 
     @staticmethod
     def columnNames():
@@ -135,13 +130,14 @@ class CurveUI(QWidget):
         splitter.addWidget(self._curveList)
         splitter.addWidget(self._curveView)
 
-        mainLayout.addLayout(toolBar)
+        self._toolBar = QWidget()
+        self._toolBar.setLayout(toolBar)
+        self._toolBar.setEnabled(False)
+
+        mainLayout.addWidget(self._toolBar)
         mainLayout.addWidget(splitter)
         mainLayout.setStretch(0, 0)
         mainLayout.setStretch(1, 1)
-
-        self._toolBar = toolBar
-        toolBar.setEnabled(False)
 
     def setEvent(self, event):
         self._curveView.setEvent(event)

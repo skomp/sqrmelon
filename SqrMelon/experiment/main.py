@@ -7,7 +7,7 @@ from experiment.curvemodel import HermiteCurve, HermiteKey, ELoopMode
 from experiment.model import Clip, Shot, Event
 from experiment.timelineview import TimelineView
 from experiment.timer import Time
-from experiment.widgets import ClipManager, CurveUI, EventModel, ShotModel, FilteredView, ClipUI, EventView
+from experiment.widgets import CurveUI, EventModel, ShotModel, FilteredView, ClipUI, EventView
 from experiment.projectutil import settings
 from experiment.camerawidget import Camera
 
@@ -60,11 +60,11 @@ def run():
     undoStack = QUndoStack()
     undoView = QUndoView(undoStack)
 
-    clip0 = Clip('Clip 0')
+    clip0 = Clip('Clip 0', undoStack)
     clip0.curves.appendRow(HermiteCurve('uOrigin.x', ELoopMode.Clamp, [HermiteKey(0.0, 0.0, 0.0, 0.0), HermiteKey(4.0, 1.0, 1.0, 1.0)]).items)
     clip0.curves.appendRow(HermiteCurve('uFlash', ELoopMode.Clamp, [HermiteKey(0.0, 1.0, 1.0, 1.0), HermiteKey(1.0, 0.0, 0.0, 0.0)]).items)
 
-    clip1 = Clip('Clip 1')
+    clip1 = Clip('Clip 1', undoStack)
     clip1.curves.appendRow(HermiteCurve('uOrigin.x', ELoopMode.Clamp, [HermiteKey(2.0, 0.0, 0.0, 0.0), HermiteKey(3.0, 1.0, 0.0, 0.0)]).items)
     clip1.curves.appendRow(HermiteCurve('uOrigin.y', ELoopMode.Clamp, [HermiteKey(0.0, 0.0, 1.0, 1.0), HermiteKey(1.0, 1.0, 1.0, 1.0)]).items)
 
@@ -92,7 +92,6 @@ def run():
     clips.manager.model().appendRow(clip1.items)
 
     timer = Time()
-    # TODO: Curve renames and loop mode changes are not undoable
     curveUI = CurveUI(timer, clips.manager.selectionChange, clips.manager.firstSelectedItem, eventManager.firstSelectedEventWithClip, undoStack)
     eventManager.selectionChange.connect(functools.partial(eventChanged, eventManager, curveUI))
     eventTimeline = TimelineView(timer, undoStack, model, (shotManager.selectionModel(), eventManager.selectionModel()))

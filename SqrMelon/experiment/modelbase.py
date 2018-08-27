@@ -1,6 +1,7 @@
 from experiment.enum import Enum
 from qtutil import *
 from util import randomColor
+from experiment.actions import ModelChange
 
 
 class Label(object):
@@ -82,3 +83,17 @@ class ItemRow(object):
         except ValueError:
             raise AttributeError(attr)
         self[i] = value
+
+
+class UndoableModel(QStandardItemModel):
+    def __init__(self, undoStack):
+        super(UndoableModel, self).__init__()
+        self.undoStack = undoStack
+        self.active = False  # set to True if an undo action is currently running
+
+    def setData(self, index, value, role=Qt.EditRole):
+        if self.active:
+            return super(UndoableModel, self).setData(index, value, role)
+        else:
+            # change is not happening from the undostack, push it there
+            self.undoStack.push(ModelChange(index, value, role))

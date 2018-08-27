@@ -1,13 +1,12 @@
 from collections import OrderedDict
-from qtutil import *
-from experiment.modelbase import ItemRow, Label
+from experiment.modelbase import ItemRow, Label, UndoableModel
 
 
 class Clip(ItemRow):
-    def __init__(self, name):
+    def __init__(self, name, undoStack):
         # type: (str) -> None
         super(Clip, self).__init__(name)
-        self.__dict__['curves'] = QStandardItemModel()
+        self.__dict__['curves'] = UndoableModel(undoStack)
         self.__dict__['textures'] = OrderedDict()
 
     def evaluate(self, localTime):

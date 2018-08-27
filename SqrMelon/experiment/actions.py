@@ -1,5 +1,3 @@
-from experiment.model import Event, Shot
-from experiment.curvemodel import HermiteKey, EInsertMode, ETangentMode
 from qtutil import *
 
 
@@ -114,6 +112,28 @@ class SelectionModelEdit(NestedCommand):
         self.__model.select(added, QItemSelectionModel.Deselect)
 
         self.__emit(removed, added)
+
+
+class ModelChange(QUndoCommand):
+    def __init__(self, index, value, role):
+        super(ModelChange, self).__init__('Model change')
+        self.__model = index.model()
+        self.__index = unpackModelIndex(index)
+        self.__restore = index.data(role)
+        self.__apply = value
+        self.__role = role
+
+    def redo(self):
+        self.__model.active = True
+        index = constructModelIndex(self.__model, self.__index)
+        self.__model.setData(index, self.__apply, self.__role)
+        self.__model.active = False
+
+    def undo(self):
+        self.__model.active = True
+        index = constructModelIndex(self.__model, self.__index)
+        self.__model.setData(index, self.__restore, self.__role)
+        self.__model.active = False
 
 
 class EventEdit(QUndoCommand):
@@ -265,6 +285,7 @@ class EventAdd(QUndoCommand):
         self.applied = True
 
         # Save event rows and models for insert/remove later on
+        from experiment.model import Event, Shot
         for event in restore:
             if isinstance(event, Shot):
                 model = self._models[0]
@@ -403,6 +424,7 @@ class MoveTangentAction(object):
         return False
 
     def mouseMoveEvent(self, event):
+        from experiment.curvemodel import ETangentMode
         dx, dy = self.__reproject(event.x(), event.y())
         dx -= self.__dragStart[0]
         dy -= self.__dragStart[1]
@@ -583,6 +605,7 @@ class InsertKeys(QUndoCommand):
         self.alteredKeys = {}
 
     def redo(self):
+        from experiment.curvemodel import EInsertMode
         for curve, key in self.apply.iteritems():
             other = curve.insertKey(key, EInsertMode.Passive)
             if other is not None:
@@ -606,6 +629,8 @@ class DuplicateEventAction(Action):
         self._copyCounter = 0
 
     def keyPressEvent(self, _):
+        from experiment.model import Event, Shot
+
         copiedEvents = []
 
         for event in self._events:
