@@ -55,7 +55,7 @@ def eventChanged(eventManager, curveUI):
 
 def run():
     app = QApplication([])
-    settings().setValue('currentproject', r'C:\Users\Henk\Documents\git\SqrMelon\SqrMelon\experiment\defaultproject')
+    settings().setValue('currentproject', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'defaultproject'))
 
     undoStack = QUndoStack()
     undoView = QUndoView(undoStack)
