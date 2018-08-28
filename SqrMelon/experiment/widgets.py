@@ -391,15 +391,18 @@ class ClipUI(QWidget):
         super(ClipUI, self).__init__(parent)
         main = vlayout()
         self.setLayout(main)
+
         hbar = hlayout()
 
-        btn = createToolButton('Add Node-48', 'Create clip', hbar)
+        btn = createToolButton('Film Reel Create-48', 'Create clip', hbar)
         btn.clicked.connect(self.__createClip)
-        hbar.addWidget(btn)
+        btn.setIconSize(QSize(24, 24))
 
-        btn = createToolButton('Delete Node-48', 'Delete selected clips', hbar)
-        hbar.addWidget(btn)
+        btn = createToolButton('Film Reel Delete-48', 'Delete selected clips', hbar)
+        btn.setIconSize(QSize(24, 24))
         btn.clicked.connect(self.__deleteSelectedClips)
+
+        hbar.addStretch(1)
 
         main.addLayout(hbar)
         self.manager = ClipManager(selectionChange, firstSelectedEvent, undoStack)
