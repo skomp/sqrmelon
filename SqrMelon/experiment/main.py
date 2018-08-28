@@ -71,7 +71,8 @@ def run():
 
     model = DemoModel(undoStack)
 
-    # TODO: Can not edit multiple elements at the same time, event when selecting multiple rows and using e.g. F2  to edit the item. Is this due to the undoable model?
+    # TODO: Can not edit multiple elements at the same time, event when selecting multiple rows and using e.g. F2 to edit the item.
+    # Override edit as described here https://stackoverflow.com/questions/14586715/how-can-i-achieve-to-update-multiple-rows-in-a-qtableview ?
     shotManager = FilteredView(undoStack, ShotModel(model))
     shotManager.model().appendRow(Shot('New Shot', 'example', 0.0, 4.0, 0).items)
 
