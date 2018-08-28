@@ -1,5 +1,6 @@
 import functools
-
+from experiment.modelbase import UndoableModel
+from experiment.render import Scene
 from experiment.scenelist import SceneList
 from experiment.view3d import View3D
 from qtutil import *
@@ -12,9 +13,9 @@ from experiment.projectutil import settings
 from experiment.camerawidget import Camera
 
 
-class DemoModel(QStandardItemModel):
+class DemoModel(UndoableModel):
     def evaluate(self, time):
-        # type: (float) -> dict[str, float]
+        # type: (float) -> (Scene, dict[str, float])
         # find things at this time
         visibleShot = None
         activeEvents = []
@@ -68,9 +69,9 @@ def run():
     clip1.curves.appendRow(HermiteCurve('uOrigin.x', ELoopMode.Clamp, [HermiteKey(2.0, 0.0, 0.0, 0.0), HermiteKey(3.0, 1.0, 0.0, 0.0)]).items)
     clip1.curves.appendRow(HermiteCurve('uOrigin.y', ELoopMode.Clamp, [HermiteKey(0.0, 0.0, 1.0, 1.0), HermiteKey(1.0, 1.0, 1.0, 1.0)]).items)
 
-    model = DemoModel()
+    model = DemoModel(undoStack)
 
-    # TODO: Edits in these views are not undoable, but I would like to mass-edit in the future
+    # TODO: Can not edit multiple elements at the same time, event when selecting multiple rows and using e.g. F2  to edit the item. Is this due to the undoable model?
     shotManager = FilteredView(undoStack, ShotModel(model))
     shotManager.model().appendRow(Shot('New Shot', 'example', 0.0, 4.0, 0).items)
 

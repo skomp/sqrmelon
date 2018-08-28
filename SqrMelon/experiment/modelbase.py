@@ -92,8 +92,13 @@ class UndoableModel(QStandardItemModel):
         self.active = False  # set to True if an undo action is currently running
 
     def setData(self, index, value, role=Qt.EditRole):
+        # change is not a change, ignore
+        if self.data(index, role) == value:
+            return False
+
         if self.active:
             return super(UndoableModel, self).setData(index, value, role)
         else:
             # change is not happening from the undostack, push it there
             self.undoStack.push(ModelChange(index, value, role))
+            return True
