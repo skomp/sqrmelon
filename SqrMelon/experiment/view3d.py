@@ -38,7 +38,10 @@ class View3D(QGLWidget):
         sceneName, snapshot = self.model.evaluate(self.timer.time)
         if sceneName is None:
             if self._lastRenderedScene is not None:
-                self._lastRenderedScene.changed.disconnect(self.repaint)
+                try:
+                    self._lastRenderedScene.changed.disconnect(self.repaint)
+                except ValueError: # no such connection
+                    pass
                 self._lastRenderedScene = None
             return
 
@@ -98,6 +101,7 @@ class View3D(QGLWidget):
         if self._lastRenderedScene != scene:
             if self._lastRenderedScene is not None:
                 self._lastRenderedScene.changed.disconnect(self.repaint)
+
             self._lastRenderedScene = scene
             if self._lastRenderedScene is not None:
                 self._lastRenderedScene.changed.connect(self.update)

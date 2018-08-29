@@ -123,6 +123,25 @@ def run():
     mainWindow.createDockWidget(camera)
     mainWindow.createDockWidget(view)
 
+    menuBar = QMenuBar()
+    mainWindow.setMenuBar(menuBar)
+    editMenu = menuBar.addMenu('Edit')
+
+    action = editMenu.addAction('&Key camera')
+    action.setShortcut(QKeySequence(Qt.Key_K))
+    action.setShortcutContext(Qt.ApplicationShortcut)
+    action.triggered.connect(functools.partial(curveUI.keyCamera, camera))
+
+    action = editMenu.addAction('&Toggle camera control')
+    action.setShortcut(QKeySequence(Qt.Key_T))
+    action.setShortcutContext(Qt.ApplicationShortcut)
+    action.triggered.connect(camera.toggle)
+
+    action = editMenu.addAction('Snap came&ra to animation')
+    action.setShortcuts(QKeySequence(Qt.Key_R))
+    action.setShortcutContext(Qt.ApplicationShortcut)
+    action.triggered.connect(camera.copyAnim)
+
     mainWindow.show()
     # makes sure qt cleans up & python stops after closing the main window; https://stackoverflow.com/questions/39304366/qobjectstarttimer-qtimer-can-only-be-used-with-threads-started-with-qthread
     mainWindow.setAttribute(Qt.WA_DeleteOnClose)

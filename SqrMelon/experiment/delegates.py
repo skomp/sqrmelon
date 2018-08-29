@@ -120,7 +120,10 @@ class UndoableSelectionView(NamedColums):
     def setModel(self, model):
         if model is None:
             # deselect all
-            self.selectionChange.emit(QItemSelection(), self.selectionModel().selection())
+            selectionModel = self.selectionModel()
+            if selectionModel is not None:
+                selected = selectionModel.selection()
+                self.selectionChange.emit(QItemSelection(), selected)
         super(UndoableSelectionView, self).setModel(model)
         self.selectionModel().selectionChanged.connect(self.__selectionChanged)
 

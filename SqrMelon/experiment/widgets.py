@@ -2,7 +2,7 @@ import re
 import functools
 import icons
 from experiment.actions import KeyEdit, ModelEdit
-from experiment.curvemodel import HermiteCurve, ETangentMode, ELoopMode
+from experiment.curvemodel import HermiteCurve, ETangentMode, ELoopMode, HermiteKey, EInsertMode
 from experiment.curveview import CurveView
 from experiment.delegates import UndoableSelectionView
 from experiment.model import Shot, Clip, Event
@@ -15,13 +15,31 @@ def sign(x): return -1 if x < 0 else 1
 class CurveList(UndoableSelectionView):
     def __init__(self, clipManagerSelectionChange, firstSelectedClip, undoStack, parent=None):
         super(CurveList, self).__init__(undoStack, parent)
-        self.setModel(QStandardItemModel())
+        self.setModel(None)
         self._firstSelectedItem = firstSelectedClip
         clipManagerSelectionChange.connect(self._pull)
 
     @staticmethod
     def columnNames():
         return HermiteCurve.properties()
+
+    def keyCamera(self, camera, time):
+        curves = self.model()
+        if curves is None:
+            # no event to key into
+            # TODO: alert the user about this?
+            return
+
+        cameraData = camera.data().data
+        for i, attr in enumerate(('uOrigin.x', 'uOrigin.y', 'uOrigin.z', 'uAngles.x', 'uAngles.y', 'uAngles.z')):
+            items = curves.findItems(attr)
+            if not items:
+                curve = HermiteCurve(attr)
+                curves.appendRow(curve.items)
+            else:
+                curve = items[0].data()
+            # TODO: Attempt to get continuity with best tangents and set tangents to custom
+            curve.insertKey(HermiteKey(time, cameraData[i], 0.0, 0.0, ETangentMode.Spline, ETangentMode.Spline, curve), EInsertMode.Copy)
 
     def _pull(self, *args):
         # get first selected container
@@ -138,6 +156,14 @@ class CurveUI(QWidget):
         mainLayout.addWidget(splitter)
         mainLayout.setStretch(0, 0)
         mainLayout.setStretch(1, 1)
+
+    def keyCamera(self, camera):
+        self.curveList.keyCamera(camera, self._curveView.time)
+        self._curveView.repaint()
+
+    @property
+    def curveList(self):
+        return self._curveList
 
     def setEvent(self, event):
         self._curveView.setEvent(event)

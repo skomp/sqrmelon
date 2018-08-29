@@ -77,8 +77,7 @@ class Camera(QWidget):
         copyAnim = QPushButton(QIcon(icons.get('Film-Refresh-48')), '')
         copyAnim.setToolTip('Copy anim')
         copyAnim.setStatusTip('Copy anim')
-        copyAnim.clicked.connect(self.requestAnimatedCameraPosition.emit)
-        copyAnim.clicked.connect(self.edited.emit)
+        copyAnim.clicked.connect(self.copyAnim)
         self.layout().addWidget(copyAnim)
         copyAnim.setIconSize(QSize(24, 24))
 
@@ -103,6 +102,10 @@ class Camera(QWidget):
         self.__appLoop.start(1.0 / 15.0)
         self.__drag = None
         self.__dirty = False
+
+    def copyAnim(self):
+        self.requestAnimatedCameraPosition.emit()
+        self.edited.emit()
 
     def followAnimation(self, *args):
         if not self.__cameraControlActive:
