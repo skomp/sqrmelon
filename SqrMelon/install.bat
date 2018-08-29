@@ -1,4 +1,4 @@
-if exist %USERPROFILE%/Downloads/python-2.7.15.amd64.msi (
+﻿if exist %USERPROFILE%/Downloads/python-2.7.15.amd64.msi (
     rem file exists
 ) else (
 bitsadmin.exe /transfer "Downloading python 2.7.15" https://www.python.org/ftp/python/2.7.15/python-2.7.15.amd64.msi %USERPROFILE%/Downloads/python-2.7.15.amd64.msi
