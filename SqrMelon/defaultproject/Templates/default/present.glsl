@@ -37,8 +37,8 @@ void main()
     vec3 color = texture(uImages[0], uv).xyz;
 
     // Black, white
-    color = mix(color, vec3(0.0), 1.0 - pow(1.0 - uBlack, 2.0));
-    color = mix(color, vec3(1.0), pow(uWhite, 2.2));
+    color = mix(color, vec3(0.0), 1.0 - pow(max(0.0, 1.0 - uBlack), 2.0));
+    color = mix(color, vec3(1.0), pow(max(0.0, uWhite), 2.2));
 
     // Shit film grain
     float grainAmount = 0.8;
