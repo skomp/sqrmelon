@@ -79,7 +79,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
-      <AdditionalDependencies>Msacm32.lib;ole32.lib;kernel32.lib;user32.lib;gdi32.lib;opengl32.lib;XAudio2.lib;winmm.lib;ucrt.lib</AdditionalDependencies>
+      <AdditionalDependencies>Msacm32.lib;ole32.lib;kernel32.lib;user32.lib;gdi32.lib;opengl32.lib;winmm.lib;ucrt.lib;Bass.lib</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EnableUAC>false</EnableUAC>

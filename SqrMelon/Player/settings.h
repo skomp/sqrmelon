@@ -13,3 +13,7 @@
 #endif
 
 #pragma comment(lib, "opengl32.lib")
+
+// #define NO_AUDIO
+// #define AUDIO_64KLANG2
+#define AUDIO_BASS

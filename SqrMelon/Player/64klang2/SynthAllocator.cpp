@@ -1,3 +1,6 @@
+#include "../settings.h"
+#ifdef AUDIO_64KLANG2
+
 #include "SynthAllocator.h"
 #ifdef COMPILE_VSTI
 	#include "SynthController.h"	
@@ -73,3 +76,5 @@ void __fastcall SynthMemCopy(void* dst, void* src, int s)
 		rep movsb
 	}
 }
+
+#endif

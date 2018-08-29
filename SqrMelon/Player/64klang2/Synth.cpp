@@ -1,3 +1,6 @@
+#include "../settings.h"
+#ifdef AUDIO_64KLANG2
+
 #include "Synth.h"
 #include "SynthNode.h"
 #include "SynthAllocator.h"
@@ -751,4 +754,6 @@ bool _64klang_RenderDone()
 {
 	return renderDone;
 }
+#endif
+
 #endif

@@ -1,3 +1,6 @@
+#include "../settings.h"
+#ifdef AUDIO_64KLANG2
+
 #include "sample_t.h"
 #include "SynthNode.h"
 
@@ -340,5 +343,7 @@ sample_t s_tanh(const sample_t& x)
 {
 	return s_sinh(x) / s_cosh(x);
 }
+
+#endif
 
 #endif

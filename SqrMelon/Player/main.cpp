@@ -1,9 +1,16 @@
 #include "settings.h"
 #include <cfloat>
 #include "generated.hpp"
+#ifdef AUDIO_64KLANG2
 #include "64klang2/SynthPlayer.h"
 #include "64klang2/SynthAllocator.h"
 #include "64klang2/sample_t.h"
+#endif
+#ifdef AUDIO_BASS
+#include "bass.h"
+const float BPM = 84.0f;
+#endif
+#include <xmmintrin.h>
 
 // #define SUPPORT_3D_TEXTURE
 
@@ -14,13 +21,11 @@
 #define DEMO_HEIGHT 720
 #endif
 
-// #define NO_AUDIO
 #ifdef NO_AUDIO
 	#define BPM 124.0f
 	#define START_BEAT 0.0f
 	#define SPEED 1.0f
 #endif
-
 
 extern "C"{int _fltused;}
 
@@ -128,7 +133,7 @@ float uV[16] = { 0 };
 float uFrustum[16];
 float animData[sizeof(float) * 4 * gAnimEntriesMax];
 
- bool evalDemo(float seconds, float beats, int width, int height, float deltaSeconds, bool isPrecalcStep=false)
+ bool evalDemo(float seconds, float beats, int width, int height, bool isPrecalcStep=false)
 {
 	float localBeats;
 	int shot = shotAtBeats(beats, localBeats);
@@ -303,7 +308,7 @@ DEVMODE dmScreenSettings =
 
 void main()
 {
-#ifndef NO_AUDIO
+#ifdef AUDIO_64KLANG2
 	_64klang2_Init();
 #endif
 	
@@ -346,19 +351,31 @@ void main()
 	initFrameBuffers(width, height);
 	TickLoader();
 	// precalc textures
-	evalDemo(0.0f, 0.0f, width, height, 0.0f, true);
+	evalDemo(0.0f, 0.0f, width, height, true);
 	TickLoader();
 
 #ifdef NO_AUDIO
 	start = GetTickCount();
-#else
+#endif
+
+#ifdef AUDIO_64KLANG2
 	float BPM = _64klang2_GetBPM();
 	_64klang2_Play();
 #endif
+
+#ifdef AUDIO_BASS
+	BASS_Init(-1, 44100, 0, NULL, NULL);
+	// BASS_SetVolume(1);
+	HSTREAM chan = BASS_StreamCreateFile(false, "audio.mp3", 0, 0, 0);
+	// HSTREAM chan = BASS_MusicLoad(false, "audio.wav", 0, 0, BASS_MUSIC_RAMP, 1);
+	// HSAMPLE sample = BASS_SampleLoad(false, "1.mp3", 0, 0, 1, BASS_SAMPLE_MONO);
+	// HCHANNEL channel = BASS_SampleGetChannel(sample, FALSE);
+	BASS_ChannelPlay(chan, true);
+	start = GetTickCount();
+#endif
+
 	TickLoader();
 	// end loading process
-	
-	float deltaSeconds, prevSeconds = 0.0f;
 	
 	MSG msg;
 	int safeguard = 2;
@@ -379,12 +396,17 @@ void main()
 		float seconds = (GetTickCount() - start) * 0.001f;
 		seconds *= SPEED;
 		seconds += START_BEAT / BPM * 60.0f;
-#else
+#endif
+
+#ifdef AUDIO_64KLANG2
 		float seconds = _64klang2_GetPlaybackTime();
 #endif
-		deltaSeconds = seconds - prevSeconds;
-		prevSeconds = seconds;
-		if(!evalDemo(seconds, seconds * ((float)BPM / 60.0f), width, height, deltaSeconds))
+
+#ifdef AUDIO_BASS
+		float seconds = (GetTickCount() - start) * 0.001f;
+#endif
+
+		if(!evalDemo(seconds, seconds * ((float)BPM / 60.0f), width, height))
 		{
 			break;
 		}

@@ -1,3 +1,6 @@
+#include "../settings.h"
+#ifdef AUDIO_64KLANG2
+
 // get skip node definitions in exe mode
 #ifndef COMPILE_VSTI
 	#include "64k2Patch.h"
@@ -5055,3 +5058,5 @@ void DestroyVoiceNodes(SynthNode* node)
 		SynthFree(node);
 	}
 }
+
+#endif
