@@ -296,7 +296,7 @@ class PassPool(object):
             yield '#endif\n'
             yield '\t}\n'
 
-        if constUniformData:
+        if maxConstUniforms:
             yield '\tfor(int j = 0; j < gIntData[passIndex * %s + %s]; ++j)\n\t{\n' % (3 * maxConstUniforms + 1, gPassConstUniforms)
             yield '\t\tGLint loc = glGetUniformLocation(shader, gTextPool[gIntData[passIndex * %s + %s + j * 3]]);\n' % (3 * maxConstUniforms + 1, gPassConstUniforms + 1)
             yield '\t\tconst float* ptr = &gFloatData[gIntData[passIndex * %s + %s + j * 3]];\n' % (3 * maxConstUniforms + 1, gPassConstUniforms + 2)
@@ -451,8 +451,8 @@ def run():
                         j = i % 8
                         if j == 0 or j == 4 or j > 5:
                             continue
-                        if j == 5: # out tangent y
-                            if v == float('inf'): # stepped tangents are implemented as out tangentY = positive infinity
+                        if j == 5:  # out tangent y
+                            if v == float('inf'):  # stepped tangents are implemented as out tangentY = positive infinity
                                 v = 'FLT_MAX'
                         keyframes.append(v)
                     assert len(keyframes) / 4.0 == int(len(keyframes) / 4), len(keyframes)
@@ -465,21 +465,21 @@ def run():
                 # TODO we can not / do not check if the channelStack length matches the uniform dimensions inside the shader (e.g. are we sure we're not gonna call glUniform2f for a vec3?)
                 assert None not in channelStack, 'Animation provided for multiple channels but there is one missing (Y if a vec3 or also Z if a vec4).'
 
-            shots.append((float(xShot.attrib['start']), float(xShot.attrib['end']), sceneIndex, animations))
+            shots.append((float(xShot.attrib['start']), float(xShot.attrib['end']), sceneIndex, animations, float(xShot.attrib['preroll']), float(xShot.attrib['speed'])))
 
     # sort shots by start time
     def _serializeShots(shots):
         shots.sort(key=lambda x: x[0])
-        shotTimesStart = floats.addFloats([x for shot in shots for x in (shot[0], shot[1])])
+        shotTimesStartEndPrerollSpeed = floats.addFloats([x for shot in shots for x in (shot[0], shot[1], shot[4], shot[5])])
         yield '\n\n__forceinline int shotAtBeats(float beats, float& localBeats)\n{\n'
         if len(shots) == 1:
-            yield '\tlocalBeats = beats - gFloatData[%s];\n' % shotTimesStart
+            yield '\tlocalBeats = beats - gFloatData[%s];\n' % shotTimesStartEndPrerollSpeed
             yield '\treturn 0;\n'
         else:
             yield '\tint shotTimeCursor = 0;\n'
             yield '\tdo\n\t{\n'
-            yield '\t\tif(beats < gFloatData[shotTimeCursor * 2 + %s])\n\t\t{\n' % (shotTimesStart + 1)
-            yield '\t\t\tlocalBeats = beats - gFloatData[shotTimeCursor * 2 + %s];\n' % shotTimesStart
+            yield '\t\tif(beats < gFloatData[shotTimeCursor * 4 + %s])\n\t\t{\n' % (shotTimesStartEndPrerollSpeed + 1)
+            yield '\t\t\tlocalBeats = (beats - gFloatData[shotTimeCursor * 4 + %s]) * gFloatData[shotTimeCursor * 4 + %s] - gFloatData[shotTimeCursor * 4 + %s];\n' % (shotTimesStartEndPrerollSpeed, shotTimesStartEndPrerollSpeed + 3, shotTimesStartEndPrerollSpeed + 2)
             yield '\t\t\treturn shotTimeCursor;\n'
             yield '\t\t}\n'
             yield '\t}\n\twhile(++shotTimeCursor < %s);\n' % len(shots)
