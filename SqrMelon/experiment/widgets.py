@@ -436,8 +436,21 @@ class ClipUI(QWidget):
 
         self.undoStack = undoStack
 
+    def createClipWithDefaults(self, defaultUniforms, nameSuggestion):
+        iter = -1
+        name = nameSuggestion
+        while self.manager.model().findItems(name):
+            iter += 1
+            name = nameSuggestion + str(iter)
+        clip = Clip(name, self.undoStack)
+        for curveName, value in defaultUniforms.iteritems():
+            curve = HermiteCurve(curveName, data=[HermiteKey(0.0, value, 0.0, 0.0, ETangentMode.Flat, ETangentMode.Flat)])
+            clip.curves.appendRow(curve.items)
+        self.undoStack.push(ModelEdit(self.manager.model(), [clip], []))
+
     def __createClip(self):
         result = QInputDialog.getText(self, 'Create clip', 'Clip name')
+        # TODO: ask pipeline to target (if multiple pipelines only) and then use default uniforms for it
         if not result[0] or not result[1]:
             return
         name = result[0]
@@ -445,7 +458,7 @@ class ClipUI(QWidget):
         if self.manager.model().findItems(name):
             QMessageBox.critical(self, 'Error creating clip', ' A clip named %s already exists' % name)
             return
-        clip = Clip(name)
+        clip = Clip(name, self.undoStack)
         self.undoStack.push(ModelEdit(self.manager.model(), [clip], []))
 
     def __deleteSelectedClips(self):
