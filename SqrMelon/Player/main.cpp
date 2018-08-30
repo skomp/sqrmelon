@@ -15,10 +15,10 @@ const float BPM = 84.0f;
 // #define SUPPORT_3D_TEXTURE
 
 #ifndef DEMO_WIDTH
-#define DEMO_WIDTH 1280
+#define DEMO_WIDTH 1920
 #endif
 #ifndef DEMO_HEIGHT
-#define DEMO_HEIGHT 720
+#define DEMO_HEIGHT 1080
 #endif
 
 #ifdef NO_AUDIO
@@ -344,7 +344,6 @@ void main()
 
 	TickLoader();
 
-	// TODO: put in threaded function and show loading process
 	// compile shaders
 	initPrograms();
 	// allocate frame buffers
@@ -365,11 +364,7 @@ void main()
 
 #ifdef AUDIO_BASS
 	BASS_Init(-1, 44100, 0, NULL, NULL);
-	// BASS_SetVolume(1);
 	HSTREAM chan = BASS_StreamCreateFile(false, "audio.mp3", 0, 0, 0);
-	// HSTREAM chan = BASS_MusicLoad(false, "audio.wav", 0, 0, BASS_MUSIC_RAMP, 1);
-	// HSAMPLE sample = BASS_SampleLoad(false, "1.mp3", 0, 0, 1, BASS_SAMPLE_MONO);
-	// HCHANNEL channel = BASS_SampleGetChannel(sample, FALSE);
 	BASS_ChannelPlay(chan, true);
 	start = GetTickCount();
 #endif
