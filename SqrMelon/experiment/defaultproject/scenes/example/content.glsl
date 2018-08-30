@@ -2,11 +2,14 @@ vec3 FogColor(Ray ray, float fog)
 {
     return mix(vec3(1.0), vec3(0.2), smoothstep(-0.2, 0.2, ray.direction.y));
 }
-
+uniform float uEmissiveShapeActivate;
 float fEmissive(vec3 p, out vec4 m)
 {
     m = vec4(0, 0, 0, -1);
-    return FAR;
+    if(uEmissiveShapeActivate == 0.0)
+        return FAR;
+    m.xyz = vec3(1.0, 0.5, 0.1) * uEmissiveShapeActivate;
+    return fSphere(p, 1.0);
 }
 float fEmissive(vec3 p) { vec4 m; return fEmissive(p, m); }
 
@@ -16,7 +19,12 @@ float fField(vec3 p, out vec4 m)
     vec3 op=p;
     float ir, r = fEmissive(p, m);
 
-    ir = length(p) - 0.5;
+    ir = p.y + 1.0;
+    fOpUnion(r,ir,m,vec4(p,0));
+
+    pModPolar(p.xz, 8.0);
+    p.x -= 1.5;
+    ir = fSphere(p, 0.25);
     fOpUnion(r,ir,m,vec4(p,1));
 
     return r;

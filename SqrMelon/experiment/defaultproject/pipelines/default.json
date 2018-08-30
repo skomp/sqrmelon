@@ -2746,5 +2746,23 @@
             "name": "bloom", 
             "scope": "Private"
         }
-    ]
+    ],
+    "uniforms": {
+        "uOrigin.x": 0.0,
+        "uOrigin.y": 1.0,
+        "uOrigin.z": -10.0,
+        "uAngles.x": 0.0,
+        "uAngles.y": 0.0,
+        "uAngles.z": 0.0,
+        "uFovBias": 0.22,
+        "uBlack": 0.0,
+        "uWhite": 0.0,
+        "uSaturation": 1.0,
+        "uGamma": 1.0,
+        "uGlitchAmountA": 0.0,
+        "uSharpDist": 50.0,
+        "uSharpRange": 0.0,
+        "uBlurFalloff": 500.0,
+        "uMaxBlur": 0.0
+    }
 }

@@ -2,11 +2,8 @@ uniform float uBlack = 0.0;
 uniform float uWhite = 0.0;
 
 uniform float uSaturation = 1.0;
-uniform float uLuminance = 1.0;
-uniform float uOffset = 0.0;
 uniform float uGamma = 1.0;
 
-uniform float uExposure = 0.0;
 uniform float uGlitchAmountA = 0.0;
 
 // https://knarkowicz.wordpress.com/2016/01/06/aces-filmic-tone-mapping-curve/
@@ -37,8 +34,8 @@ void main()
     vec3 color = texture(uImages[0], uv).xyz;
 
     // Black, white
-    color = mix(color, vec3(0.0), 1.0 - pow(1.0 - uBlack, 2.0));
-    color = mix(color, vec3(1.0), pow(uWhite, 2.2));
+    color = mix(color, vec3(0.0), 1.0 - sqr(max(0.0, 1.0 - uBlack)));
+    color = mix(color, vec3(1.0), sqr(max(0.0, uWhite)));
 
     // Shit film grain
     float grainAmount = 0.8;
@@ -48,10 +45,10 @@ void main()
     color *= 1.0 - grain;
 
     // additional color correction
-    color = pow(hsv2rgb(rgb2hsv(color) * vec3(1.0, uSaturation, 1.0) + vec3(0.0, 0.0, uOffset)), vec3(uGamma));
+    color = pow(hsv2rgb(rgb2hsv(color) * vec3(1.0, uSaturation, 1.0)), vec3(uGamma));
 
     // tone mapping & gamma correction
-    color = LinearToSRGB(ACESFilm(max(color * uLuminance * pow(2.0, uExposure), 0.0)));
+    color = LinearToSRGB(ACESFilm(max(color, 0.0)));
 
     outColor0 = vec4(color,1.0);
 }

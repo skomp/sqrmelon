@@ -7,5 +7,8 @@
     "rx": 0.0,
     "ry": 0.0,
     "rz": 0.0
+  },
+  "uniforms": {
+    "uEmissiveShapeActivate": 1.0
   }
 }
