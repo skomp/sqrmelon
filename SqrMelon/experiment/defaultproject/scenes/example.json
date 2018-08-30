@@ -8,7 +8,7 @@
     "ry": 0.0,
     "rz": 0.0
   },
-  "uniforms": {
+  "channels": {
     "uEmissiveShapeActivate": 1.0
   }
 }

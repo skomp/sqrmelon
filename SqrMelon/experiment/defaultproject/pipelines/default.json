@@ -16,15 +16,15 @@
             "stitches": [
                 {
                     "name": "header",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "noiselib",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "sdf",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "lensdirt",
@@ -72,7 +72,7 @@
             "stitches": [
                 {
                     "name": "header",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "settings",
@@ -80,11 +80,11 @@
                 },
                 {
                     "name": "noiselib",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "sdf",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "lighting",
@@ -127,15 +127,15 @@
             "stitches": [
                 {
                     "name": "header",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "noiselib",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "noise",
-                    "scope": "Private"
+                    "scope": "Public"
                 }
             ],
             "x": 24,
@@ -182,7 +182,7 @@
             "stitches": [
                 {
                     "name": "header",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "settings",
@@ -190,11 +190,11 @@
                 },
                 {
                     "name": "noiselib",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "sdf",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "lighting",
@@ -429,7 +429,7 @@
             "stitches": [
                 {
                     "name": "header",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "settings",
@@ -470,7 +470,7 @@
             "stitches": [
                 {
                     "name": "header",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "settings",
@@ -478,11 +478,11 @@
                 },
                 {
                     "name": "noiselib",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "sdf",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "prefxoverlay",
@@ -611,15 +611,15 @@
             "stitches": [
                 {
                     "name": "header",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "noiselib",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "sdf",
-                    "scope": "Private"
+                    "scope": "Public"
                 },
                 {
                     "name": "present",
@@ -1891,7 +1891,7 @@
             "y": 270
         }
     ],
-    "uniforms": {
+    "channels": {
         "uOrigin.x": 0.0,
         "uOrigin.y": 1.0,
         "uOrigin.z": -10.0,
