@@ -93,6 +93,9 @@ def run():
     clips.manager.model().appendRow(clip0.items)
     clips.manager.model().appendRow(clip1.items)
 
+    scenelist = SceneList()
+    scenelist.requestCreateClip.connect(clips.createClipWithDefaults)
+
     timer = Time()
     curveUI = CurveUI(timer, clips.manager.selectionChange, clips.manager.firstSelectedItem, eventManager.firstSelectedEventWithClip, undoStack)
     eventManager.selectionChange.connect(functools.partial(eventChanged, eventManager, curveUI))
@@ -119,7 +122,7 @@ def run():
     mainWindow.createDockWidget(shotManager, name='Shots')
     mainWindow.createDockWidget(eventManager, name='Events')
     mainWindow.createDockWidget(eventTimeline)
-    mainWindow.createDockWidget(SceneList())
+    mainWindow.createDockWidget(scenelist)
     mainWindow.createDockWidget(camera)
     mainWindow.createDockWidget(view)
 
