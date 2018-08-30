@@ -5,12 +5,12 @@ from model import Node
 def deserializePipeline(filePath):
     with open(filePath) as fileHandle:
         data = json.load(fileHandle)
-    data['graph'] = graphFromJson(data)
+    data['graph'] = graphFromJson(data['graph'])
     return data
 
 
 def serializePipeline(filePath, graph, uniforms):
-    with open(filePath) as fileHandle:
+    with open(filePath, 'w') as fileHandle:
         data = {'graph': graphToJson(graph),
                 'uniforms': uniforms}
         json.dump(data, fileHandle, indent=4, sort_keys=True)
@@ -24,11 +24,11 @@ def graphFromJson(data):
         for plug in node.inputs:
             for i, connection in enumerate(plug.connections):
                 id, portName = connection.split('.', 1)
-                plug.connections[i] = Node.idLut[id].findOutput(portName)
+                plug.connections[i] = Node.idLut[int(id)].findOutput(portName)
         for plug in node.outputs:
             for i, connection in enumerate(plug.connections):
                 id, portName = connection.split('.', 1)
-                plug.connections[i] = Node.idLut[id].findInput(portName)
+                plug.connections[i] = Node.idLut[int(id)].findInput(portName)
     return nodes
 
 

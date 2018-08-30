@@ -24,8 +24,8 @@ class Stitch(object):
         self.scope = scope
 
     def toJson(self):
-        return {'name', self.name,
-                'scope', str(self.scope)}
+        return {'name': self.name,
+                'scope': str(self.scope)}
 
     @classmethod
     def fromJson(cls, data):
@@ -54,7 +54,7 @@ class Plug(object):
 
     def toJson(self):
         return {'name': self.name,
-                'connections': tuple('%s.%s' % (connection.parent.id, connection.name) for connection in self.connections)}
+                'connections': tuple('%s.%s' % (connection.node.id, connection.name) for connection in self.connections)}
 
     @classmethod
     def fromJson(cls, data):
@@ -97,6 +97,16 @@ class Node(object):
             plug.node = self
 
         self.layout()
+
+    def findInput(self, name):
+        for input in self.inputs:
+            if input.name == name:
+                return input
+
+    def findOutput(self, name):
+        for output in self.outputs:
+            if output.name == name:
+                return output
 
     @property
     def id(self):
