@@ -1,10 +1,10 @@
+from glutil import *
 import json
 from buffers import Texture
 from experiment.projectutil import pipelineFolder, scenesFolder, SCENE_EXT
-from experiment.renderpipeline.fileio import deserializeGraph
+from experiment.renderpipeline.fileio import deserializePipeline
 from experiment.renderpipeline.model import EStitchScope
 from experiment.util import FileSystemWatcher2
-from glutil import *
 
 
 class Pipeline(PooledResource):
@@ -22,27 +22,40 @@ class Pipeline(PooledResource):
         self.watcher.fileChanged.connect(self.invalidate)
 
         self.__tail = None
+        self.__uniforms = None
 
     def invalidate(self, changedPath):
         self.__tail = None
+        self.__uniforms = None
+
+    def __reloadInternalData(self):
+        # load graph
+        pipelineFile = self.pipelineDir + '.json'
+        with open(pipelineFile) as fh:
+            data = deserializePipeline(fh)
+        graph = data['graph']
+        self.__uniforms = data['uniforms']
+        # find a node with outputs that are not connected
+        for node in graph:
+            for output in node.outputs:
+                if not output.connections:
+                    self.__tail = node
+                    break
+            else:
+                continue
+            break
+        assert self.__tail
+
+    @property
+    def uniforms(self):
+        if self.__uniforms is None:
+            self.__reloadInternalData()
+        return self.__uniforms
 
     @property
     def tail(self):
         if self.__tail is None:
-            # load graph
-            pipelineFile = self.pipelineDir + '.json'
-            with open(pipelineFile) as fh:
-                graph = deserializeGraph(fh)
-            # find a node with outputs that are not connected
-            for node in graph:
-                for output in node.outputs:
-                    if not output.connections:
-                        self.__tail = node
-                        break
-                else:
-                    continue
-                break
-        assert self.__tail
+            self.__reloadInternalData()
         return self.__tail
 
 

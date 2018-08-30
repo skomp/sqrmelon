@@ -4,7 +4,7 @@ from commands import AddNode, DeleteNode
 from model import Node
 from utils import menuAction
 from widgets import NodeView, NodeSettings
-from fileio import deserializeGraph, serializeGraph
+from fileio import serializePipeline, deserializePipeline
 
 
 class RenderPipelineEditor(QMainWindowState):
@@ -45,7 +45,7 @@ class RenderPipelineEditor(QMainWindowState):
         result = QInputDialog.getText(self, 'Create node', 'Name')
         if not result[0] or not result[1]:
             return
-        node = Node(result[0], 0, 0)
+        node = Node(result[0])
         node.layout()
         self.__undoStack.push(AddNode(self.__view.graph, node, self.repaint))
 
@@ -57,8 +57,7 @@ class RenderPipelineEditor(QMainWindowState):
         result = self.currentGraphFile()
         if not result:
             return
-        with open(result, 'w') as fh:
-            serializeGraph(self.__view.graph, fh)
+        serializePipeline(result, self.__view.graph, self.__uniforms)
         QMessageBox.information(self, 'Save successful', 'Saved %s' % result)
 
     def __open(self):
@@ -67,8 +66,9 @@ class RenderPipelineEditor(QMainWindowState):
             return
         self.__undoStack.clear()
         self.__currentGraphFile = result
-        with open(result) as fh:
-            self.__view.graph = deserializeGraph(fh)
+        data = deserializePipeline(result)
+        self.__view.graph = data['graph']
+        self.__uniforms = data['uniforms']
         self.__view.repaint()
 
     def currentGraphFile(self):

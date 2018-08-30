@@ -1,7 +1,4 @@
-from serializable import AtomSerializable
-
-
-class Enum(AtomSerializable):
+class Enum(object):
     def __init__(self, label):
         if isinstance(label, basestring):
             assert label in self.options()
@@ -28,10 +25,3 @@ class Enum(AtomSerializable):
     @staticmethod
     def options():
         raise NotImplementedError()
-
-    @classmethod
-    def fromAtom(cls, data):
-        return cls(data)
-
-    def toAtom(self):
-        return self.__label

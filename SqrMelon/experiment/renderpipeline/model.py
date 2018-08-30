@@ -1,7 +1,6 @@
 from qtutil import *
 from experiment.enum import Enum
 from utils import lerp
-from experiment.serializable import Serializable, AtomSerializable
 
 
 class EStitchScope(Enum):
@@ -19,29 +18,27 @@ EStitchScope.Public = EStitchScope('Public')
 EStitchScope.Private = EStitchScope('Private')
 
 
-class Stitch(Serializable):
-    def initialize(self, name, scope=EStitchScope.Public):
+class Stitch(object):
+    def __init__(self, name, scope=EStitchScope.Public):
         self.name = name
         self.scope = scope
 
+    def toJson(self):
+        return {'name', self.name,
+                'scope', str(self.scope)}
+
     @classmethod
-    def serializableProperties(cls):
-        yield 'name'
-        yield 'scope', EStitchScope
+    def fromJson(cls, data):
+        return cls(data['name'], EStitchScope(data['scope']))
 
 
-class Plug(Serializable):
-    def initialize(self, name, node):
+class Plug(object):
+    def __init__(self, name, node, connections=tuple()):
         self.name = name
         self.node = node
-        self.connections = []
+        self.connections = list(connections)
         self._portRect = None
         self._textRect = None
-
-    @classmethod
-    def serializableProperties(cls):
-        yield 'name'
-        yield 'connections'
 
     @property
     def portRect(self):
@@ -55,46 +52,80 @@ class Plug(Serializable):
         painter.drawEllipse(self._portRect)
         painter.drawText(self._textRect, Qt.AlignRight | Qt.AlignTop, self.name)
 
+    def toJson(self):
+        return {'name': self.name,
+                'connections': tuple('%s.%s' % (connection.parent.id, connection.name) for connection in self.connections)}
+
+    @classmethod
+    def fromJson(cls, data):
+        return cls(data['name'], None, data['connections'])
+
 
 class OutputPlug(Plug):
-    def initialize(self, name, node, size=-1):
-        super(OutputPlug, self).initialize(name, node)
+    def __init__(self, name, node, size=-1, connections=tuple()):
+        super(OutputPlug, self).__init__(name, node, connections)
         # if size is negative it is a factor of the screen resolution
         self.size = size
 
+    def toJson(self):
+        data = super(OutputPlug, self).toJson()
+        data['size'] = self.size
+        return data
+
     @classmethod
-    def serializableProperties(cls):
-        yield 'name'
-        yield 'size'
-        yield 'connections'
+    def fromJson(cls, data):
+        return cls(data['name'], None, data['size'], data['connections'])
 
 
-class Node(Serializable):
-    def initialize(self, name, x=0, y=0):
+class Node(object):
+    # serialization utility, cleared before saving graph
+    idLut = {}
+
+    def __init__(self, name, x=0, y=0, inputs=tuple(), outputs=tuple(), stitches=tuple()):
         self.name = name
         self.x = x
         self.y = y
         self._rect = None
         self._contentRect = None
-        self.inputs = []
-        self.outputs = []
-        self.stitches = []
+        self.inputs = list(inputs)
+        self.outputs = list(outputs)
+        self.stitches = list(stitches)
 
-    def postInitialize(self):
-        self.layout()
         for plug in self.inputs:
             plug.node = self
         for plug in self.outputs:
             plug.node = self
 
+        self.layout()
+
+    @property
+    def id(self):
+        # serialization utility
+        id = Node.idLut.get(self, None)
+        if id is None:
+            id = len(Node.idLut)
+            Node.idLut[self] = id
+        return id
+
+    def toJson(self):
+        return {'name': self.name,
+                'id': self.id,
+                'x': self.x,
+                'y': self.y,
+                'inputs': tuple(input.toJson() for input in self.inputs),
+                'outputs': tuple(output.toJson() for output in self.outputs),
+                'stitches': tuple(stitch.toJson() for stitch in self.stitches)}
+
     @classmethod
-    def serializableProperties(cls):
-        yield 'name'
-        yield 'x'
-        yield 'y'
-        yield 'inputs'
-        yield 'outputs'
-        yield 'stitches'
+    def fromJson(cls, data):
+        node = cls(data['name'],
+                   data['x'],
+                   data['y'],
+                   tuple(Plug.fromJson(input) for input in data['inputs']),
+                   tuple(OutputPlug.fromJson(input) for input in data['outputs']),
+                   tuple(Stitch.fromJson(input) for input in data['stitches']))
+        Node.idLut[data['id']] = node
+        return node
 
     def setName(self, name):
         self.name = name
