@@ -1,6 +1,7 @@
+import functools
 import json
 import fileutil
-from experiment.projectutil import pipelineFolder, sceneStitchesSource, scenesFolder, iterPipelineNames, sceneStitches, publicStitches, iterSceneNames
+from experiment.projectutil import pipelineFolder, scenesFolder, iterPipelineNames, iterSceneStitches, iterSceneNames, SCENE_EXT, sceneDefaultChannels, iterPublicStitches
 from qtutil import *
 import icons
 from send2trash import send2trash
@@ -10,6 +11,7 @@ import subprocess
 class SceneList(QWidget):
     currentChanged = pyqtSignal(QStandardItem)
     requestCreateShot = pyqtSignal(str)
+    requestCreateClip = pyqtSignal(dict, str)
 
     def __init__(self):
         super(SceneList, self).__init__()
@@ -46,14 +48,14 @@ class SceneList(QWidget):
 
         self.view.setContextMenuPolicy(Qt.CustomContextMenu)
         self.view.customContextMenuRequested.connect(self.__contextMenu)
+
         self.contextMenu = QMenu()
-        action = self.contextMenu.addAction('Show in explorer')
-        action.triggered.connect(self.__showInExplorer)
-        # action = self.contextMenu.addAction('Create shot')
-        # action.triggered.connect(self.__createShot)
-        self.__contextMenuItem = None
 
         self.updateWithCurrentProject()
+
+    def __requestClip(self, item, isMaster=False):
+        sceneName = item.text()
+        self.requestCreateClip.emit(sceneDefaultChannels(sceneName, isMaster), sceneName)
 
     def selectSceneWithName(self, name):
         items = self.view.model().findItems(name)
@@ -61,36 +63,32 @@ class SceneList(QWidget):
             self.view.setExpanded(items[0].index(), True)
             self.view.selectionModel().select(items[0].index(), QItemSelectionModel.ClearAndSelect)
 
-    # def __createShot(self):
-    #    for idx in self.view.selectionModel().selectedIndexes():
-    #        item = self.view.model().itemFromIndex(idx)
-    #        self.requestCreateShot.emit(item.text())
-    #        return
-
     def __contextMenu(self, pos):
         index = self.view.indexAt(pos)
         if not index.isValid():
             return
         item = self.view.model().itemFromIndex(index)
-        self.__contextMenuItem = item
+
+        self.contextMenu.clear()
+        action = self.contextMenu.addAction('Show in explorer')
+        action.triggered.connect(functools.partial(self.__showInExplorer, item))
+
+        if not item.parent() and item.text()[0] != ':':
+            action = self.contextMenu.addAction('Create clip')
+            action.triggered.connect(functools.partial(self.__requestClip, item))
+            action = self.contextMenu.addAction('Create master clip')
+            action.triggered.connect(functools.partial(self.__requestClip, item, True))
+
         self.contextMenu.popup(self.view.mapToGlobal(pos))
 
-    def __itemPath(self, item):
-        if item.parent():
-            return os.path.join(scenesFolder(), item.parent().text(), item.text() + '.glsl')
-        else:
-            return os.path.join(scenesFolder(), item.text())
-
-    def __showInExplorer(self):
-        if self.__contextMenuItem is None:
-            return
-        subprocess.Popen('explorer /select,"%s"' % self.__itemPath(self.__contextMenuItem))
+    def __showInExplorer(self, item):
+        subprocess.Popen('explorer /select,"%s"' % item.data())
 
     def __onOpenFile(self, current):
         if not current.parent().isValid():
             return
         item = self.view.model().itemFromIndex(current)
-        os.startfile(self.__itemPath(item))
+        os.startfile(item.data())
 
     def __onCurrentChanged(self, current, __):
         if not current.parent().isValid():
@@ -122,7 +120,8 @@ class SceneList(QWidget):
     def initShared(self):
         for pipelineName in iterPipelineNames():
             item = QStandardItem(':' + pipelineName)
-            filtered = {path.lower(): path for path in publicStitches(pipelineName)}
+            item.setData(os.path.join(pipelineFolder(), pipelineName))
+            filtered = {path.lower(): path for path in iterPublicStitches(pipelineName)}
             allPaths = (filtered[key] for key in sorted(filtered.keys()))
             for path in allPaths:
                 name = os.path.splitext(os.path.basename(path))[0]
@@ -134,8 +133,9 @@ class SceneList(QWidget):
 
     def appendSceneItem(self, sceneName):
         item = QStandardItem(sceneName)
+        item.setData(os.path.join(scenesFolder(), sceneName))
         self.view.model().appendRow(item)
-        filtered = {path.lower(): path for path in sceneStitches(sceneName)}
+        filtered = {path.lower(): path for path in iterSceneStitches(sceneName)}
         allPaths = (filtered[key] for key in sorted(filtered.keys()))
         for path in allPaths:
             name = os.path.splitext(os.path.basename(path))[0]
@@ -185,7 +185,7 @@ class SceneList(QWidget):
 
         # create files required per-scene as defined by the pipeline
         srcDir = os.path.join(pipelineFolder(), pipeline)
-        for sitchName in sceneStitchesSource(pipeline):
+        for sitchName in sceneStitchNames(pipeline):
             # read source data if any
             src = os.path.join(srcDir, sitchName + '.glsl')
             text = ''
