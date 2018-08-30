@@ -1,18 +1,19 @@
 import json
+from collections import OrderedDict
 from model import Node
 
 
 def deserializePipeline(filePath):
     with open(filePath) as fileHandle:
-        data = json.load(fileHandle)
+        data = json.load(fileHandle, object_pairs_hook=OrderedDict)
     data['graph'] = graphFromJson(data['graph'])
     return data
 
 
-def serializePipeline(filePath, graph, uniforms):
+def serializePipeline(filePath, graph, channels):
     with open(filePath, 'w') as fileHandle:
         data = {'graph': graphToJson(graph),
-                'uniforms': uniforms}
+                'channels': channels}
         json.dump(data, fileHandle, indent=4, sort_keys=True)
 
 

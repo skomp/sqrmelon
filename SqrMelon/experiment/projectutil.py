@@ -1,7 +1,8 @@
-import json
-
+# TODO: File contains recursive dependency to experiment/render.py, should restructure...
+from experiment.renderpipeline.model import EStitchScope
 from qtutil import *
 
+PIPELINE_EXT = '.json'
 SCENE_EXT = '.json'
 
 
@@ -20,8 +21,8 @@ def pipelineFolder():
 
 def iterPipelineNames():
     for name in os.listdir(pipelineFolder()):
-        if name.endswith('.json'):
-            yield name[:-len('.json')]
+        if name.endswith(PIPELINE_EXT):
+            yield name[:-len(PIPELINE_EXT)]
 
 
 def scenesFolder():
@@ -30,28 +31,43 @@ def scenesFolder():
 
 def iterSceneNames():
     for name in os.listdir(scenesFolder()):
-        if name.endswith('.json'):
-            yield name[:-len('.json')]
+        if name.endswith(SCENE_EXT):
+            yield name[:-len(SCENE_EXT)]
 
 
-def _iterStitches(pipelineName, key):
-    with open(os.path.join(pipelineFolder(), pipelineName + '.json')) as fh:
-        data = json.load(fh)['graph']
-    for entry in data:
-        if entry['__class__'] == 'Stitch' and entry['scope'] == key:
-            yield entry['name']
+def pipelineDefaultChannels(pipelineName):
+    from render import Pipeline, Scene
+    return Pipeline.pool(pipelineName).channels
 
 
-def publicStitches(pipelineName):
-    return set(_iterStitches(pipelineName, 'Public'))
+def _iterStitches(pipelineName, scope):
+    from render import Pipeline, Scene
+    for stitchName in Pipeline.pool(pipelineName).iterStitchNames(scope):
+        yield stitchName
 
 
-def sceneStitchesSource(pipelineName):
-    return set(_iterStitches(pipelineName, 'Scene'))
+def iterPublicStitches(pipelineName):
+    folder = os.path.join(pipelineFolder(), pipelineName)
+    for stitchName in _iterStitches(pipelineName, EStitchScope.Public):
+        yield os.path.join(folder, stitchName + '.glsl')
 
 
-def sceneStitches(sceneName):
-    with open(os.path.join(scenesFolder(), sceneName + '.json')) as fh:
-        data = json.load(fh)
-    pipelineName = data['pipeline']
-    return set(_iterStitches(pipelineName, 'Scene'))
+def sceneStitchNames(pipelineName):
+    return set(_iterStitches(pipelineName, EStitchScope.Scene))
+
+
+def iterSceneStitches(sceneName):
+    from render import Pipeline, Scene
+    folder = os.path.join(scenesFolder(), sceneName)
+    for stitchName in Scene.pool(sceneName).pipeline.iterStitchNames(EStitchScope.Scene):
+        yield os.path.join(folder, stitchName + '.glsl')
+
+
+def sceneDefaultChannels(sceneName, includePipelineUniforms=False):
+    from render import Pipeline, Scene
+    scene = Scene.pool(sceneName)
+    if not includePipelineUniforms:
+        return scene.channels.copy()
+    result = scene.pipeline.channels.copy()
+    result.update(scene.channels.copy())
+    return result

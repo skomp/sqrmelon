@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from qtutil import *
 from experiment.enum import Enum
 from utils import lerp
@@ -24,8 +25,8 @@ class Stitch(object):
         self.scope = scope
 
     def toJson(self):
-        return {'name': self.name,
-                'scope': str(self.scope)}
+        return OrderedDict([('name', self.name),
+                            ('scope', str(self.scope))])
 
     @classmethod
     def fromJson(cls, data):
@@ -53,8 +54,8 @@ class Plug(object):
         painter.drawText(self._textRect, Qt.AlignRight | Qt.AlignTop, self.name)
 
     def toJson(self):
-        return {'name': self.name,
-                'connections': tuple('%s.%s' % (connection.node.id, connection.name) for connection in self.connections)}
+        return OrderedDict([('name', self.name),
+                            ('connections', tuple('%s.%s' % (connection.node.id, connection.name) for connection in self.connections))])
 
     @classmethod
     def fromJson(cls, data):
@@ -118,13 +119,13 @@ class Node(object):
         return id
 
     def toJson(self):
-        return {'name': self.name,
-                'id': self.id,
-                'x': self.x,
-                'y': self.y,
-                'inputs': tuple(input.toJson() for input in self.inputs),
-                'outputs': tuple(output.toJson() for output in self.outputs),
-                'stitches': tuple(stitch.toJson() for stitch in self.stitches)}
+        return OrderedDict([('name', self.name),
+                            ('id', self.id),
+                            ('x', self.x),
+                            ('y', self.y),
+                            ('inputs', tuple(input.toJson() for input in self.inputs)),
+                            ('outputs', tuple(output.toJson() for output in self.outputs)),
+                            ('stitches', tuple(stitch.toJson() for stitch in self.stitches))])
 
     @classmethod
     def fromJson(cls, data):

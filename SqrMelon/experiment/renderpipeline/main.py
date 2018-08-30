@@ -57,7 +57,7 @@ class RenderPipelineEditor(QMainWindowState):
         result = self.currentGraphFile()
         if not result:
             return
-        serializePipeline(result, self.__view.graph, self.__uniforms)
+        serializePipeline(result, self.__view.graph, self.__channels)
         QMessageBox.information(self, 'Save successful', 'Saved %s' % result)
 
     def __open(self):
@@ -68,7 +68,7 @@ class RenderPipelineEditor(QMainWindowState):
         self.__currentGraphFile = result
         data = deserializePipeline(result)
         self.__view.graph = data['graph']
-        self.__uniforms = data['uniforms']
+        self.__channels = data['channels']
         self.__view.repaint()
 
     def currentGraphFile(self):

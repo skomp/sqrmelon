@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from glutil import *
 import json
 from buffers import Texture
@@ -21,22 +22,31 @@ class Pipeline(PooledResource):
         self.watcher = FileSystemWatcher2([pipelineFile])
         self.watcher.fileChanged.connect(self.invalidate)
 
+        self.__graph = None
         self.__tail = None
-        self.__uniforms = None
+        self.__channels = None
 
     def invalidate(self, changedPath):
+        self.__graph = None
         self.__tail = None
-        self.__uniforms = None
+        self.__channels = None
+
+    def iterStitchNames(self, scope):
+        if self.__graph is None:
+            self.__reloadInternalData()
+        for node in self.__graph:
+            for stitch in node.stitches:
+                if stitch.scope == scope:
+                    yield stitch.name
 
     def __reloadInternalData(self):
         # load graph
         pipelineFile = self.pipelineDir + '.json'
-        with open(pipelineFile) as fh:
-            data = deserializePipeline(fh)
-        graph = data['graph']
-        self.__uniforms = data['uniforms']
+        data = deserializePipeline(pipelineFile)
+        self.__graph = data['graph']
+        self.__channels = data['channels']
         # find a node with outputs that are not connected
-        for node in graph:
+        for node in self.__graph:
             for output in node.outputs:
                 if not output.connections:
                     self.__tail = node
@@ -47,10 +57,10 @@ class Pipeline(PooledResource):
         assert self.__tail
 
     @property
-    def uniforms(self):
-        if self.__uniforms is None:
+    def channels(self):
+        if self.__channels is None:
             self.__reloadInternalData()
-        return self.__uniforms
+        return self.__channels
 
     @property
     def tail(self):
@@ -137,14 +147,21 @@ class Scene(PooledResource):
         self.changed = Signal()
 
         self.sceneDir = os.path.join(scenesFolder(), name)
+        # TODO: pool the scene file and watch for file changes ? probably not needed once channels can be edited from the UI
         with open(self.sceneDir + SCENE_EXT) as fh:
-            self.pipeline = Pipeline.pool(json.load(fh)['pipeline'])
+            data = json.load(fh, object_pairs_hook=OrderedDict)
+            self.__channels = data['channels']
+            self.pipeline = Pipeline.pool(data['pipeline'])
 
         self.pipeline.watcher.fileChanged.connect(self.__pipelineChanged)
 
         self.watcher = FileSystemWatcher2([])
         self.watcher.fileChanged.connect(self.emitChanged)
         self.__shaderCache = {}
+
+    @property
+    def channels(self):
+        return self.__channels
 
     def emitChanged(self, *args):
         self.changed.emit()
