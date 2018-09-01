@@ -1,6 +1,8 @@
 import functools
 import json
 import fileutil
+from experiment.demomodel import CreateShotDialog
+from experiment.model import Shot
 from experiment.projectutil import pipelineFolder, scenesFolder, iterPipelineNames, iterSceneStitches, iterSceneNames, SCENE_EXT, sceneDefaultChannels, iterPublicStitches, sceneStitchNames
 from qtutil import *
 import icons
@@ -10,11 +12,13 @@ import subprocess
 
 class SceneList(QWidget):
     currentChanged = pyqtSignal(QStandardItem)
-    requestCreateShot = pyqtSignal(str)
+    requestCreateShot = pyqtSignal(Shot)
     requestCreateClip = pyqtSignal(dict, str)
 
-    def __init__(self):
+    def __init__(self, timer):
         super(SceneList, self).__init__()
+
+        self.timer = timer
 
         main = vlayout()
         self.setLayout(main)
@@ -58,7 +62,9 @@ class SceneList(QWidget):
         self.requestCreateClip.emit(sceneDefaultChannels(sceneName, isMaster), sceneName)
 
     def __requestShot(self, item):
-        self.requestCreateShot.emit(item.text())
+        shot = CreateShotDialog.run(self.timer.time, item.text(), self)
+        if shot:
+            self.requestCreateShot.emit(shot)
 
     def selectSceneWithName(self, name):
         items = self.view.model().findItems(name)

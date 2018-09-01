@@ -5,6 +5,7 @@ from experiment.actions import KeyEdit, ModelEdit
 from experiment.curvemodel import HermiteCurve, ETangentMode, ELoopMode, HermiteKey, EInsertMode
 from experiment.curveview import CurveView
 from experiment.delegates import UndoableSelectionView
+from experiment.demomodel import CreateShotDialog
 from experiment.model import Shot, Clip, Event
 from experiment.modelbase import UndoableModel
 from qtutil import *
@@ -351,6 +352,9 @@ class EventModel(NamedProxyModel):
 
 
 class FilteredView(UndoableSelectionView):
+    # TODO: Can not edit multiple elements at the same time, event when selecting multiple rows and using e.g. F2 to edit the item.
+    # Override edit as described here https://stackoverflow.com/questions/14586715/how-can-i-achieve-to-update-multiple-rows-in-a-qtableview ?
+
     def __init__(self, undoStack, model, parent=None):
         super(FilteredView, self).__init__(undoStack, parent)
         self.setModel(model)
@@ -483,3 +487,50 @@ class ClipUI(QWidget):
         if not rows:
             return
         self.undoStack.push(ModelEdit(self.manager.model(), [], rows))
+
+
+class ShotManager(QWidget):
+    def __init__(self, undoStack, demoModel, timer, parent=None):
+        super(ShotManager, self).__init__(parent)
+        self.timer = timer
+
+        layout = vlayout()
+        self.setLayout(layout)
+
+        toolBar = hlayout()
+        layout.addLayout(toolBar)
+
+        createShot = QPushButton(icons.get('Film Strip Create-48'), '')
+        toolBar.addWidget(createShot)
+        createShot.setToolTip('Create shot')
+        createShot.setStatusTip('Create shot')
+
+        deleteShot = QPushButton(icons.get('Film Strip Delete-48'), '')
+        toolBar.addWidget(deleteShot)
+        deleteShot.setToolTip('Delete selected shots')
+        deleteShot.setStatusTip('Delete selected shots')
+
+        toolBar.addStretch(1)
+
+        self.undoStack = undoStack
+        self.view = FilteredView(undoStack, ShotModel(demoModel))
+        self.view.model().appendRow(Shot('New Shot', 'example', 0.0, 4.0, 0).items)
+        layout.addWidget(self.view)
+        layout.setStretch(1, 1)
+
+        deleteShot.clicked.connect(self.deleteSelectedShots)
+        createShot.clicked.connect(self.createShot)
+
+    def createShot(self):
+        shot = CreateShotDialog.run(self.timer.time, None, self)
+        if shot is not None:
+            model = self.view.model().sourceModel()
+            self.undoStack.push(ModelEdit(model, [shot], []))
+
+    def deleteSelectedShots(self):
+        pyObjs = set()
+        for idx in self.view.selectionModel().selectedIndexes():
+            pyObjs.add(idx.sibling(idx.row(), 0).data(Qt.UserRole + 1))
+        for pyObj in pyObjs:
+            model = self.view.model().sourceModel()
+            self.undoStack.push(ModelEdit(model, [], [pyObj.items[0].row()]))

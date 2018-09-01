@@ -1,57 +1,19 @@
-# TODO: Delete shots and events (Delete key when focus is on timeline and Delete buttons above the filtered views)
+# TODO: Press F and A to frame selection / all in timeline view
+# TODO: Delete shots and events from TimelineView with keyboard
 # TODO: Loop range and curve editor time changes are incorrect
 import functools
+import icons
+from experiment.demomodel import DemoModel
 from view3d import View3D
-from experiment.modelbase import UndoableModel
-from experiment.render import Scene
 from experiment.scenelist import SceneList
 from qtutil import *
 from experiment.curvemodel import HermiteCurve, HermiteKey, ELoopMode
-from experiment.model import Clip, Shot, Event
+from experiment.model import Clip, Event
 from experiment.timelineview import TimelineView
 from experiment.timer import Time
-from experiment.widgets import CurveUI, EventModel, ShotModel, FilteredView, ClipUI, EventView
+from experiment.widgets import CurveUI, EventModel, ClipUI, EventView, ShotManager
 from experiment.projectutil import settings
 from experiment.camerawidget import Camera
-
-
-class DemoModel(UndoableModel):
-    def createShot(self, timer, sceneName):
-        # TODO: make undoable
-        time = timer.time
-        self.appendRow(Shot(sceneName, sceneName, time, time + 8.0).items)
-
-    def createEvent(self, timer, clip):
-        # TODO: make undoable
-        time = timer.time
-        self.appendRow(Event(clip.name, clip, time, time + 8.0).items)
-
-    def evaluate(self, time):
-        # type: (float) -> (Scene, Dict[str, float])
-        # find things at this time
-        visibleShot = None
-        activeEvents = []
-        for row in xrange(self.rowCount()):
-            pyObj = self.item(row).data()
-            if pyObj.start <= time <= pyObj.end:
-                if isinstance(pyObj, Shot):
-                    if visibleShot is None or pyObj.track < visibleShot.track:
-                        visibleShot = pyObj
-                if isinstance(pyObj, Event):
-                    activeEvents.append(pyObj)
-        scene = None
-        if visibleShot:
-            scene = visibleShot.scene
-
-        # sort events by inverse priority
-        activeEvents.sort(key=lambda x: -x.track)
-
-        # evaluate and overwrite (because things with priority are evaluated last)
-        evaluatedData = {}
-        for event in activeEvents:
-            evaluatedData.update(event.evaluate(time))
-
-        return scene, evaluatedData
 
 
 def evalCamera(camera, model, timer):
@@ -83,10 +45,14 @@ def run():
 
     demoModel = DemoModel(undoStack)
 
-    # TODO: Can not edit multiple elements at the same time, event when selecting multiple rows and using e.g. F2 to edit the item.
-    # Override edit as described here https://stackoverflow.com/questions/14586715/how-can-i-achieve-to-update-multiple-rows-in-a-qtableview ?
-    shotManager = FilteredView(undoStack, ShotModel(demoModel))
-    shotManager.model().appendRow(Shot('New Shot', 'example', 0.0, 4.0, 0).items)
+    timer = Time()
+    sceneList = SceneList(timer)
+
+    shotManager = ShotManager(undoStack, demoModel, timer)
+
+    deleteEvent = QPushButton(icons.get('Curves Delete-48'), '')
+    deleteEvent.setToolTip('Delete selected events')
+    deleteEvent.setStatusTip('Delete selected events')
 
     eventManager = EventView(undoStack, EventModel(demoModel))
     eventManager.model().appendRow(Event('New event', clip0, 0.0, 4.0, 1.0, 0.0, 2).items)
@@ -94,9 +60,9 @@ def run():
     eventManager.model().appendRow(Event('New event', clip1, 1.0, 2.0, 0.5, 0.0, 1).items)
 
     # changing the model contents seems to mess with the column layout stretch
-    demoModel.rowsInserted.connect(shotManager.updateSections)
+    demoModel.rowsInserted.connect(shotManager.view.updateSections)
     demoModel.rowsInserted.connect(eventManager.updateSections)
-    demoModel.rowsRemoved.connect(shotManager.updateSections)
+    demoModel.rowsRemoved.connect(shotManager.view.updateSections)
     demoModel.rowsRemoved.connect(eventManager.updateSections)
 
     eventManager.model().appendRow(Event('New event', clip0, 2.0, 4.0, 0.25, 0.0, 1).items)
@@ -105,16 +71,14 @@ def run():
     clips.manager.model().appendRow(clip0.items)
     clips.manager.model().appendRow(clip1.items)
 
-    sceneList = SceneList()
     sceneList.requestCreateClip.connect(clips.createClipWithDefaults)
 
-    timer = Time()
-    sceneList.requestCreateShot.connect(functools.partial(demoModel.createShot, timer))
+    sceneList.requestCreateShot.connect(demoModel.addShot)
     clips.requestEvent.connect(functools.partial(demoModel.createEvent, timer))
 
     curveUI = CurveUI(timer, clips.manager.selectionChange, clips.manager.firstSelectedItem, eventManager.firstSelectedEventWithClip, undoStack)
     eventManager.selectionChange.connect(functools.partial(eventChanged, eventManager, curveUI))
-    eventTimeline = TimelineView(timer, undoStack, demoModel, (shotManager.selectionModel(), eventManager.selectionModel()))
+    eventTimeline = TimelineView(timer, undoStack, demoModel, (shotManager.view.selectionModel(), eventManager.selectionModel()))
 
     camera = Camera()
     camera.requestAnimatedCameraPosition.connect(functools.partial(evalCamera, camera, demoModel, timer))
