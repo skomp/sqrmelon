@@ -12,6 +12,7 @@ class SceneList(QWidget):
     currentChanged = pyqtSignal(QStandardItem)
     requestCreateShot = pyqtSignal(str)
     requestCreateClip = pyqtSignal(dict, str)
+    requestCreateShot = pyqtSignal(str)
 
     def __init__(self):
         super(SceneList, self).__init__()
@@ -56,6 +57,8 @@ class SceneList(QWidget):
     def __requestClip(self, item, isMaster=False):
         sceneName = item.text()
         self.requestCreateClip.emit(sceneDefaultChannels(sceneName, isMaster), sceneName)
+    def __requestShot(self, item):
+        self.requestCreateShot.emit(item.text())
 
     def selectSceneWithName(self, name):
         items = self.view.model().findItems(name)
@@ -78,6 +81,8 @@ class SceneList(QWidget):
             action.triggered.connect(functools.partial(self.__requestClip, item))
             action = self.contextMenu.addAction('Create master clip')
             action.triggered.connect(functools.partial(self.__requestClip, item, True))
+            action = self.contextMenu.addAction('Create shot')
+            action.triggered.connect(functools.partial(self.__requestShot, item))
 
         self.contextMenu.popup(self.view.mapToGlobal(pos))
 

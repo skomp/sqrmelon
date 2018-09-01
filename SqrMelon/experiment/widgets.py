@@ -6,6 +6,7 @@ from experiment.curvemodel import HermiteCurve, ETangentMode, ELoopMode, Hermite
 from experiment.curveview import CurveView
 from experiment.delegates import UndoableSelectionView
 from experiment.model import Shot, Clip, Event
+from experiment.modelbase import UndoableModel
 from qtutil import *
 
 
@@ -386,7 +387,7 @@ class EventView(FilteredView):
 class ClipManager(UndoableSelectionView):
     def __init__(self, selectionChange, firstSelectedEvent, undoStack, parent=None):
         super(ClipManager, self).__init__(undoStack, parent)
-        self.setModel(QStandardItemModel())
+        self.setModel(UndoableModel(undoStack))
         self._firstSelectedEvent = firstSelectedEvent
         selectionChange.connect(self._pull)
 
@@ -413,6 +414,8 @@ class ClipManager(UndoableSelectionView):
 
 
 class ClipUI(QWidget):
+    requestEvent = pyqtSignal(Clip)
+
     def __init__(self, selectionChange, firstSelectedEvent, undoStack, parent=None):
         super(ClipUI, self).__init__(parent)
         main = vlayout()
@@ -432,9 +435,22 @@ class ClipUI(QWidget):
 
         main.addLayout(hbar)
         self.manager = ClipManager(selectionChange, firstSelectedEvent, undoStack)
+        self.manager.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.manager.customContextMenuRequested.connect(self.__clipContextMenu)
         main.addWidget(self.manager)
 
         self.undoStack = undoStack
+        self.__contextMenu = QMenu()  # reference to avoid agressive garbage collection
+
+    def __clipContextMenu(self, pos):
+        idx = self.manager.indexAt(pos)
+        if not idx.isValid():
+            return
+        idx = idx.sibling(idx.row(), 0)
+        clip = idx.data(Qt.UserRole + 1)
+        self.__contextMenu.clear()
+        self.__contextMenu.addAction('Create event').triggered.connect(functools.partial(self.requestEvent.emit, clip))
+        self.__contextMenu.popup(self.manager.mapToGlobal(pos))
 
     def createClipWithDefaults(self, defaultUniforms, nameSuggestion):
         iter = -1
@@ -462,6 +478,8 @@ class ClipUI(QWidget):
         self.undoStack.push(ModelEdit(self.manager.model(), [clip], []))
 
     def __deleteSelectedClips(self):
+        # TODO: Delete adds a selection change to the undostack as well, should macro it somehow
+        # TODO: Delete must delete events using this clip as well
         rows = [idx.row() for idx in self.manager.selectionModel().selectedRows()]
         if not rows:
             return
