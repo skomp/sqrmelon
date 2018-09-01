@@ -2,16 +2,15 @@
 # TODO: Delete shots and events from TimelineView with keyboard
 # TODO: Loop range and curve editor time changes are incorrect
 import functools
-import icons
 from experiment.demomodel import DemoModel
 from view3d import View3D
 from experiment.scenelist import SceneList
 from qtutil import *
 from experiment.curvemodel import HermiteCurve, HermiteKey, ELoopMode
-from experiment.model import Clip, Event
+from experiment.model import Clip, Event, Shot
 from experiment.timelineview import TimelineView
 from experiment.timer import Time
-from experiment.widgets import CurveUI, EventModel, ClipUI, EventView, ShotManager
+from experiment.widgets import CurveUI, ClipUI, ShotManager, EventManager
 from experiment.projectutil import settings
 from experiment.camerawidget import Camera
 
@@ -32,67 +31,26 @@ def run():
     app = QApplication([])
     settings().setValue('currentproject', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'defaultproject'))
 
+    # these elements are pretty "global" in that they are referenced by most widgets
     undoStack = QUndoStack()
-    undoView = QUndoView(undoStack)
-
-    clip0 = Clip('Clip 0', undoStack)
-    clip0.curves.appendRow(HermiteCurve('uOrigin.x', ELoopMode.Clamp, [HermiteKey(0.0, 0.0, 0.0, 0.0), HermiteKey(4.0, 1.0, 1.0, 1.0)]).items)
-    clip0.curves.appendRow(HermiteCurve('uFlash', ELoopMode.Clamp, [HermiteKey(0.0, 1.0, 1.0, 1.0), HermiteKey(1.0, 0.0, 0.0, 0.0)]).items)
-
-    clip1 = Clip('Clip 1', undoStack)
-    clip1.curves.appendRow(HermiteCurve('uOrigin.x', ELoopMode.Clamp, [HermiteKey(2.0, 0.0, 0.0, 0.0), HermiteKey(3.0, 1.0, 0.0, 0.0)]).items)
-    clip1.curves.appendRow(HermiteCurve('uOrigin.y', ELoopMode.Clamp, [HermiteKey(0.0, 0.0, 1.0, 1.0), HermiteKey(1.0, 1.0, 1.0, 1.0)]).items)
-
+    timer = Time()
     demoModel = DemoModel(undoStack)
 
-    timer = Time()
+    # main widgets
+    undoView = QUndoView(undoStack)
     sceneList = SceneList(timer)
-
     shotManager = ShotManager(undoStack, demoModel, timer)
-
-    deleteEvent = QPushButton(icons.get('Curves Delete-48'), '')
-    deleteEvent.setToolTip('Delete selected events')
-    deleteEvent.setStatusTip('Delete selected events')
-
-    eventManager = EventView(undoStack, EventModel(demoModel))
-    eventManager.model().appendRow(Event('New event', clip0, 0.0, 4.0, 1.0, 0.0, 2).items)
-    eventManager.model().appendRow(Event('New event', clip0, 0.0, 1.0, 1.0, 0.0, 1).items)
-    eventManager.model().appendRow(Event('New event', clip1, 1.0, 2.0, 0.5, 0.0, 1).items)
-
-    # changing the model contents seems to mess with the column layout stretch
-    demoModel.rowsInserted.connect(shotManager.view.updateSections)
-    demoModel.rowsInserted.connect(eventManager.updateSections)
-    demoModel.rowsRemoved.connect(shotManager.view.updateSections)
-    demoModel.rowsRemoved.connect(eventManager.updateSections)
-
-    eventManager.model().appendRow(Event('New event', clip0, 2.0, 4.0, 0.25, 0.0, 1).items)
-
-    clips = ClipUI(eventManager.selectionChange, eventManager.firstSelectedEvent, undoStack)
-    clips.manager.model().appendRow(clip0.items)
-    clips.manager.model().appendRow(clip1.items)
-
-    sceneList.requestCreateClip.connect(clips.createClipWithDefaults)
-
-    sceneList.requestCreateShot.connect(demoModel.addShot)
-    clips.requestEvent.connect(functools.partial(demoModel.createEvent, timer))
-
-    curveUI = CurveUI(timer, clips.manager.selectionChange, clips.manager.firstSelectedItem, eventManager.firstSelectedEventWithClip, undoStack)
-    eventManager.selectionChange.connect(functools.partial(eventChanged, eventManager, curveUI))
-    eventTimeline = TimelineView(timer, undoStack, demoModel, (shotManager.view.selectionModel(), eventManager.selectionModel()))
-
+    eventManager = EventManager(undoStack, demoModel, timer)
+    # TODO: passing in these callables is achieving the same as some of the "requestX" connections, perhaps we should settle on 1 mechanism (in which case the requestX actions feel less intuitive)
+    clips = ClipUI(eventManager.view.selectionChange, eventManager.view.firstSelectedEvent, undoStack)
+    curveUI = CurveUI(timer, clips.manager.selectionChange, clips.manager.firstSelectedItem, eventManager.view.firstSelectedEventWithClip, undoStack)
+    eventTimeline = TimelineView(timer, undoStack, demoModel, (shotManager.view.selectionModel(), eventManager.view.selectionModel()))
     camera = Camera()
-    camera.requestAnimatedCameraPosition.connect(functools.partial(evalCamera, camera, demoModel, timer))
-    # when animating, the camera will see about animation
-    # if it is not set to follow animation it will do nothing
-    # else it will emit requestAnimatedCameraPosition, so that the internal state will match
-    timer.changed.connect(camera.followAnimation)
 
+    # the 3D view is the only widget that references other widgets
     view = View3D(camera, demoModel, timer)
-    # when the camera is changed  through flying (WASD, Mouse) or through the input widgets, it will emit an edited event, signaling repaint
-    camera.edited.connect(view.repaint)
-    # when the time changes, the camera is connected first so animation is applied, then we still have to manually trigger a repaint here
-    timer.changed.connect(view.repaint)
 
+    # set up main window and dock widgets
     mainWindow = QMainWindowState(settings())
     mainWindow.setDockNestingEnabled(True)
     mainWindow.createDockWidget(undoView)
@@ -105,24 +63,69 @@ def run():
     mainWindow.createDockWidget(camera)
     mainWindow.createDockWidget(view)
 
+    # set up menu actions & shortcuts
     menuBar = QMenuBar()
     mainWindow.setMenuBar(menuBar)
+
     editMenu = menuBar.addMenu('Edit')
 
-    action = editMenu.addAction('&Key camera')
-    action.setShortcut(QKeySequence(Qt.Key_K))
-    action.setShortcutContext(Qt.ApplicationShortcut)
-    action.triggered.connect(functools.partial(curveUI.keyCamera, camera))
+    keyCamera = editMenu.addAction('&Key camera')
+    keyCamera.setShortcut(QKeySequence(Qt.Key_K))
+    keyCamera.setShortcutContext(Qt.ApplicationShortcut)
 
-    action = editMenu.addAction('&Toggle camera control')
-    action.setShortcut(QKeySequence(Qt.Key_T))
-    action.setShortcutContext(Qt.ApplicationShortcut)
-    action.triggered.connect(camera.toggle)
+    toggleCamera = editMenu.addAction('&Toggle camera control')
+    toggleCamera.setShortcut(QKeySequence(Qt.Key_T))
+    toggleCamera.setShortcutContext(Qt.ApplicationShortcut)
 
-    action = editMenu.addAction('Snap came&ra to animation')
-    action.setShortcuts(QKeySequence(Qt.Key_R))
-    action.setShortcutContext(Qt.ApplicationShortcut)
-    action.triggered.connect(camera.copyAnim)
+    resetCamera = editMenu.addAction('Snap came&ra to animation')
+    resetCamera.setShortcuts(QKeySequence(Qt.Key_R))
+    resetCamera.setShortcutContext(Qt.ApplicationShortcut)
+
+    # add test content
+    clip0 = Clip('Clip 0', undoStack)
+    clip0.curves.appendRow(HermiteCurve('uOrigin.x', ELoopMode.Clamp, [HermiteKey(0.0, 0.0, 0.0, 0.0), HermiteKey(4.0, 1.0, 1.0, 1.0)]).items)
+    clip0.curves.appendRow(HermiteCurve('uFlash', ELoopMode.Clamp, [HermiteKey(0.0, 1.0, 1.0, 1.0), HermiteKey(1.0, 0.0, 0.0, 0.0)]).items)
+
+    clip1 = Clip('Clip 1', undoStack)
+    clip1.curves.appendRow(HermiteCurve('uOrigin.x', ELoopMode.Clamp, [HermiteKey(2.0, 0.0, 0.0, 0.0), HermiteKey(3.0, 1.0, 0.0, 0.0)]).items)
+    clip1.curves.appendRow(HermiteCurve('uOrigin.y', ELoopMode.Clamp, [HermiteKey(0.0, 0.0, 1.0, 1.0), HermiteKey(1.0, 1.0, 1.0, 1.0)]).items)
+
+    demoModel.appendRow(Shot('New Shot', 'example', 0.0, 4.0, 0).items)
+
+    demoModel.appendRow(Event('New event', clip0, 0.0, 4.0, 1.0, 0.0, 2).items)
+    demoModel.appendRow(Event('New event', clip0, 0.0, 1.0, 1.0, 0.0, 1).items)
+    demoModel.appendRow(Event('New event', clip1, 1.0, 2.0, 0.5, 0.0, 1).items)
+    demoModel.appendRow(Event('New event', clip0, 2.0, 4.0, 0.25, 0.0, 1).items)
+
+    clips.manager.model().appendRow(clip0.items)
+    clips.manager.model().appendRow(clip1.items)
+
+    # connection widgets together
+    # changing the model contents seems to mess with the column layout stretch
+    demoModel.rowsInserted.connect(shotManager.view.updateSections)
+    demoModel.rowsInserted.connect(eventManager.view.updateSections)
+    demoModel.rowsRemoved.connect(shotManager.view.updateSections)
+    demoModel.rowsRemoved.connect(eventManager.view.updateSections)
+
+    sceneList.requestCreateClip.connect(clips.createClip)
+    sceneList.requestCreateShot.connect(demoModel.addShot)
+    clips.requestEvent.connect(functools.partial(demoModel.createEvent, timer))
+    eventManager.view.selectionChange.connect(functools.partial(eventChanged, eventManager.view, curveUI))
+    camera.requestAnimatedCameraPosition.connect(functools.partial(evalCamera, camera, demoModel, timer))
+
+    # when animating, the camera will see about animation
+    # if it is not set to follow animation it will do nothing
+    # else it will emit requestAnimatedCameraPosition, so that the internal state will match
+    timer.changed.connect(camera.followAnimation)
+
+    # when the camera is changed  through flying (WASD, Mouse) or through the input widgets, it will emit an edited event, signaling repaint
+    camera.edited.connect(view.repaint)
+    # when the time changes, the camera is connected first so animation is applied, then we still have to manually trigger a repaint here
+    timer.changed.connect(view.repaint)
+
+    keyCamera.triggered.connect(functools.partial(curveUI.keyCamera, camera))
+    toggleCamera.triggered.connect(camera.toggle)
+    resetCamera.triggered.connect(camera.copyAnim)
 
     mainWindow.show()
     # makes sure qt cleans up & python stops after closing the main window; https://stackoverflow.com/questions/39304366/qobjectstarttimer-qtimer-can-only-be-used-with-threads-started-with-qthread

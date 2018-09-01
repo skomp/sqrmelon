@@ -1,89 +1,10 @@
-from math import log, floor, ceil
-
-from experiment.actions import DirectionalAction
+from experiment.actions import zoom, ViewZoomAction, ViewPanAction
 from qtutil import *
+from math import log, floor, ceil
 
 
 def clamp(v, n, x):
     return min(max(v, n), x)
-
-
-class ViewPanAction(object):
-    def __init__(self, viewRect, widgetSize):
-        self.__dragStart = None
-        self.__startPos = None
-        self.__rect = viewRect
-        self.__widgetSize = widgetSize
-
-    def mousePressEvent(self, event):
-        self.__dragStart = event.pos()
-        self.__startPos = self.__rect.left, self.__rect.right, self.__rect.top, self.__rect.bottom
-
-    def mouseMoveEvent(self, event):
-        delta = event.pos() - self.__dragStart
-        ux = delta.x() * (self.__rect.right - self.__rect.left) / float(self.__widgetSize.width())
-        uy = delta.y() * (self.__rect.bottom - self.__rect.top) / float(self.__widgetSize.height())
-        self.__rect.left = self.__startPos[0] - ux
-        self.__rect.right = self.__startPos[1] - ux
-        self.__rect.top = self.__startPos[2] - uy
-        self.__rect.bottom = self.__startPos[3] - uy
-
-    def mouseReleaseEvent(self, undoStack):
-        pass
-
-    def draw(self, painter):
-        pass
-
-
-def zoom(pivotUnits, viewRect, hSteps, vSteps, baseValues=None):
-    if baseValues is None:
-        baseValues = viewRect.left, viewRect.right, viewRect.top, viewRect.bottom
-
-    cx, cy = pivotUnits
-    extents = [baseValues[0] - cx, baseValues[1] - cx, baseValues[2] - cy, baseValues[3] - cy]
-
-    for step in xrange(abs(hSteps)):
-        if hSteps > 0:
-            extents[0] *= 1.0005
-            extents[1] *= 1.0005
-        else:
-            extents[0] /= 1.0005
-            extents[1] /= 1.0005
-
-    for step in xrange(abs(vSteps)):
-        if vSteps > 0:
-            extents[2] *= 1.0005
-            extents[3] *= 1.0005
-        else:
-            extents[2] /= 1.0005
-            extents[3] /= 1.0005
-
-    viewRect.set(cx + extents[0], cx + extents[1], cy + extents[2], cy + extents[3])
-
-
-class ViewZoomAction(DirectionalAction):
-    def __init__(self, viewRect, pixelSize, reproject, mask):
-        super(ViewZoomAction, self).__init__(reproject, mask)
-        self.__rect = viewRect
-        self.__pixelSize = pixelSize
-        self.__baseValues = self.__rect.left, self.__rect.right, self.__rect.top, self.__rect.bottom
-
-    def processMouseDelta(self, event):
-        dx = self._dragStartPx.x() - event.x()
-        dy = self._dragStartPx.y() - event.y()
-        dx = int(dx * 4000.0 / float(self.__pixelSize.width()))
-        dy = int(dy * 4000.0 / float(self.__pixelSize.height()))
-        if not self._mask & 1:
-            dx = 0
-        if not self._mask & 2:
-            dy = 0
-
-        zoom(self._dragStartU, self.__rect, dx, dy, self.__baseValues)
-
-        return False
-
-    def mouseReleaseEvent(self, undoStack):
-        pass
 
 
 class ViewRect(object):
@@ -187,13 +108,12 @@ class GridView(QWidget):
     def pxToU(self, x, y):
         return self.xToT(x), self.yToV(y)
 
-    @property
-    def cellSize(self):
+    def cellSize(self, pixels, left, right):
         """
         Calculate the size (in time-units) of a grid-cell
         """
-        view = self._viewRect.right - self._viewRect.left
-        cellSize = abs(view) / (float(self.width()) / float(self.CELL_SIZE_MAX_PX))
+        view = right - left
+        cellSize = abs(view) / (float(pixels) / float(self.CELL_SIZE_MAX_PX))
         cellSize = min(pow(2.0, round(log(cellSize, 2.0))), pow(4.0, round(log(cellSize, 4.0))),
                        pow(8.0, round(log(cellSize, 8.0))))
 
@@ -201,7 +121,7 @@ class GridView(QWidget):
 
     def iterAxis(self, pixels, start, end, textBoundsMin, textBoundsMax, uToPx):
         view = end - start
-        cellSize = self.cellSize
+        cellSize = self.cellSize(pixels, start, end)
         cursor = int(ceil(start / cellSize))
         limit = int(floor(end / cellSize))
         if cursor > limit:
@@ -267,7 +187,9 @@ class GridView(QWidget):
             self.repaint()
 
     def mouseReleaseEvent(self, event):
-        self._action = None
+        if self._action:
+            self._action.mouseReleaseEvent()
+            self._action = None
 
     def mouseMoveEvent(self, event):
         if self._action:

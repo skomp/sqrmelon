@@ -13,7 +13,7 @@ import subprocess
 class SceneList(QWidget):
     currentChanged = pyqtSignal(QStandardItem)
     requestCreateShot = pyqtSignal(Shot)
-    requestCreateClip = pyqtSignal(dict, str)
+    requestCreateClip = pyqtSignal(dict)
 
     def __init__(self, timer):
         super(SceneList, self).__init__()
@@ -58,8 +58,7 @@ class SceneList(QWidget):
         self.updateWithCurrentProject()
 
     def __requestClip(self, item, isMaster=False):
-        sceneName = item.text()
-        self.requestCreateClip.emit(sceneDefaultChannels(sceneName, isMaster), sceneName)
+        self.requestCreateClip.emit(sceneDefaultChannels(item.text(), isMaster))
 
     def __requestShot(self, item):
         shot = CreateShotDialog.run(self.timer.time, item.text(), self)

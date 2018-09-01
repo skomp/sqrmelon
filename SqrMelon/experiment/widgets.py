@@ -5,7 +5,7 @@ from experiment.actions import KeyEdit, ModelEdit
 from experiment.curvemodel import HermiteCurve, ETangentMode, ELoopMode, HermiteKey, EInsertMode
 from experiment.curveview import CurveView
 from experiment.delegates import UndoableSelectionView
-from experiment.demomodel import CreateShotDialog
+from experiment.demomodel import CreateShotDialog, CreateEventDialog
 from experiment.model import Shot, Clip, Event
 from experiment.modelbase import UndoableModel
 from qtutil import *
@@ -354,7 +354,6 @@ class EventModel(NamedProxyModel):
 class FilteredView(UndoableSelectionView):
     # TODO: Can not edit multiple elements at the same time, event when selecting multiple rows and using e.g. F2 to edit the item.
     # Override edit as described here https://stackoverflow.com/questions/14586715/how-can-i-achieve-to-update-multiple-rows-in-a-qtableview ?
-
     def __init__(self, undoStack, model, parent=None):
         super(FilteredView, self).__init__(undoStack, parent)
         self.setModel(model)
@@ -377,6 +376,7 @@ class FilteredView(UndoableSelectionView):
 
 
 class EventView(FilteredView):
+    # TODO: Move these functions to EventManager
     def firstSelectedEvent(self):
         for container in self.selectionModel().selectedRows():
             return container.data(Qt.UserRole + 1)
@@ -428,7 +428,7 @@ class ClipUI(QWidget):
         hBar = hlayout()
 
         btn = createToolButton('Film Reel Create-48', 'Create clip', hBar)
-        btn.clicked.connect(self.__createClip)
+        btn.clicked.connect(self.createClip)
         btn.setIconSize(QSize(24, 24))
 
         btn = createToolButton('Film Reel Delete-48', 'Delete selected clips', hBar)
@@ -456,19 +456,7 @@ class ClipUI(QWidget):
         self.__contextMenu.addAction('Create event').triggered.connect(functools.partial(self.requestEvent.emit, clip))
         self.__contextMenu.popup(self.manager.mapToGlobal(pos))
 
-    def createClipWithDefaults(self, defaultUniforms, nameSuggestion):
-        cursor = -1
-        name = nameSuggestion
-        while self.manager.model().findItems(name):
-            cursor += 1
-            name = nameSuggestion + str(cursor)
-        clip = Clip(name, self.undoStack)
-        for curveName, value in defaultUniforms.iteritems():
-            curve = HermiteCurve(curveName, data=[HermiteKey(0.0, value, 0.0, 0.0, ETangentMode.Flat, ETangentMode.Flat)])
-            clip.curves.appendRow(curve.items)
-        self.undoStack.push(ModelEdit(self.manager.model(), [clip], []))
-
-    def __createClip(self):
+    def createClip(self, defaultUniforms={}):
         result = QInputDialog.getText(self, 'Create clip', 'Clip name')
         if not result[0] or not result[1]:
             return
@@ -478,6 +466,11 @@ class ClipUI(QWidget):
             QMessageBox.critical(self, 'Error creating clip', ' A clip named %s already exists' % name)
             return
         clip = Clip(name, self.undoStack)
+
+        for curveName, value in defaultUniforms.iteritems():
+            curve = HermiteCurve(curveName, data=[HermiteKey(0.0, value, 0.0, 0.0, ETangentMode.Flat, ETangentMode.Flat)])
+            clip.curves.appendRow(curve.items)
+
         self.undoStack.push(ModelEdit(self.manager.model(), [clip], []))
 
     def __deleteSelectedClips(self):
@@ -489,9 +482,9 @@ class ClipUI(QWidget):
         self.undoStack.push(ModelEdit(self.manager.model(), [], rows))
 
 
-class ShotManager(QWidget):
+class GenericManager(QWidget):
     def __init__(self, undoStack, demoModel, timer, parent=None):
-        super(ShotManager, self).__init__(parent)
+        super(GenericManager, self).__init__(parent)
         self.timer = timer
 
         layout = vlayout()
@@ -500,37 +493,57 @@ class ShotManager(QWidget):
         toolBar = hlayout()
         layout.addLayout(toolBar)
 
-        createShot = QPushButton(icons.get('Film Strip Create-48'), '')
-        toolBar.addWidget(createShot)
-        createShot.setToolTip('Create shot')
-        createShot.setStatusTip('Create shot')
+        createBtn = QPushButton(icons.get(self._createIcon), '')
+        toolBar.addWidget(createBtn)
+        createBtn.setToolTip(self._createLabel)
+        createBtn.setStatusTip(self._createLabel)
 
-        deleteShot = QPushButton(icons.get('Film Strip Delete-48'), '')
-        toolBar.addWidget(deleteShot)
-        deleteShot.setToolTip('Delete selected shots')
-        deleteShot.setStatusTip('Delete selected shots')
+        deleteBtn = QPushButton(icons.get(self._deleteIcon), '')
+        toolBar.addWidget(deleteBtn)
+        deleteBtn.setToolTip(self._deleteLabel)
+        deleteBtn.setStatusTip(self._deleteLabel)
 
         toolBar.addStretch(1)
 
         self.undoStack = undoStack
-        self.view = FilteredView(undoStack, ShotModel(demoModel))
-        self.view.model().appendRow(Shot('New Shot', 'example', 0.0, 4.0, 0).items)
+        self.view = self._viewClass(undoStack, self._modelClass(demoModel))
         layout.addWidget(self.view)
         layout.setStretch(1, 1)
 
-        deleteShot.clicked.connect(self.deleteSelectedShots)
-        createShot.clicked.connect(self.createShot)
+        createBtn.clicked.connect(self.create)
+        deleteBtn.clicked.connect(self.deleteSelected)
 
-    def createShot(self):
-        shot = CreateShotDialog.run(self.timer.time, None, self)
-        if shot is not None:
+    def create(self):
+        itemRow = self._dialog(round(self.timer.time), None, self)
+        if itemRow is not None:
             model = self.view.model().sourceModel()
-            self.undoStack.push(ModelEdit(model, [shot], []))
+            # TODO: find a vacant track in the current model to set the event track
+            self.undoStack.push(ModelEdit(model, [itemRow], []))
 
-    def deleteSelectedShots(self):
+    def deleteSelected(self):
         pyObjs = set()
         for idx in self.view.selectionModel().selectedIndexes():
             pyObjs.add(idx.sibling(idx.row(), 0).data(Qt.UserRole + 1))
         for pyObj in pyObjs:
             model = self.view.model().sourceModel()
             self.undoStack.push(ModelEdit(model, [], [pyObj.items[0].row()]))
+
+
+class ShotManager(GenericManager):
+    _createIcon = 'Film Strip Create-48'
+    _createLabel = 'Create shot'
+    _deleteIcon = 'Film Strip Delete-48'
+    _deleteLabel = 'Delete selected shots'
+    _modelClass = ShotModel
+    _viewClass = FilteredView
+    _dialog = CreateShotDialog.run
+
+
+class EventManager(GenericManager):
+    _createIcon = 'Curves Create-48'
+    _createLabel = 'Create event'
+    _deleteIcon = 'Curves Delete-48'
+    _deleteLabel = 'Delete selected events'
+    _modelClass = EventModel
+    _viewClass = EventView
+    _dialog = CreateEventDialog.run

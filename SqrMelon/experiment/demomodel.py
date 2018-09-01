@@ -41,19 +41,18 @@ class DemoModel(UndoableModel):
         return scene, evaluatedData
 
 
-class CreateShotDialog(QDialog):
-    def __init__(self, initialSceneName=None, parent=None):
-        super(CreateShotDialog, self).__init__(parent)
+class CreateItemRowDialog(QDialog):
+    def __init__(self, itemLabels, initialItemLabel=None, parent=None):
+        super(CreateItemRowDialog, self).__init__(parent)
         layout = vlayout()
         self.setLayout(layout)
         self.name = QLineEdit()
         layout.addWidget(self.name)
-        self.scene = QComboBox()
-        items = list(iterSceneNames())
-        self.scene.addItems(items)
-        if initialSceneName is not None:
-            self.scene.setCurrentIndex(items.index(initialSceneName))
-        layout.addWidget(self.scene)
+        self.options = QComboBox()
+        self.options.addItems(itemLabels)
+        if initialItemLabel is not None:
+            self.options.setCurrentIndex(itemLabels.index(initialItemLabel))
+        layout.addWidget(self.options)
         hbar = hlayout()
         ok = QPushButton('Ok')
         hbar.addWidget(ok)
@@ -64,12 +63,33 @@ class CreateShotDialog(QDialog):
         ok.clicked.connect(self.accept)
         cancel.clicked.connect(self.reject)
 
-    @staticmethod
-    def run(time, initialSceneName=None, parent=None):
-        d = CreateShotDialog(initialSceneName, parent)
+    def _currentItem(self):
+        return self.options.currentText()
+
+    @classmethod
+    def run(cls, data, time, initialSceneName=None, parent=None):
+        d = CreateItemRowDialog(data, initialSceneName, parent)
         d.exec_()
         if d.result() != QDialog.Accepted:
             return
         name = d.name.text()
-        sceneName = d.scene.currentText()
-        return Shot(name, sceneName, time, time + 8.0, 0)
+        return cls._itemRowClass(name, d._currentItem(), time, time + 8.0)
+
+
+class CreateShotDialog(CreateItemRowDialog):
+    _itemRowClass = Shot
+
+    @classmethod
+    def run(cls, time, initialItemLabel=None, parent=None):
+        return super(CreateShotDialog, cls).run(list(iterSceneNames()), time, initialItemLabel, parent)
+
+
+class CreateEventDialog(CreateItemRowDialog):
+    _itemRowClass = Event
+
+    def __init__(self, clips, initialItemLabel=None, parent=None):
+        self.clips = {clip.name: clip for clip in clips}
+        super(CreateEventDialog, self).__init__(self.clips.keys(), initialItemLabel, parent)
+
+    def _currentItem(self):
+        return self.clips[super(CreateEventDialog, self)._currentItem()]

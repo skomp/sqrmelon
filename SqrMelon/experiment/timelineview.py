@@ -301,7 +301,7 @@ class TimelineView(GridView):
 
     def mouseReleaseEvent(self, event):
         action = self._action
-        super(TimelineView, self).mouseReleaseEvent(event)  # self._action = None
+        self._action = None
         # make sure self.action is None before calling mouseReleaseEvent so that:
         # 1. when returning True we will clear any painting done by self.action during mousePress/-Move
         # 2. when a callback results in a repaint the above holds true

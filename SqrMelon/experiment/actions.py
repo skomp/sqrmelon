@@ -3,7 +3,12 @@ from experiment.commands import TimeEdit, KeyEdit, ModelEdit, EventEdit
 from qtutil import *
 
 
-class MoveTimeAction(object):
+class Action(object):
+    def draw(self, painter):
+        pass
+
+
+class MoveTimeAction(Action):
     def __init__(self, originalTime, xToT, setTime, undoable=True):
         self.__originalTime = originalTime
         self.__setTime = setTime
@@ -22,29 +27,6 @@ class MoveTimeAction(object):
         if self.__undoable:
             undoStack.push(TimeEdit(self.__originalTime, self.__newTime, self.__setTime))
 
-    def draw(self, painter):
-        pass
-
-
-class Action(object):
-    def mousePressEvent(self, event):
-        pass
-
-    def mouseReleaseEvent(self, event):
-        pass
-
-    def mouseMoveEvent(self, event):
-        pass
-
-    def keyPressEvent(self, event):
-        pass
-
-    def keyReleaseEvent(self, event):
-        pass
-
-    def draw(self, painter):
-        pass
-
 
 class DirectionalAction(Action):
     def __init__(self, reproject, mask=3):
@@ -57,8 +39,10 @@ class DirectionalAction(Action):
         self._dragStartPx = event.pos()
         self._dragStartU = self._reproject(event.x(), event.y())
         # when we are omni-directional and shift is pressed we can lock the event to a single axis
-        if self._mask == 3 and event.modifiers() == Qt.ShiftModifier:
+        if self._mask == 3 and event.modifiers() & Qt.ShiftModifier:
             self._mask = 0
+        else:
+            cursor.set(Qt.SizeAllCursor)
         return False
 
     def mouseMoveEvent(self, event):
@@ -67,15 +51,93 @@ class DirectionalAction(Action):
             dxPx = deltaPx.x()
             dyPx = deltaPx.y()
             if abs(dxPx) > 4 and abs(dxPx) > abs(dyPx):
+                cursor.set(Qt.SizeHorCursor)
                 self._mask = 1
-            if abs(dyPx) > 4 and abs(dyPx) > abs(dxPx):
+            elif abs(dyPx) > 4 and abs(dyPx) > abs(dxPx):
+                cursor.set(Qt.SizeVerCursor)
                 self._mask = 2
             return
 
         return self.processMouseDelta(event)
 
+    def mouseReleaseEvent(self, __=None):
+        cursor.restore()
+
     def processMouseDelta(self, event):
         raise NotImplementedError()
+
+
+class ViewPanAction(Action):
+    def __init__(self, viewRect, widgetSize):
+        self.__dragStart = None
+        self.__startPos = None
+        self.__rect = viewRect
+        self.__widgetSize = widgetSize
+
+    def mousePressEvent(self, event):
+        self.__dragStart = event.pos()
+        self.__startPos = self.__rect.left, self.__rect.right, self.__rect.top, self.__rect.bottom
+        cursor.set(Qt.SizeAllCursor)
+
+    def mouseMoveEvent(self, event):
+        delta = event.pos() - self.__dragStart
+        ux = delta.x() * (self.__rect.right - self.__rect.left) / float(self.__widgetSize.width())
+        uy = delta.y() * (self.__rect.bottom - self.__rect.top) / float(self.__widgetSize.height())
+        self.__rect.left = self.__startPos[0] - ux
+        self.__rect.right = self.__startPos[1] - ux
+        self.__rect.top = self.__startPos[2] - uy
+        self.__rect.bottom = self.__startPos[3] - uy
+
+    def mouseReleaseEvent(self, __=None):
+        cursor.restore()
+
+
+def zoom(pivotUnits, viewRect, hSteps, vSteps, baseValues=None):
+    if baseValues is None:
+        baseValues = viewRect.left, viewRect.right, viewRect.top, viewRect.bottom
+
+    cx, cy = pivotUnits
+    extents = [baseValues[0] - cx, baseValues[1] - cx, baseValues[2] - cy, baseValues[3] - cy]
+
+    for step in xrange(abs(hSteps)):
+        if hSteps > 0:
+            extents[0] *= 1.0005
+            extents[1] *= 1.0005
+        else:
+            extents[0] /= 1.0005
+            extents[1] /= 1.0005
+
+    for step in xrange(abs(vSteps)):
+        if vSteps > 0:
+            extents[2] *= 1.0005
+            extents[3] *= 1.0005
+        else:
+            extents[2] /= 1.0005
+            extents[3] /= 1.0005
+
+    viewRect.set(cx + extents[0], cx + extents[1], cy + extents[2], cy + extents[3])
+
+
+class ViewZoomAction(DirectionalAction):
+    def __init__(self, viewRect, pixelSize, reproject, mask):
+        super(ViewZoomAction, self).__init__(reproject, mask)
+        self.__rect = viewRect
+        self.__pixelSize = pixelSize
+        self.__baseValues = self.__rect.left, self.__rect.right, self.__rect.top, self.__rect.bottom
+
+    def processMouseDelta(self, event):
+        dx = self._dragStartPx.x() - event.x()
+        dy = self._dragStartPx.y() - event.y()
+        dx = int(dx * 4000.0 / float(self.__pixelSize.width()))
+        dy = int(dy * 4000.0 / float(self.__pixelSize.height()))
+        if not self._mask & 1:
+            dx = 0
+        if not self._mask & 2:
+            dy = 0
+
+        zoom(self._dragStartU, self.__rect, dx, dy, self.__baseValues)
+
+        return False
 
 
 class MoveKeyAction(DirectionalAction):
@@ -87,6 +149,7 @@ class MoveKeyAction(DirectionalAction):
         self.__triggerRepaint = triggerRepaint
 
     def mouseReleaseEvent(self, undoStack):
+        super(MoveKeyAction, self).mouseReleaseEvent()
         undoStack.push(KeyEdit(self.__initialState, self.__triggerRepaint))
         return False
 
@@ -113,7 +176,7 @@ class MoveKeyAction(DirectionalAction):
         return True  # repaint
 
 
-class MoveTangentAction(object):
+class MoveTangentAction(Action):
     def __init__(self, selectedTangents, reproject, triggerRepaint):
         self.__reproject = reproject
         self.__initialState = {key: key.copyData() for (key, mask) in selectedTangents.iteritems()}
@@ -122,10 +185,12 @@ class MoveTangentAction(object):
         self.__triggerRepaint = triggerRepaint
 
     def mousePressEvent(self, event):
+        cursor.set(Qt.SizeVerCursor)
         self.__dragStart = self.__reproject(event.x(), event.y())
         return False
 
     def mouseReleaseEvent(self, undoStack):
+        cursor.restore()
         undoStack.push(KeyEdit(self.__initialState, self.__triggerRepaint))
         return False
 
@@ -146,9 +211,6 @@ class MoveTangentAction(object):
 
         return True  # repaint
 
-    def draw(self, painter):
-        pass
-
 
 class MoveEventAction(DirectionalAction):
     def __init__(self, reproject, cellSize, events, handle=3):
@@ -159,16 +221,16 @@ class MoveEventAction(DirectionalAction):
 
     def mousePressEvent(self, event):
         if self._handle in (1, 2):
+            self._mask = 1
+        result = super(MoveEventAction, self).mousePressEvent(event)
+        if self._mask == 1:
             # Change cursor to horizontal move when dragging start or end section
             cursor.set(Qt.SizeHorCursor)
-            self._mask = 1
-        else:
-            cursor.set(Qt.SizeAllCursor)
-        return super(MoveEventAction, self).mousePressEvent(event)
+        return result
 
     def mouseReleaseEvent(self, undoStack):
+        super(MoveEventAction, self).mouseReleaseEvent(undoStack)
         undoStack.push(EventEdit(self._events))
-        cursor.restore()
 
     def processMouseDelta(self, event):
         from experiment.timelineview import GraphicsItemEvent
@@ -200,9 +262,6 @@ class MoveEventAction(DirectionalAction):
                 newTrack = int(round(value[2] + uy))
                 if newTrack != event.track:
                     event.track = newTrack
-
-    def draw(self, painter):
-        pass
 
 
 class MarqueeActionBase(object):
