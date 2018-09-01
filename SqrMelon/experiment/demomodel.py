@@ -67,8 +67,8 @@ class CreateItemRowDialog(QDialog):
         return self.options.currentText()
 
     @classmethod
-    def run(cls, data, time, initialSceneName=None, parent=None):
-        d = CreateItemRowDialog(data, initialSceneName, parent)
+    def run(cls, data, time, initialSceneName, parent):
+        d = cls(data, initialSceneName, parent)
         d.exec_()
         if d.result() != QDialog.Accepted:
             return
@@ -80,7 +80,7 @@ class CreateShotDialog(CreateItemRowDialog):
     _itemRowClass = Shot
 
     @classmethod
-    def run(cls, time, initialItemLabel=None, parent=None):
+    def run(cls, time, initialItemLabel, parent):
         return super(CreateShotDialog, cls).run(list(iterSceneNames()), time, initialItemLabel, parent)
 
 

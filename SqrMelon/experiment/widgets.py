@@ -546,4 +546,11 @@ class EventManager(GenericManager):
     _deleteLabel = 'Delete selected events'
     _modelClass = EventModel
     _viewClass = EventView
-    _dialog = CreateEventDialog.run
+
+    def __init__(self, undoStack, demoModel, timer, parent=None):
+        super(EventManager, self).__init__(undoStack, demoModel, timer, parent)
+        self._dialog = self.runDialog
+        self.iterClips = None
+
+    def runDialog(self, *args):
+        return CreateEventDialog.run(list(self.iterClips()), *args)

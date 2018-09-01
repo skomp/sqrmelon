@@ -40,9 +40,18 @@ def run():
     undoView = QUndoView(undoStack)
     sceneList = SceneList(timer)
     shotManager = ShotManager(undoStack, demoModel, timer)
+
+    def iterItemRows(model):
+        for row in xrange(model.rowCount()):
+            yield model.index(row, 0).data(Qt.UserRole + 1)
+
     eventManager = EventManager(undoStack, demoModel, timer)
     # TODO: passing in these callables is achieving the same as some of the "requestX" connections, perhaps we should settle on 1 mechanism (in which case the requestX actions feel less intuitive)
     clips = ClipUI(eventManager.view.selectionChange, eventManager.view.firstSelectedEvent, undoStack)
+    # TODO: ClipUI context menu should use CreateEventDialog
+    # TODO: Bi-directional connection between ClipsUI and EventManager... need to rething this as it's quite an ugly workaround for a required argument
+    eventManager.iterClips = functools.partial(iterItemRows, clips.manager.model())
+
     curveUI = CurveUI(timer, clips.manager.selectionChange, clips.manager.firstSelectedItem, eventManager.view.firstSelectedEventWithClip, undoStack)
     eventTimeline = TimelineView(timer, undoStack, demoModel, (shotManager.view.selectionModel(), eventManager.view.selectionModel()))
     camera = Camera()
