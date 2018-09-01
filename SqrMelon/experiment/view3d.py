@@ -1,6 +1,5 @@
 from experiment.timer import Time
 from experiment.camerawidget import Camera
-from experiment.main import DemoModel
 from experiment.render import Scene, FrameBufferPool
 from qtutil import *
 from OpenGL.GL import *

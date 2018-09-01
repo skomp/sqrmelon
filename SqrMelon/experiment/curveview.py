@@ -1,4 +1,3 @@
-from typing import Dict, List
 import functools
 import icons
 from experiment.actions import MoveTimeAction, MoveTangentAction, MoveKeyAction

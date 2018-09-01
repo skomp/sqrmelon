@@ -1,5 +1,4 @@
 from qtutil import *
-from typing import Dict
 from collections import OrderedDict
 from experiment.modelbase import ItemRow, Label, UndoableModel
 

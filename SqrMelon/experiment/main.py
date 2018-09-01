@@ -1,9 +1,10 @@
-from typing import Dict
+# TODO: Delete shots and events (Delete key when focus is on timeline and Delete buttons above the filtered views)
+# TODO: Loop range and curve editor time changes are incorrect
 import functools
+from view3d import View3D
 from experiment.modelbase import UndoableModel
 from experiment.render import Scene
 from experiment.scenelist import SceneList
-from experiment.view3d import View3D
 from qtutil import *
 from experiment.curvemodel import HermiteCurve, HermiteKey, ELoopMode
 from experiment.model import Clip, Shot, Event

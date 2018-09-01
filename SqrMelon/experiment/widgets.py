@@ -466,7 +466,6 @@ class ClipUI(QWidget):
 
     def __createClip(self):
         result = QInputDialog.getText(self, 'Create clip', 'Clip name')
-        # TODO: ask pipeline to target (if multiple pipelines only) and then use default uniforms for it
         if not result[0] or not result[1]:
             return
         name = result[0]

@@ -1,5 +1,4 @@
 from qtutil import *
-from typing import Dict
 
 
 def unpackModelIndex(qIndex):
