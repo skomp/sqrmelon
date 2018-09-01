@@ -6,7 +6,7 @@ from experiment.util import sign
 
 class EInsertMode(Enum):
     Error = None  # when inserting a key at another key, raise an exception
-    Copy = None  # when inserting a key at another key, set the value of the exising key instead
+    Copy = None  # when inserting a key at another key, set the value of the existing key instead
     Passive = None  # when inserting a key at another key, silently ignore
 
     # Force = None  # when inserting a key at another key, insert it anyways, causing 2 keys at identical times (and undefined behaviour due to unstable sorting)
@@ -116,28 +116,26 @@ class HermiteKey(object):
         if inTangentDone and outTangentDone:
             return
 
-        keys = self.parent._keys
-
         # just 1 key, set flat and return
-        if len(keys) == 1:
+        if self.parent.keyCount() == 1:
             self.inTangentY = 0.0
             self.outTangentY = 0.0
             return
 
-        idx = keys.index(self)
+        idx = self.parent.indexFromKey(self)
 
         if idx == 0:
-            next = keys[idx + 1]
-            prev = next
-        elif idx == len(keys) - 1:
-            prev = keys[idx - 1]
-            next = prev
+            adjacent = self.parent.key(idx + 1)
+            prev = adjacent
+        elif idx == self.parent.keyCount() - 1:
+            prev = self.parent.key(idx - 1)
+            adjacent = prev
         else:
-            prev = keys[idx - 1]
-            next = keys[idx + 1]
+            prev = self.parent.key(idx - 1)
+            adjacent = self.parent.key(idx + 1)
 
         prevToMeDY = (self.y - prev.y)  # / (self.x - prev.x)
-        meToNextDY = (next.y - self.y)  # / (next.x - self.x)
+        meToNextDY = (adjacent.y - self.y)  # / (adjacent.x - self.x)
 
         if not inTangentDone and self.inTangentMode == ETangentMode.Linear:
             self.inTangentY = prevToMeDY
@@ -255,6 +253,9 @@ class HermiteCurve(ItemRow):
     def sort(self):
         self.__dict__['_keys'] = sorted(self.__dict__['_keys'], key=lambda x: x.x)
 
+    def indexFromKey(self, key):
+        return self._keys.index(key)
+
     def key(self, index):
         return self._keys[index]
 
@@ -300,14 +301,14 @@ class HermiteCurve(ItemRow):
 
         # cubic hermite spline interpolation
         prev = self._keys[index - 1]
-        next = self._keys[index]
+        adjacent = self._keys[index]
 
         if prev.outTangentY == float('infinity'):
             return prev.y
-        if next.inTangentY == float('infinity'):
-            return next.y
+        if adjacent.inTangentY == float('infinity'):
+            return adjacent.y
 
-        dx = float(next.x - prev.x)
+        dx = float(adjacent.x - prev.x)
 
         t = (x - prev.x) / dx
 
@@ -325,5 +326,5 @@ class HermiteCurve(ItemRow):
 
         return (h00t * prev.y +
                 h10t * prev.outTangentY +
-                h11t * next.inTangentY +
-                h01t * next.y)
+                h11t * adjacent.inTangentY +
+                h01t * adjacent.y)

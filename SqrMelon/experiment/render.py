@@ -10,10 +10,9 @@ from experiment.util import FileSystemWatcher2
 
 class Pipeline(PooledResource):
     """
-    Lazily deserialized pipeline, invalidadtes on file change
+    Lazily deserialized pipeline, invalidates on file change
     and pools to avoid data duplication.
     """
-
     def __init__(self, name):
         self.name = name
         self.pipelineDir = os.path.join(pipelineFolder(), self.name)
@@ -26,7 +25,7 @@ class Pipeline(PooledResource):
         self.__tail = None
         self.__channels = None
 
-    def invalidate(self, changedPath):
+    def invalidate(self, __):
         self.__graph = None
         self.__tail = None
         self.__channels = None
@@ -89,11 +88,11 @@ class FrameBufferPool(FrameBuffer):
 
     @staticmethod
     def get(w, h, numOutputs):
-        for buffer in FrameBufferPool._pool:
-            if buffer in FrameBufferPool._inUse:
+        for frameBuffer in FrameBufferPool._pool:
+            if frameBuffer in FrameBufferPool._inUse:
                 continue
-            if buffer.width() == w and buffer.height() == h and len(list(buffer.textures())) == numOutputs:
-                return buffer
+            if frameBuffer.width() == w and frameBuffer.height() == h and len(list(frameBuffer.textures())) == numOutputs:
+                return frameBuffer
         return FrameBufferPool(w, h, numOutputs)
 
     def ref(self):
@@ -163,7 +162,7 @@ class Scene(PooledResource):
     def channels(self):
         return self.__channels
 
-    def emitChanged(self, *args):
+    def emitChanged(self, *__):
         self.changed.emit()
 
     def __pipelineChanged(self):
@@ -182,23 +181,23 @@ class Scene(PooledResource):
     def renderNode(self, node, screenResolution, uniforms, renderBuffers):
         # recursively render dependencies
         inputs = []
-        for input in node.inputs:
-            if not input.connections:
+        for port in node.inputs:
+            if not port.connections:
                 continue
             # if an input has an incoming connection, we render the source of that connection
             # and take ownership of the buffer (so that the buffer pool does not allow it to be overwritten elsewhere, before we used the input data)
-            source = input.connections[0].node
-            colorBufferIndex = source.outputs.index(input.connections[0])
+            source = port.connections[0].node
+            colorBufferIndex = source.outputs.index(port.connections[0])
             # we track which nodes we've passed while rendering
             inputFrameBuffer = renderBuffers.get(source, None)
             if inputFrameBuffer is None:
-                # this node was not yet rendered, we must render it and take ownership of the resuling framebuffer
+                # this node was not yet rendered, we must render it and take ownership of the resulting framebuffer
                 inputFrameBuffer = self.renderNode(source, screenResolution, uniforms, renderBuffers)
                 renderBuffers[source] = inputFrameBuffer
             # increment the refcount to the input to signify we are using this buffer
             inputFrameBuffer.ref()
             # collect the color buffer to use
-            inputs.append(ColorBufferInput(input.name, inputFrameBuffer, colorBufferIndex, source))
+            inputs.append(ColorBufferInput(port.name, inputFrameBuffer, colorBufferIndex, source))
 
         shader = self.__shaderCache.get(node, None)
         if shader is None:
@@ -226,10 +225,10 @@ class Scene(PooledResource):
         glUseProgram(program)
 
         # bind inputs
-        for i, input in enumerate(inputs):
+        for i, port in enumerate(inputs):
             glActiveTexture(GL_TEXTURE0 + i)
-            input.colorBuffer().use()
-            glUniform1i(glGetUniformLocation(program, input.inputName), i)
+            port.colorBuffer().use()
+            glUniform1i(glGetUniformLocation(program, port.inputName), i)
 
         # apply uniforms
         for key, value in uniforms.iteritems():
@@ -256,7 +255,7 @@ class Scene(PooledResource):
         FullScreenRectSingleton.instance().draw()
 
         # free inputs
-        for input in inputs:
-            renderBuffers[input.sourceNode].free()
+        for port in inputs:
+            renderBuffers[port.sourceNode].free()
 
         return frameBuffer

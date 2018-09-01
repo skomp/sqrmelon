@@ -1,11 +1,11 @@
+from experiment.commands import ModelChange
 from experiment.enum import Enum
 from qtutil import *
 from util import randomColor
-from experiment.actions import ModelChange
 
 
 class Label(object):
-    """ Utiliy to display a non-editable string in the ItemRow system. """
+    """ Utility to display a non-editable string in the ItemRow system. """
 
     def __init__(self, text):
         self.text = str(text)
@@ -99,6 +99,6 @@ class UndoableModel(QStandardItemModel):
         if self.active:
             return super(UndoableModel, self).setData(index, value, role)
         else:
-            # change is not happening from the undostack, push it there
+            # change is not happening from the undo stack, push it there
             self.undoStack.push(ModelChange(index, value, role))
             return True

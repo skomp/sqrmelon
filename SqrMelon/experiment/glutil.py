@@ -45,11 +45,11 @@ class Program(PooledResource):
             cls._errorDialog.setLayout(vlayout())
             cls._errorDialogText = QTextEdit()
             cls._errorDialog.layout().addWidget(cls._errorDialogText)
-            hbar = hlayout()
-            cls._errorDialog.layout().addLayout(hbar)
-            hbar.addStretch(1)
+            hBar = hlayout()
+            cls._errorDialog.layout().addLayout(hBar)
+            hBar.addStretch(1)
             btn = QPushButton('Close')
-            hbar.addWidget(btn)
+            hBar.addWidget(btn)
             btn.clicked.connect(cls._errorDialog.accept)
         cls._errorDialog.setHtml(msg)
         cls._errorDialog.setGeometry(100, 100, 800, 600)
@@ -79,7 +79,7 @@ class Program(PooledResource):
             errors = e.args[0].split('\n')
             try:
                 code = e.args[1][0].split('\n')
-            except:
+            except IndexError:
                 errors = str(e.args)
                 code = fragCode
             # html escape output
@@ -89,7 +89,7 @@ class Program(PooledResource):
             for error in errors:
                 try:
                     lineNumber = int(error.split(' : ', 1)[0].rsplit('(')[-1].split(')')[0])
-                except:
+                except ValueError:
                     continue
                 lineNumber -= 1
                 log.append('<p><font color="red">%s</font><br/>%s<br/><font color="#081">%s</font><br/>%s</p>' % (
@@ -121,7 +121,7 @@ class Shader(PooledResource):
             self._program = Program.pool(STATIC_VERT, '\n'.join(code))
         return self._program.program
 
-    def invalidate(self, changedPath):
+    def invalidate(self, __):
         self._program = None
 
 

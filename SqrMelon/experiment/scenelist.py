@@ -1,7 +1,7 @@
 import functools
 import json
 import fileutil
-from experiment.projectutil import pipelineFolder, scenesFolder, iterPipelineNames, iterSceneStitches, iterSceneNames, SCENE_EXT, sceneDefaultChannels, iterPublicStitches
+from experiment.projectutil import pipelineFolder, scenesFolder, iterPipelineNames, iterSceneStitches, iterSceneNames, SCENE_EXT, sceneDefaultChannels, iterPublicStitches, sceneStitchNames
 from qtutil import *
 import icons
 from send2trash import send2trash
@@ -12,7 +12,6 @@ class SceneList(QWidget):
     currentChanged = pyqtSignal(QStandardItem)
     requestCreateShot = pyqtSignal(str)
     requestCreateClip = pyqtSignal(dict, str)
-    requestCreateShot = pyqtSignal(str)
 
     def __init__(self):
         super(SceneList, self).__init__()
@@ -57,6 +56,7 @@ class SceneList(QWidget):
     def __requestClip(self, item, isMaster=False):
         sceneName = item.text()
         self.requestCreateClip.emit(sceneDefaultChannels(sceneName, isMaster), sceneName)
+
     def __requestShot(self, item):
         self.requestCreateShot.emit(item.text())
 
@@ -74,7 +74,7 @@ class SceneList(QWidget):
 
         self.contextMenu.clear()
         action = self.contextMenu.addAction('Show in explorer')
-        action.triggered.connect(functools.partial(self.__showInExplorer, item))
+        action.triggered.connect(functools.partial(self._showInExplorer, item))
 
         if not item.parent() and item.text()[0] != ':':
             action = self.contextMenu.addAction('Create clip')
@@ -86,7 +86,8 @@ class SceneList(QWidget):
 
         self.contextMenu.popup(self.view.mapToGlobal(pos))
 
-    def __showInExplorer(self, item):
+    @staticmethod
+    def _showInExplorer(item):
         subprocess.Popen('explorer /select,"%s"' % item.data())
 
     def __onOpenFile(self, current):
@@ -190,15 +191,15 @@ class SceneList(QWidget):
 
         # create files required per-scene as defined by the pipeline
         srcDir = os.path.join(pipelineFolder(), pipeline)
-        for sitchName in sceneStitchNames(pipeline):
+        for stitchName in sceneStitchNames(pipeline):
             # read source data if any
-            src = os.path.join(srcDir, sitchName + '.glsl')
+            src = os.path.join(srcDir, stitchName + '.glsl')
             text = ''
             if fileutil.exists(src):
                 with fileutil.read(src) as fh:
                     text = fh.read()
             # create required shader stitch
-            dst = os.path.join(outDir, sitchName + '.glsl')
+            dst = os.path.join(outDir, stitchName + '.glsl')
             with fileutil.edit(dst) as fh:
                 fh.write(text)
 

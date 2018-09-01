@@ -42,7 +42,7 @@ class CurveList(UndoableSelectionView):
             # TODO: Attempt to get continuity with best tangents and set tangents to custom
             curve.insertKey(HermiteKey(time, cameraData[i], 0.0, 0.0, ETangentMode.Spline, ETangentMode.Spline, curve), EInsertMode.Copy)
 
-    def _pull(self, *args):
+    def _pull(self, *__):
         # get first selected container
         clip = self._firstSelectedItem()
         curves = None
@@ -141,7 +141,7 @@ class CurveUI(QWidget):
         self._curveView.requestAllCurvesVisible.connect(self._curveList.selectAll)
         self._curveView.selectionModel.changed.connect(self.__keySelectionChanged)
 
-        def forwardFocus(event):
+        def forwardFocus(__):
             self._curveView.setFocus(Qt.MouseFocusReason)
 
         self._curveList.focusInEvent = forwardFocus
@@ -254,7 +254,7 @@ class CurveUI(QWidget):
         if not pat.match(res[0]):
             QMessageBox.critical(self, 'Could not add attribute',
                                  'Invalid name or channel pattern given. '
-                                 'Please use only alphanumeric characters and undersores;'
+                                 'Please use only alphanumeric characters and underscores;'
                                  'also use only these masks: [x], [xy], [xyz], [xyzw].')
             return
         if '[' not in res[0]:
@@ -398,7 +398,7 @@ class ClipManager(UndoableSelectionView):
             break
         return clip
 
-    def _pull(self, *args):
+    def _pull(self, *__):
         # get first selected container
         pyObj = self._firstSelectedEvent()
         if pyObj is None:
@@ -421,26 +421,26 @@ class ClipUI(QWidget):
         main = vlayout()
         self.setLayout(main)
 
-        hbar = hlayout()
+        hBar = hlayout()
 
-        btn = createToolButton('Film Reel Create-48', 'Create clip', hbar)
+        btn = createToolButton('Film Reel Create-48', 'Create clip', hBar)
         btn.clicked.connect(self.__createClip)
         btn.setIconSize(QSize(24, 24))
 
-        btn = createToolButton('Film Reel Delete-48', 'Delete selected clips', hbar)
+        btn = createToolButton('Film Reel Delete-48', 'Delete selected clips', hBar)
         btn.setIconSize(QSize(24, 24))
         btn.clicked.connect(self.__deleteSelectedClips)
 
-        hbar.addStretch(1)
+        hBar.addStretch(1)
 
-        main.addLayout(hbar)
+        main.addLayout(hBar)
         self.manager = ClipManager(selectionChange, firstSelectedEvent, undoStack)
         self.manager.setContextMenuPolicy(Qt.CustomContextMenu)
         self.manager.customContextMenuRequested.connect(self.__clipContextMenu)
         main.addWidget(self.manager)
 
         self.undoStack = undoStack
-        self.__contextMenu = QMenu()  # reference to avoid agressive garbage collection
+        self.__contextMenu = QMenu()  # reference to avoid aggressive garbage collection
 
     def __clipContextMenu(self, pos):
         idx = self.manager.indexAt(pos)
@@ -453,11 +453,11 @@ class ClipUI(QWidget):
         self.__contextMenu.popup(self.manager.mapToGlobal(pos))
 
     def createClipWithDefaults(self, defaultUniforms, nameSuggestion):
-        iter = -1
+        cursor = -1
         name = nameSuggestion
         while self.manager.model().findItems(name):
-            iter += 1
-            name = nameSuggestion + str(iter)
+            cursor += 1
+            name = nameSuggestion + str(cursor)
         clip = Clip(name, self.undoStack)
         for curveName, value in defaultUniforms.iteritems():
             curve = HermiteCurve(curveName, data=[HermiteKey(0.0, value, 0.0, 0.0, ETangentMode.Flat, ETangentMode.Flat)])
@@ -478,7 +478,7 @@ class ClipUI(QWidget):
         self.undoStack.push(ModelEdit(self.manager.model(), [clip], []))
 
     def __deleteSelectedClips(self):
-        # TODO: Delete adds a selection change to the undostack as well, should macro it somehow
+        # TODO: Delete adds a selection change to the undo stack as well, should macro it somehow
         # TODO: Delete must delete events using this clip as well
         rows = [idx.row() for idx in self.manager.selectionModel().selectedRows()]
         if not rows:

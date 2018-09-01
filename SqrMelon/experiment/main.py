@@ -1,3 +1,4 @@
+from typing import Dict
 import functools
 from experiment.modelbase import UndoableModel
 from experiment.render import Scene
@@ -25,7 +26,7 @@ class DemoModel(UndoableModel):
         self.appendRow(Event(clip.name, clip, time, time + 8.0).items)
 
     def evaluate(self, time):
-        # type: (float) -> (Scene, dict[str, float])
+        # type: (float) -> (Scene, Dict[str, float])
         # find things at this time
         visibleShot = None
         activeEvents = []
@@ -103,11 +104,11 @@ def run():
     clips.manager.model().appendRow(clip0.items)
     clips.manager.model().appendRow(clip1.items)
 
-    scenelist = SceneList()
-    scenelist.requestCreateClip.connect(clips.createClipWithDefaults)
+    sceneList = SceneList()
+    sceneList.requestCreateClip.connect(clips.createClipWithDefaults)
 
     timer = Time()
-    scenelist.requestCreateShot.connect(functools.partial(demoModel.createShot, timer))
+    sceneList.requestCreateShot.connect(functools.partial(demoModel.createShot, timer))
     clips.requestEvent.connect(functools.partial(demoModel.createEvent, timer))
 
     curveUI = CurveUI(timer, clips.manager.selectionChange, clips.manager.firstSelectedItem, eventManager.firstSelectedEventWithClip, undoStack)
@@ -135,7 +136,7 @@ def run():
     mainWindow.createDockWidget(shotManager, name='Shots')
     mainWindow.createDockWidget(eventManager, name='Events')
     mainWindow.createDockWidget(eventTimeline)
-    mainWindow.createDockWidget(scenelist)
+    mainWindow.createDockWidget(sceneList)
     mainWindow.createDockWidget(camera)
     mainWindow.createDockWidget(view)
 

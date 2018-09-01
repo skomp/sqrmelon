@@ -36,12 +36,12 @@ def iterSceneNames():
 
 
 def pipelineDefaultChannels(pipelineName):
-    from render import Pipeline, Scene
+    from render import Pipeline
     return Pipeline.pool(pipelineName).channels
 
 
 def _iterStitches(pipelineName, scope):
-    from render import Pipeline, Scene
+    from render import Pipeline
     for stitchName in Pipeline.pool(pipelineName).iterStitchNames(scope):
         yield stitchName
 
@@ -57,14 +57,14 @@ def sceneStitchNames(pipelineName):
 
 
 def iterSceneStitches(sceneName):
-    from render import Pipeline, Scene
+    from render import Scene
     folder = os.path.join(scenesFolder(), sceneName)
     for stitchName in Scene.pool(sceneName).pipeline.iterStitchNames(EStitchScope.Scene):
         yield os.path.join(folder, stitchName + '.glsl')
 
 
 def sceneDefaultChannels(sceneName, includePipelineUniforms=False):
-    from render import Pipeline, Scene
+    from render import Scene
     scene = Scene.pool(sceneName)
     if not includePipelineUniforms:
         return scene.channels.copy()

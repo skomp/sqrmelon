@@ -1,16 +1,18 @@
+from qtutil import *
+from typing import Dict
 from collections import OrderedDict
 from experiment.modelbase import ItemRow, Label, UndoableModel
 
 
 class Clip(ItemRow):
     def __init__(self, name, undoStack):
-        # type: (str) -> None
+        # type: (str, QUndoStack) -> None
         super(Clip, self).__init__(name)
         self.__dict__['curves'] = UndoableModel(undoStack)
         self.__dict__['textures'] = OrderedDict()
 
     def evaluate(self, localTime):
-        # type: (float) -> dict[str, float]
+        # type: (float) -> Dict[str, float]
         result = {}
         for row in xrange(self.curves.rowCount()):
             pyObj = self.curves.item(row).data()
@@ -28,7 +30,7 @@ class Event(ItemRow):
         super(Event, self).__init__(name, clip, start, end, end - start, speed, roll, track)
 
     def evaluate(self, time):
-        # type: (float) -> dict[str, float]
+        # type: (float) -> Dict[str, float]
         return self.clip.evaluate((time - self.start) * self.speed + self.roll)
 
     def propertyChanged(self, index):

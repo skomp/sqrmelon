@@ -1,10 +1,11 @@
+from typing import Dict, List
 import functools
-
 import icons
-from experiment.actions import RecursiveCommandError, MoveTimeAction, MoveTangentAction, MoveKeyAction, InsertKeys, DeleteKeys
-from experiment.curvemodel import HermiteKey, ETangentMode
+from experiment.actions import MoveTimeAction, MoveTangentAction, MoveKeyAction
+from experiment.commands import KeySelectionEdit, RecursiveCommandError, InsertKeys, DeleteKeys
+from experiment.curvemodel import HermiteKey, ETangentMode, HermiteCurve
 from experiment.gridview import GridView
-from experiment.keyselection import KeySelection, KeyMarqueeAction, KeySelectionEdit
+from experiment.keyselection import KeySelection, KeyMarqueeAction
 from experiment.model import Event
 from experiment.timer import drawPlayhead
 from qtutil import *
@@ -54,7 +55,7 @@ class CurveView(GridView):
             self._time = value
             self.repaint()
 
-    def _pull(self, *args):
+    def _pull(self, *__):
         newState = {index.data(Qt.UserRole + 1) for index in self._source.selectionModel().selectedRows()}
         deselected = self._visibleCurves - newState
         self._visibleCurves = newState
@@ -101,7 +102,7 @@ class CurveView(GridView):
         dx, dy = self.uToPx(t + self._viewRect.left, wt + self._viewRect.top)
         a = (dx * dx + dy * dy)
         if a == 0.0:
-            return (TANGENT_LENGTH, 0.0)
+            return TANGENT_LENGTH, 0.0
         f = TANGENT_LENGTH / (a ** 0.5)
         return dx * f, dy * f * (1 if isOut else -1)
 
@@ -219,7 +220,7 @@ class CurveView(GridView):
             self._action.draw(painter)
 
     def mousePressEvent(self, event):
-        # alt for camera manip
+        # Alt for camera editing
         if event.modifiers() & Qt.AltModifier:
             super(CurveView, self).mousePressEvent(event)
             # creating self._action, calling it's mousePressEvent and repainting is handled in base class
@@ -328,14 +329,14 @@ class CurveView(GridView):
             self.repaint()
         elif event.key() == Qt.Key_I:
             # insert key if there's no key at this time
-            apply = {}
+            insert = {}  # type: Dict[HermiteCurve, HermiteKey]
             for curve in self._visibleCurves:
-                apply[curve] = HermiteKey(self.time, curve.evaluate(self.time), 0, 0, ETangentMode.Auto, ETangentMode.Auto, curve)
-            self._undoStack.push(InsertKeys(apply, self.repaint))
+                insert[curve] = HermiteKey(self.time, curve.evaluate(self.time), 0, 0, ETangentMode.Auto, ETangentMode.Auto, curve)
+            self._undoStack.push(InsertKeys(insert, self.repaint))
         elif event.key() == Qt.Key_Delete:
             # delete selected keys
-            apply = {}
+            delete = {}  # type: Dict[HermiteCurve, List[HermiteKey]]
             for key, mask in self.selectionModel.iteritems():
                 if mask & 1:
-                    apply.setdefault(key.parent, []).append(key)
-            self._undoStack.push(DeleteKeys(apply, self.repaint))
+                    delete.setdefault(key.parent, []).append(key)
+            self._undoStack.push(DeleteKeys(delete, self.repaint))

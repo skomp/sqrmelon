@@ -11,6 +11,7 @@ def clamp(v, n, x):
 class ViewPanAction(object):
     def __init__(self, viewRect, widgetSize):
         self.__dragStart = None
+        self.__startPos = None
         self.__rect = viewRect
         self.__widgetSize = widgetSize
 
@@ -66,7 +67,7 @@ class ViewZoomAction(DirectionalAction):
         self.__rect = viewRect
         self.__pixelSize = pixelSize
         self.__baseValues = self.__rect.left, self.__rect.right, self.__rect.top, self.__rect.bottom
-    
+
     def processMouseDelta(self, event):
         dx = self._dragStartPx.x() - event.x()
         dy = self._dragStartPx.y() - event.y()
@@ -156,6 +157,7 @@ class ViewRect(object):
 class GridView(QWidget):
     # TODO: Cursor management
     CELL_SIZE_MAX_PX = 80
+
     def __init__(self, parent=None, mask=3):
         super(GridView, self).__init__(parent)
         self.setFocusPolicy(Qt.StrongFocus)

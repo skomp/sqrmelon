@@ -1,3 +1,6 @@
+from experiment.timer import Time
+from experiment.camerawidget import Camera
+from experiment.main import DemoModel
 from experiment.render import Scene, FrameBufferPool
 from qtutil import *
 from OpenGL.GL import *
@@ -7,7 +10,7 @@ from cgmath import Mat44
 
 class View3D(QGLWidget):
     def __init__(self, camera, model, timer):
-        # type: (View3D, Camera, DemoModel, Timer) -> None
+        # type: (View3D, Camera, DemoModel, Time) -> None
         glFormat = QGLFormat()
         glFormat.setVersion(4, 1)
         glFormat.setProfile(QGLFormat.CoreProfile)
@@ -40,7 +43,7 @@ class View3D(QGLWidget):
             if self._lastRenderedScene is not None:
                 try:
                     self._lastRenderedScene.changed.disconnect(self.repaint)
-                except ValueError: # no such connection
+                except ValueError:  # no such connection
                     pass
                 self._lastRenderedScene = None
             return
@@ -59,10 +62,10 @@ class View3D(QGLWidget):
         uniforms['uV'] = r[:]
         uniforms['uV'][12:15] = cameraData.translate
 
-        tfov = tan(uniforms.get('uFovBias', 0.5))
+        tanFOV = tan(uniforms.get('uFovBias', 0.5))
         aspect = self.width() / float(self.height())  # TODO: base off frame buffer
-        xfov = tfov * aspect
-        uniforms['uFrustum'] = (-xfov, -tfov, 1.0, xfov, -tfov, 1.0, -xfov, tfov, 1.0, xfov, tfov, 1.0)
+        xFOV = tanFOV * aspect
+        uniforms['uFrustum'] = (-xFOV, -tanFOV, 1.0, xFOV, -tanFOV, 1.0, -xFOV, tanFOV, 1.0, xFOV, tanFOV, 1.0)
 
         # combine vector data types
         for key in snapshot:

@@ -1,4 +1,4 @@
-from experiment.actions import SelectionModelEdit, RecursiveCommandError
+from experiment.commands import SelectionModelEdit, RecursiveCommandError
 from experiment.enum import Enum
 from qtutil import *
 
@@ -17,16 +17,16 @@ class EnumEdit(QComboBox):
         self.__enum = enum
         self.addItems(enum.options())
         self.editingFinished = self.currentIndexChanged
+        self.__timer = QTimer()
 
     def focusInEvent(self, evt):
         # we get multiple focus in events while spawning the item delegate
         # the last one is a popupFocusReason, but this popup is immediately cancelled again
         # so we delay the popup to skip over the lose-focus event while trying to gain focus
         if evt.reason() == 7:
-            self.__t = QTimer()
-            self.__t.timeout.connect(self.showPopup)
-            self.__t.setSingleShot(True)
-            self.__t.start(100)
+            self.__timer.timeout.connect(self.showPopup)
+            self.__timer.setSingleShot(True)
+            self.__timer.start(100)
 
     def value(self):
         return self.currentText()
@@ -44,8 +44,13 @@ class EnumEdit(QComboBox):
 
 
 class AtomDelegate(QItemDelegate):
+    def __init__(self, *args):
+        super(AtomDelegate, self).__init__(*args)
+        self.__type = None  # track what type of data we are editing so we can cast setEditorData
+        self.__editor = None  # avoid GC of widget
+
     def setEditorData(self, editorWidget, index):
-        editorWidget.setValue(self.__typ(index.data(Qt.EditRole)))
+        editorWidget.setValue(self.__type(index.data(Qt.EditRole)))
 
     def setModelData(self, editorWidget, model, index):
         model.setData(index, str(editorWidget.value()))
@@ -53,22 +58,22 @@ class AtomDelegate(QItemDelegate):
     def createEditor(self, parentWidget, styleOption, index):
         if index.column() == 0:
             # special case for self-referencing item
-            self.__typ = str
+            self.__type = str
             self.__editor = LineEdit()
         else:
-            self.__typ = index.data(Qt.UserRole + 1)
-            if not isinstance(self.__typ, type):
+            self.__type = index.data(Qt.UserRole + 1)
+            if not isinstance(self.__type, type):
                 return
-            if self.__typ == int:
+            if self.__type == int:
                 self.__editor = SpinBox()
-                self.__editor.setMinimum(-2**31)
-                self.__editor.setMaximum(2**31-1)
-            elif self.__typ == float:
+                self.__editor.setMinimum(-2 ** 31)
+                self.__editor.setMaximum(2 ** 31 - 1)
+            elif self.__type == float:
                 self.__editor = DoubleSpinBox()
-            elif self.__typ == basestring or issubclass(self.__typ, basestring):
+            elif self.__type == basestring or issubclass(self.__type, basestring):
                 self.__editor = LineEdit()
-            elif issubclass(self.__typ, Enum):
-                self.__editor = EnumEdit(self.__typ)
+            elif issubclass(self.__type, Enum):
+                self.__editor = EnumEdit(self.__type)
             else:
                 return
         self.__editor.setParent(parentWidget)
@@ -80,9 +85,9 @@ class AtomDelegate(QItemDelegate):
         self.closeEditor.emit(self.__editor, QAbstractItemDelegate.NoHint)
 
 
-class NamedColums(QTableView):
+class NamedColumns(QTableView):
     def __init__(self, parent=None):
-        super(NamedColums, self).__init__(parent)
+        super(NamedColumns, self).__init__(parent)
         self.setSelectionMode(QTableView.ExtendedSelection)
         self.setSelectionBehavior(QTableView.SelectRows)
         self.verticalHeader().hide()
@@ -92,7 +97,7 @@ class NamedColums(QTableView):
                            'QTableView:active { selection-background-color: rgb(0,120,215); }')
 
     def setModel(self, model):
-        super(NamedColums, self).setModel(model)
+        super(NamedColumns, self).setModel(model)
         self._updateNames()
 
     def _updateNames(self):
@@ -110,7 +115,7 @@ class NamedColums(QTableView):
         raise NotImplementedError()
 
 
-class UndoableSelectionView(NamedColums):
+class UndoableSelectionView(NamedColumns):
     selectionChange = pyqtSignal(QItemSelection, QItemSelection)
 
     def __init__(self, undoStack, parent=None):

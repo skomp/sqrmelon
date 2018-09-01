@@ -24,12 +24,12 @@ def graphFromJson(data):
     for node in nodes:
         for plug in node.inputs:
             for i, connection in enumerate(plug.connections):
-                id, portName = connection.split('.', 1)
-                plug.connections[i] = Node.idLut[int(id)].findOutput(portName)
+                idx, portName = connection.split('.', 1)
+                plug.connections[i] = Node.idLut[int(idx)].findOutput(portName)
         for plug in node.outputs:
             for i, connection in enumerate(plug.connections):
-                id, portName = connection.split('.', 1)
-                plug.connections[i] = Node.idLut[int(id)].findInput(portName)
+                idx, portName = connection.split('.', 1)
+                plug.connections[i] = Node.idLut[int(idx)].findInput(portName)
     return nodes
 
 

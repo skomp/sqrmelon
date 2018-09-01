@@ -1,11 +1,12 @@
-from experiment.actions import MarqueeActionBase, NestedCommand
+from experiment.commands import KeySelectionEdit
+from experiment.actions import MarqueeActionBase
 from qtutil import *
 
 
 class KeySelection(QObject):
     changed = pyqtSignal()
 
-    # dict of HermiteKey objects and bitmask of (point, intangent, outtangent)
+    # dict of HermiteKey objects and bitmask of (point, inTangent, outTangent)
 
     def __init__(self):
         super(KeySelection, self).__init__()
@@ -57,57 +58,6 @@ class KeySelection(QObject):
     def __delitem__(self, item):
         del self.__data[item]
         self.changed.emit()
-
-
-class KeySelectionEdit(NestedCommand):
-    def __init__(self, selectionDict, keyStateDict, parent=None):
-        super(KeySelectionEdit, self).__init__('Key selection change', parent)
-        self.__selectionModel = selectionDict
-        self.__apply = (keyStateDict.copy(), [])
-
-        # move addOrModify actions to remove if we are modifying to '0'
-        for key, value in self.__apply[0].iteritems():
-            if value == 0:
-                # all elements deselected, register for removal
-                assert key in self.__selectionModel, 'Attempting to deselect key that wasn\'t selected.'
-                self.__apply[1].append(key)
-
-        for key in self.__apply[1]:
-            del self.__apply[0][key]
-
-        # cache restore state
-        self.__restore = ({}, [])
-        for addOrModify in self.__apply[0]:
-            if addOrModify in self.__selectionModel:
-                # is modification
-                self.__restore[0][addOrModify] = self.__selectionModel[addOrModify]
-            else:
-                self.__restore[1].append(addOrModify)
-
-        for remove in self.__apply[1]:
-            self.__restore[0][remove] = self.__selectionModel[remove]
-
-    def redo(self):
-        oldState = self.__selectionModel.blockSignals(True)
-
-        self.__selectionModel.update(self.__apply[0])
-        for remove in self.__apply[1]:
-            del self.__selectionModel[remove]
-
-        self.__selectionModel.blockSignals(oldState)
-        if not oldState:
-            self.__selectionModel.changed.emit()
-
-    def undo(self):
-        oldState = self.__selectionModel.blockSignals(True)
-
-        self.__selectionModel.update(self.__restore[0])
-        for remove in self.__restore[1]:
-            del self.__selectionModel[remove]
-
-        self.__selectionModel.blockSignals(oldState)
-        if not oldState:
-            self.__selectionModel.changed.emit()
 
 
 # TODO: Mimic maya? when mask is tangent, always deselect key; when selecting, first attempt to select keys, if no keys found then attempt to select tangents

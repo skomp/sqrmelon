@@ -36,8 +36,8 @@ class FileSystemWatcher2(QFileSystemWatcher):
         super(FileSystemWatcher2, self).__init__()
         for pathToWatch in pathsToWatch:
             self.addPath(pathToWatch)
-        for dirname in {os.path.dirname(pathToWatch) for pathToWatch in pathsToWatch}:
-            self.addPath(dirname)
+        for dirName in {os.path.dirname(pathToWatch) for pathToWatch in pathsToWatch}:
+            self.addPath(dirName)
         self.pathsToWatch = [unicode(os.path.abspath(pathToWatch)) for pathToWatch in pathsToWatch]
         self.directoryChanged.connect(self.__handleDeleteCreateInsteadOfSave)
 
@@ -47,8 +47,8 @@ class FileSystemWatcher2(QFileSystemWatcher):
                 continue
             self.addPath(pathToWatch)
             self.pathsToWatch.append(unicode(os.path.abspath(pathToWatch)))
-        for dirname in {os.path.dirname(pathToWatch) for pathToWatch in pathsToWatch} - set(self.directories()):
-            self.addPath(dirname)
+        for dirName in {os.path.dirname(pathToWatch) for pathToWatch in pathsToWatch} - set(self.directories()):
+            self.addPath(dirName)
 
     def clear(self):
         self.removePaths(self.pathsToWatch)
@@ -58,7 +58,7 @@ class FileSystemWatcher2(QFileSystemWatcher):
         """
         https://stackoverflow.com/questions/18300376/qt-qfilesystemwatcher-signal-filechanged-gets-emited-only-once/30076119
         some text editors save to a temp file, delete the existing file and move their temp file
-        filesystemwatcher stopts watching files upon delete
+        file system watcher stops watching files upon delete
         but we do get a lot of directory changes, so we can ensure we are watching the right files all the time
         we could technically do this during the fileChanged callback, but the un-watching happens async so it is not reliable
         """

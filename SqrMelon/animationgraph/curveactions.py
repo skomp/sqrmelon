@@ -7,7 +7,6 @@ class DragAction(QUndoCommand):
     """
     Wrapper to move given set of keys & track undo-state.
     """
-
     def __init__(self, event, selection, clickCallback, scale, snap):
         super(DragAction, self).__init__('MoveKeys')
         self.__start = event.pos()

@@ -38,20 +38,12 @@ class Plug(object):
         self.name = name
         self.node = node
         self.connections = list(connections)
-        self._portRect = None
-        self._textRect = None
-
-    @property
-    def portRect(self):
-        return self._portRect
-
-    @property
-    def textRect(self):
-        return self._textRect
+        self.portRect = None
+        self.textRect = None
 
     def paint(self, painter):
-        painter.drawEllipse(self._portRect)
-        painter.drawText(self._textRect, Qt.AlignRight | Qt.AlignTop, self.name)
+        painter.drawEllipse(self.portRect)
+        painter.drawText(self.textRect, Qt.AlignRight | Qt.AlignTop, self.name)
 
     def toJson(self):
         return OrderedDict([('name', self.name),
@@ -100,9 +92,9 @@ class Node(object):
         self.layout()
 
     def findInput(self, name):
-        for input in self.inputs:
-            if input.name == name:
-                return input
+        for port in self.inputs:
+            if port.name == name:
+                return port
 
     def findOutput(self, name):
         for output in self.outputs:
@@ -112,18 +104,18 @@ class Node(object):
     @property
     def id(self):
         # serialization utility
-        id = Node.idLut.get(self, None)
-        if id is None:
-            id = len(Node.idLut)
-            Node.idLut[self] = id
-        return id
+        idx = Node.idLut.get(self, None)
+        if idx is None:
+            idx = len(Node.idLut)
+            Node.idLut[self] = idx
+        return idx
 
     def toJson(self):
         return OrderedDict([('name', self.name),
                             ('id', self.id),
                             ('x', self.x),
                             ('y', self.y),
-                            ('inputs', tuple(input.toJson() for input in self.inputs)),
+                            ('inputs', tuple(port.toJson() for port in self.inputs)),
                             ('outputs', tuple(output.toJson() for output in self.outputs)),
                             ('stitches', tuple(stitch.toJson() for stitch in self.stitches))])
 
@@ -132,9 +124,9 @@ class Node(object):
         node = cls(data['name'],
                    data['x'],
                    data['y'],
-                   tuple(Plug.fromJson(input) for input in data['inputs']),
-                   tuple(OutputPlug.fromJson(input) for input in data['outputs']),
-                   tuple(Stitch.fromJson(input) for input in data['stitches']))
+                   tuple(Plug.fromJson(port) for port in data['inputs']),
+                   tuple(OutputPlug.fromJson(output) for output in data['outputs']),
+                   tuple(Stitch.fromJson(stitch) for stitch in data['stitches']))
         Node.idLut[data['id']] = node
         return node
 
@@ -149,10 +141,10 @@ class Node(object):
         self._rect.moveTo(x, y)
         self._contentRect.moveTo(x + Node.PADDING, y + Node.PADDING)
         for plug in self.inputs + self.outputs:
-            x, y = plug._portRect.x() + dx, plug._portRect.y() + dy
-            plug._portRect.moveTo(x, y)
-            x, y = plug._textRect.x() + dx, plug._textRect.y() + dy
-            plug._textRect.moveTo(x, y)
+            x, y = plug.portRect.x() + dx, plug.portRect.y() + dy
+            plug.portRect.moveTo(x, y)
+            x, y = plug.textRect.x() + dx, plug.textRect.y() + dy
+            plug.textRect.moveTo(x, y)
 
     @property
     def rect(self):
@@ -163,31 +155,31 @@ class Node(object):
     PADDING = 4
 
     def layout(self):
-        PLUGSIZE = 7
+        PLUG_SIZE = 7
 
         metrics = QApplication.fontMetrics()
         padding = Node.PADDING
-        em = max(PLUGSIZE, metrics.height()) + padding
+        em = max(PLUG_SIZE, metrics.height()) + padding
 
         lhs = 0.0
         if self.inputs:
-            lhs = max(PLUGSIZE + padding + metrics.width(input.name) + padding for input in self.inputs)
+            lhs = max(PLUG_SIZE + padding + metrics.width(port.name) + padding for port in self.inputs)
         rhs = 0.0
         if self.outputs:
-            rhs = max(PLUGSIZE + padding + metrics.width(output.name) + padding for output in self.outputs)
+            rhs = max(PLUG_SIZE + padding + metrics.width(output.name) + padding for output in self.outputs)
         contentWidth = max(lhs + rhs, metrics.width(self.name))
         self._contentRect = QRect(self.x + padding, self.y + padding, contentWidth, em * (1 + max(len(self.inputs), len(self.outputs))))
         self._rect = QRect(self.x, self.y, contentWidth + 2 * padding, em * (1 + max(len(self.inputs), len(self.outputs))) + 2 * padding)
 
         contentRect = self._contentRect.adjusted(0, em, 0, 0)
         for i in xrange(max(len(self.inputs), len(self.outputs))):
-            o = ((em - padding) - PLUGSIZE) / 2
+            o = ((em - padding) - PLUG_SIZE) / 2
             if i < len(self.inputs):
-                self.inputs[i]._portRect = QRect(contentRect.x(), contentRect.y() + o, PLUGSIZE, PLUGSIZE)
-                self.inputs[i]._textRect = QRect(contentRect.x() + PLUGSIZE + padding, contentRect.y(), lhs - (PLUGSIZE + padding), metrics.height())
+                self.inputs[i].portRect = QRect(contentRect.x(), contentRect.y() + o, PLUG_SIZE, PLUG_SIZE)
+                self.inputs[i].textRect = QRect(contentRect.x() + PLUG_SIZE + padding, contentRect.y(), lhs - (PLUG_SIZE + padding), metrics.height())
             if i < len(self.outputs):
-                self.outputs[i]._portRect = QRect(contentRect.right() - PLUGSIZE, contentRect.y() + o, PLUGSIZE, PLUGSIZE)
-                self.outputs[i]._textRect = QRect(contentRect.right() - rhs, contentRect.y(), rhs - (PLUGSIZE + padding), contentRect.height())
+                self.outputs[i].portRect = QRect(contentRect.right() - PLUG_SIZE, contentRect.y() + o, PLUG_SIZE, PLUG_SIZE)
+                self.outputs[i].textRect = QRect(contentRect.right() - rhs, contentRect.y(), rhs - (PLUG_SIZE + padding), contentRect.height())
             contentRect.adjust(0, em, 0, 0)
 
     def paint(self, painter):
@@ -195,12 +187,12 @@ class Node(object):
         path.addRoundedRect(QRectF(self._rect), Node.PADDING, Node.PADDING)
         painter.fillPath(path, QColor(220, 220, 220))
         painter.drawText(self._contentRect, Qt.AlignHCenter | Qt.AlignTop, self.name)
-        for input in self.inputs:
-            input.paint(painter)
+        for port in self.inputs:
+            port.paint(painter)
             # connections are bidirectional, so by only painting connections for inputs we cover all of them
-            for other in input.connections:
-                start = input._portRect.center()
-                end = other._portRect.center()
+            for other in port.connections:
+                start = port.portRect.center()
+                end = other.portRect.center()
                 path = QPainterPath()
                 path.moveTo(start)
                 path.cubicTo(QPoint(lerp(start.x(), end.x(), 0.5), start.y()), QPoint(lerp(end.x(), start.x(), 0.5), end.y()), end)

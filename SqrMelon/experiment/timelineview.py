@@ -88,7 +88,7 @@ class TimelineMarqueeAction(MarqueeActionBase):
         self._undoStack = undoStack
 
     @staticmethod
-    def _preprocess(selectionModels, itemsIter):
+    def _preProcess(selectionModels, itemsIter):
         events = list(graphicsItem.event for graphicsItem in itemsIter)
         for selectionModel in selectionModels:
             selectedRows = set(idx.row() for idx in selectionModel.selectedRows())
@@ -104,7 +104,7 @@ class TimelineMarqueeAction(MarqueeActionBase):
     @staticmethod
     def _selectNew(selectionModels, itemsIter):
         changeMap = {}
-        for selectionModel, selectedRows, touchedRows in TimelineMarqueeAction._preprocess(selectionModels, itemsIter):
+        for selectionModel, selectedRows, touchedRows in TimelineMarqueeAction._preProcess(selectionModels, itemsIter):
             keep = selectedRows & touchedRows
             select = (touchedRows - keep)
             deselect = (selectedRows - keep)
@@ -116,7 +116,7 @@ class TimelineMarqueeAction(MarqueeActionBase):
     @staticmethod
     def _selectAdd(selectionModels, itemsIter):
         changeMap = {}
-        for selectionModel, selectedRows, touchedRows in TimelineMarqueeAction._preprocess(selectionModels, itemsIter):
+        for selectionModel, selectedRows, touchedRows in TimelineMarqueeAction._preProcess(selectionModels, itemsIter):
             select = touchedRows - selectedRows
             if not select:
                 continue
@@ -126,7 +126,7 @@ class TimelineMarqueeAction(MarqueeActionBase):
     @staticmethod
     def _selectRemove(selectionModels, itemsIter):
         changeMap = {}
-        for selectionModel, selectedRows, touchedRows in TimelineMarqueeAction._preprocess(selectionModels, itemsIter):
+        for selectionModel, selectedRows, touchedRows in TimelineMarqueeAction._preProcess(selectionModels, itemsIter):
             deselect = touchedRows & selectedRows
             if not deselect:
                 continue
@@ -136,7 +136,7 @@ class TimelineMarqueeAction(MarqueeActionBase):
     @staticmethod
     def _selectToggle(selectionModels, itemsIter):
         changeMap = {}
-        for selectionModel, selectedRows, touchedRows in TimelineMarqueeAction._preprocess(selectionModels, itemsIter):
+        for selectionModel, selectedRows, touchedRows in TimelineMarqueeAction._preProcess(selectionModels, itemsIter):
             deselect = touchedRows & selectedRows
             select = touchedRows - deselect
             if not select and not deselect:
@@ -147,7 +147,6 @@ class TimelineMarqueeAction(MarqueeActionBase):
     def _createCommand(self, selectionModels, changeMap):
         """
         # TODO: If we instead were editing one single model, and our other views were just filtered versions of the same model, this can become so much simpler
-        Super fun hacky times!
         So the SelectionModelEdit does not actually change anything as it reacts to changes
         by Qt views to a selectionModel. We just retroactively try to make those selection changes undoable.
         If we want to push selection changes, which would work as normal and push undo commands to the stack for free.
@@ -245,7 +244,8 @@ class TimelineView(GridView):
             for row in set(selectionModel.model().mapToSource(idx).row() for idx in selectionModel.selectedRows()):
                 yield self.__model.item(row).data()
 
-    def _itemHandleAt(self, itemRect, pos):
+    @staticmethod
+    def _itemHandleAt(itemRect, pos):
         # reimplemented from GraphicsItemEvent.mouseMoveEvent
         # returns a mask for what part of the event is clicked (start=1, right=2, both=3)
         if itemRect.width() > GraphicsItemEvent.handleWidth * 3:

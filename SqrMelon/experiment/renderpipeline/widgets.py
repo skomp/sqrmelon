@@ -94,7 +94,7 @@ class NodeSettings(QWidget):
             old = plug.size
             try:
                 new = int(item.text())
-            except:
+            except ValueError:
                 return
         self.undoStack.push(SetAttr(functools.partial(setattr, plug, name), old, new, self.nodeChanged.emit))
 
@@ -132,7 +132,7 @@ class NodeSettings(QWidget):
             new = EStitchScope(item.text())
         self.undoStack.push(SetAttr(functools.partial(setattr, stitch, name), old, new, functools.partial(self.setNode, self.node)))
 
-    def __onEditingFinished(self, *args):
+    def __onEditingFinished(self, *__):
         self.undoStack.push(SetAttr(functools.partial(setattr, self.node, 'name'), self.node.name, self._nameEdit.text(), self.nodeChanged.emit))
 
     def setNode(self, node):
@@ -148,9 +148,9 @@ class NodeSettings(QWidget):
 
         mdl = self._inputList.model()
         mdl.clear()
-        for input in node.inputs:
-            item = QStandardItem(input.name)
-            item.setData(input)
+        for port in node.inputs:
+            item = QStandardItem(port.name)
+            item.setData(port)
             mdl.appendRow(item)
 
         mdl = self._outputList.model()

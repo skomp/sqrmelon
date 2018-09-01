@@ -107,7 +107,7 @@ class Camera(QWidget):
         self.requestAnimatedCameraPosition.emit()
         self.edited.emit()
 
-    def followAnimation(self, *args):
+    def followAnimation(self, *__):
         if not self.__cameraControlActive:
             self.requestAnimatedCameraPosition.emit()
 
@@ -130,7 +130,7 @@ class Camera(QWidget):
         self.cameraChanged.emit()
     """
 
-    def toggle(self, *args):
+    def toggle(self, *__):
         self.__cameraControlActive = not self.__cameraControlActive
         if self.__cameraControlActive:
             self.__enabled.setIcon(icons.get('Toggle Off-48'))
@@ -181,7 +181,7 @@ class Camera(QWidget):
                                   self.__data.rotate[2])
             self.__dirty = True
 
-    def flyMouseEnd(self, event):
+    def flyMouseEnd(self, __):
         self.__drag = None
 
     def flyKeyboardInput(self, keyEvent, state):
