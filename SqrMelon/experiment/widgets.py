@@ -138,17 +138,17 @@ class CurveUI(QWidget):
         self._curveList = CurveList(clipManagerSelectionChange, firstSelectedClip, undoStack)
         self._curveList.selectionChange.connect(self.__visibleCurvesChanged)
 
-        self._curveView = CurveView(timer, self._curveList, undoStack)
-        self._curveView.requestAllCurvesVisible.connect(self._curveList.selectAll)
-        self._curveView.selectionModel.changed.connect(self.__keySelectionChanged)
+        self.view = CurveView(timer, self._curveList, undoStack)
+        self.view.requestAllCurvesVisible.connect(self._curveList.selectAll)
+        self.view.selectionModel.changed.connect(self.__keySelectionChanged)
 
         def forwardFocus(__):
-            self._curveView.setFocus(Qt.MouseFocusReason)
+            self.view.setFocus(Qt.MouseFocusReason)
 
         self._curveList.focusInEvent = forwardFocus
 
         splitter.addWidget(self._curveList)
-        splitter.addWidget(self._curveView)
+        splitter.addWidget(self.view)
 
         self._toolBar = QWidget()
         self._toolBar.setLayout(toolBar)
@@ -160,32 +160,32 @@ class CurveUI(QWidget):
         mainLayout.setStretch(1, 1)
 
     def keyCamera(self, camera):
-        self.curveList.keyCamera(camera, self._curveView.time)
-        self._curveView.repaint()
+        self.curveList.keyCamera(camera, self.view.time)
+        self.view.repaint()
 
     @property
     def curveList(self):
         return self._curveList
 
     def setEvent(self, event):
-        self._curveView.setEvent(event)
+        self.view.setEvent(event)
 
     def __activeClipChanged(self):
         clip = self._firstSelectedClip()
         self._toolBar.setEnabled(bool(clip))
 
         event = self._firstSelectedEventWithClip(clip)
-        self._curveView.setEvent(event)
+        self.view.setEvent(event)
 
     def __visibleCurvesChanged(self):
-        state = self._curveView.hasVisibleCurves()
+        state = self.view.hasVisibleCurves()
         for action in self._curveActions:
             action.setEnabled(state)
 
     def __keySelectionChanged(self):
         # set value and time fields to match selection
         cache = None
-        for key, mask in self._curveView.selectionModel.iteritems():
+        for key, mask in self.view.selectionModel.iteritems():
             if not mask & 1:
                 continue
             if cache is None:
@@ -203,26 +203,26 @@ class CurveUI(QWidget):
 
     def __valueChanged(self, value):
         restore = {}
-        for key, mask in self._curveView.selectionModel.iteritems():
+        for key, mask in self.view.selectionModel.iteritems():
             if not mask & 1:
                 continue
             restore[key] = key.copyData()
             key.y = value
-        self._undostack.push(KeyEdit(restore, self._curveView.repaint))
+        self._undostack.push(KeyEdit(restore, self.view.repaint))
 
     def __timeChanged(self, value):
         restore = {}
-        for key, mask in self._curveView.selectionModel.iteritems():
+        for key, mask in self.view.selectionModel.iteritems():
             if not mask & 1:
                 continue
             restore[key] = key.copyData()
             key.x = value
-        self._undostack.push(KeyEdit(restore, self._curveView.repaint))
+        self._undostack.push(KeyEdit(restore, self.view.repaint))
 
     def __setTangentMode(self, tangentMode):
         restore = {}
         dirty = False
-        for key, mask in self._curveView.selectionModel.iteritems():
+        for key, mask in self.view.selectionModel.iteritems():
             restore[key] = key.copyData()
             if mask & 2:
                 key.inTangentMode = tangentMode
@@ -242,7 +242,7 @@ class CurveUI(QWidget):
         if not dirty:
             return
 
-        self._undoStack.push(KeyEdit(restore, self._curveView.repaint))
+        self._undoStack.push(KeyEdit(restore, self.view.repaint))
         self.repaint()
 
     def __addChannel(self):

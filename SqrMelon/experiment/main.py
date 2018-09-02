@@ -117,6 +117,8 @@ def run():
     demoModel.rowsRemoved.connect(shotManager.view.updateSections)
     demoModel.rowsRemoved.connect(eventManager.view.updateSections)
 
+    demoModel.dataChanged.connect(curveUI.view.repaint)
+
     eventManager.view.selectionChange.connect(functools.partial(eventChanged, eventManager.view.selectionModel().selectedRows, curveUI))
     camera.requestAnimatedCameraPosition.connect(functools.partial(evalCamera, camera, demoModel, timer))
 

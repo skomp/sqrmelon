@@ -176,7 +176,6 @@ class TimelineMarqueeAction(MarqueeActionBase):
 
 
 class TimelineView(GridView):
-    # TODO: Mouse release after moving or rescaling events should repaint the curve view in case the loop-range should be updated; connect demoModel itemChange to CurveView repaint ?
     def __init__(self, timer, undoStack, demoModel, selectionModels):
         super(TimelineView, self).__init__(mask=1)
 
