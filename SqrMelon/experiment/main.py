@@ -74,6 +74,16 @@ def run():
 
     editMenu = menuBar.addMenu('Edit')
 
+    undo = undoStack.createUndoAction(editMenu, '&Undo ')
+    editMenu.addAction(undo)
+    undo.setShortcut(QKeySequence(QKeySequence.Undo))
+    undo.setShortcutContext(Qt.ApplicationShortcut)
+
+    redo = undoStack.createRedoAction(editMenu, '&Redo ')
+    editMenu.addAction(redo)
+    redo.setShortcut(QKeySequence(QKeySequence.Redo))
+    redo.setShortcutContext(Qt.ApplicationShortcut)
+
     keyCamera = editMenu.addAction('&Key camera')
     keyCamera.setShortcut(QKeySequence(Qt.Key_K))
     keyCamera.setShortcutContext(Qt.ApplicationShortcut)
