@@ -85,7 +85,7 @@ class CurveUI(QWidget):
         self._time = QDoubleSpinBox()
         self._value = QDoubleSpinBox()
         self._snap = QComboBox()
-        self._snap.addItems(['1', '2', '4', '8',' 16', '32', '64', '128'])
+        self._snap.addItems(['1', '2', '4', '8', '16', '32', '64', '128'])
 
         toolBar.addWidget(QLabel('Relative:'))
         toolBar.addWidget(self._relative)
