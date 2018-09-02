@@ -134,8 +134,8 @@ class HermiteKey(object):
             prev = self.parent.key(idx - 1)
             adjacent = self.parent.key(idx + 1)
 
-        prevToMeDY = (self.y - prev.y)  # / (self.x - prev.x)
-        meToNextDY = (adjacent.y - self.y)  # / (adjacent.x - self.x)
+        prevToMeDY = (self.y - prev.y) / (self.x - prev.x)
+        meToNextDY = (adjacent.y - self.y) / (adjacent.x - self.x)
 
         if not inTangentDone and self.inTangentMode == ETangentMode.Linear:
             self.inTangentY = prevToMeDY
@@ -325,6 +325,6 @@ class HermiteCurve(ItemRow):
         h11t = ttt - tt
 
         return (h00t * prev.y +
-                h10t * prev.outTangentY +
-                h11t * adjacent.inTangentY +
+                h10t * prev.outTangentY * dx +
+                h11t * adjacent.inTangentY * dx +
                 h01t * adjacent.y)

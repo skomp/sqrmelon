@@ -86,10 +86,10 @@ class CurveView(GridView):
     def _tangentEndPoint(self, curve, i, isOut):
         key = curve.key(i)
         if not isOut:
-            dx = curve.key(i - 1).x - key.x
+            dx = 1.0
             wt = key.inTangentY
         else:
-            dx = curve.key(i + 1).x - key.x
+            dx = -1.0
             wt = key.outTangentY
 
         TANGENT_LENGTH = 40.0
