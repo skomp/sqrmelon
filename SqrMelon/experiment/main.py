@@ -1,6 +1,16 @@
-# TODO: 3D view should adhere to some aspect ratio
-# TODO: Playback & more timeline controls
 # TODO: Save project & ask to save on exit
+
+# TODO: Playback & more timeline controls, that whole toolbar needs proper layout as well
+# TODO: Loop point change doesn't repaint the timelineview
+
+# TODO: 3D view should adhere to some aspect ratio, based on user configured resolution
+# TODO: Resolution factor selector, if mode is not "viewport size" image should be rendered at target and rescaled to fit window, serves as a performance test as well; if window is floating add "resize window" button to auto-size it to the underlying buffer size
+# TODO: No signal image
+
+# TODO: Record button
+# TODO: Copy paste support
+# TODO: There are still some abstract functions and other TODOs in widgets.py
+
 import functools
 import json
 from experiment.demomodel import DemoModel
