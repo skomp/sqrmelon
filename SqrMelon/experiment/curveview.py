@@ -6,7 +6,7 @@ from experiment.curvemodel import HermiteKey, ETangentMode, HermiteCurve
 from experiment.gridview import GridView
 from experiment.keyselection import KeySelection, KeyMarqueeAction
 from experiment.model import Event
-from experiment.timer import drawPlayhead
+from experiment.timer import drawPlayhead, drawLoopRange
 from qtutil import *
 
 
@@ -202,23 +202,7 @@ class CurveView(GridView):
                 left = self.tToX(0.0)
                 right = self.tToX(self._event.duration)
 
-            painter.setOpacity(0.5)
-
-            painter.fillRect(0, 0, left, self.height(), Qt.black)
-            painter.fillRect(right + 2, 0, self.width() - right, self.height(), Qt.black)
-
-            painter.setPen(QColor(33, 150, 243))
-            painter.drawLine(left, 16, left, self.height())
-            painter.drawLine(right, 16, right, self.height())
-
-            painter.setPen(QColor(63, 81, 181))
-            painter.drawLine(left + 1, 16, left + 1, self.height())
-            painter.drawLine(right + 1, 16, right + 1, self.height())
-
-            painter.drawPixmap(left, 0, icons.getImage('left'))
-            painter.drawPixmap(right - 4, 0, icons.getImage('right'))
-
-            painter.setOpacity(1.0)
+            drawLoopRange(painter, left, right, self.width(), self.height())
 
         # paint playhead
         x = self.tToX(self.time)

@@ -1,0 +1,88 @@
+{
+  "Identifier": "SqrMelonProject",
+  "BPM": 120,
+  "LoopStart": 0,
+  "LoopEnd": 4,
+  "Clips": [
+    {
+      "Name": "Clip 0",
+      "Curves": [
+        {
+          "Name": "uOrigin.x",
+          "LoopMode": "Clamp",
+          "Keys": [0.0, 0.0, 0.0, 0.0, "Custom", "Custom", 4.0, 1.0, 1.0, 1.0, "Custom", "Custom"]
+        },
+        {
+          "Name": "uFlash",
+          "LoopMode": "Clamp",
+          "Keys": [0.0, 1.0, 1.0, 1.0, "Custom", "Custom", 1.0, 0.0, 0.0, 0.0, "Custom", "Custom"
+          ]
+        }
+      ]
+    },
+    {
+      "Name": "Clip 1",
+      "Curves": [
+        {
+          "Name": "uOrigin.x",
+          "LoopMode": "Clamp",
+          "Keys": [2.0, 0.0, 0.0, 0.0, "Custom", "Custom", 3.0, 1.0, 0.0, 0.0, "Custom", "Custom"
+          ]
+        },
+        {
+          "Name": "uOrigin.y",
+          "LoopMode": "Clamp",
+          "Keys": [0.0, 0.0, 0.0, 1.0, "Custom", "Custom", 1.0, 1.0, 1.0, 1.0, "Custom", "Custom"
+          ]
+        }
+      ]
+    }
+  ],
+  "Shots": [
+    {
+      "Name": "New Shot",
+      "Scene": "example",
+      "Start": 0.0,
+      "End": 4.0,
+      "Track": 0
+    }
+  ],
+  "Events": [
+    {
+      "Name": "New Event",
+      "Clip": "Clip 0",
+      "Start": 0.0,
+      "End": 4.0,
+      "Speed": 1.0,
+      "Roll": 0.0,
+      "Track": 2
+    },
+    {
+      "Name": "New Event",
+      "Clip": "Clip 0",
+      "Start": 0.0,
+      "End": 1.0,
+      "Speed": 1.0,
+      "Roll": 0.0,
+      "Track": 1
+    },
+    {
+      "Name": "New Event",
+      "Clip": "Clip 1",
+      "Start": 1.0,
+      "End": 2.0,
+      "Speed": 0.5,
+      "Roll": 0.0,
+      "Track": 1
+    },
+    {
+      "Name": "New Event",
+      "Clip": "Clip 0",
+      "Start": 2.0,
+      "End": 4.0,
+      "Speed": 0.25,
+      "Roll": 0.0,
+      "Track": 1
+    }
+  ]
+}

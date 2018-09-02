@@ -10,7 +10,7 @@ def settings():
 
 def projectFolder():
     assert settings().contains('currentproject')
-    return str(settings().value('currentproject'))
+    return os.path.dirname(str(settings().value('currentproject')))
 
 
 def pipelineFolder():

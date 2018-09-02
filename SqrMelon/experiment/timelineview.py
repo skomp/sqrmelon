@@ -1,11 +1,11 @@
 import functools
-
+import pyglet
 from experiment.actions import MarqueeActionBase, MoveTimeAction, MoveEventAction, DuplicateEventAction
 from experiment.commands import ModelEdit
 from experiment.gridview import GridView
 from experiment.model import Shot
-from experiment.timer import drawPlayhead
-
+from experiment.projectutil import projectFolder, settings
+from experiment.timer import drawPlayhead, drawLoopRange
 from qtutil import *
 import icons
 
@@ -320,6 +320,14 @@ class TimelineView(GridView):
         x = self.tToX(self._timer.time)
         drawPlayhead(painter, x, self.height())
 
+        # paint loop range
+        loopStart = self.parent().loopStart.value()
+        loopStop = self.parent().loopStop.value()
+        if 0 <= loopStart < loopStop:
+            loopStart = self.tToX(loopStart)
+            loopStop = self.tToX(loopStop)
+            drawLoopRange(painter, loopStart, loopStop, self.width(), self.height())
+
         if self._action is not None:
             self._action.draw(painter)
 
@@ -396,3 +404,134 @@ class TimelineView(GridView):
         if event.key() == Qt.Key_Control:
             if isinstance(self._action, DuplicateEventAction):
                 self._action = None
+
+
+def muteState():
+    return settings().value('mute', 'False') == 'True'
+
+
+def setMuteState(state):
+    settings().setValue('mute', str(bool(state)))
+
+
+class TimelineManager(QWidget):
+    def __init__(self, timer, undoStack, demoModel, selectionModels, parent=None):
+        super(TimelineManager, self).__init__(parent)
+        layout = vlayout()
+        self.setLayout(layout)
+
+        hbar = hlayout()
+        layout.addLayout(hbar)
+
+        self.view = TimelineView(timer, undoStack, demoModel, selectionModels)
+        layout.addWidget(self.view)
+        layout.setStretch(1, 1)
+
+        self.loopStart = DoubleSpinBox()
+        hbar.addWidget(self.loopStart)
+        self.loopStop = DoubleSpinBox()
+        hbar.addWidget(self.loopStop)
+        self.bpm = DoubleSpinBox()
+        hbar.addWidget(self.bpm)
+
+        self.__playPause = QPushButton(icons.get('Play'), '')
+        self.__playPause.setToolTip('Play')
+        self.__playPause.setStatusTip('Play')
+        self.__playPause.setFixedWidth(24)
+        hbar.addWidget(self.__playPause)
+        shortcut0 = QShortcut(self)
+        shortcut0.setKey(QKeySequence(Qt.Key_Space))
+        shortcut0.setContext(Qt.ApplicationShortcut)
+        shortcut1 = QShortcut(self)
+        shortcut1.setKey(QKeySequence(Qt.Key_P))
+        shortcut1.setContext(Qt.ApplicationShortcut)
+        self.__playPause.clicked.connect(self.__togglePlayPause)
+        # self.__playPause.clicked.connect(timer.playPause)
+        shortcut0.activated.connect(self.__togglePlayPause)
+        # shortcut0.activated.connect(timer.playPause)
+        shortcut1.activated.connect(self.__togglePlayPause)
+        # shortcut1.activated.connect(timer.playPause)
+
+        isMuted = muteState()
+        self.__mute = QPushButton(icons.get('Mute') if isMuted else icons.get('Medium Volume'), '')
+        self.__mute.setToolTip('Un-mute' if isMuted else 'Mute')
+        self.__mute.setStatusTip('Un-mute' if isMuted else 'Mute')
+        self.__mute.clicked.connect(self.__toggleMute)
+        self.__mute.setFixedWidth(24)
+        hbar.addWidget(self.__mute)
+        self.__soundtrack = None
+
+        hbar.addStretch(1)
+
+    def __togglePlayPause(self):
+        if self.__playPause.toolTip() == 'Play':
+            self.__playPause.setIcon(icons.get('Pause'))
+            self.__playPause.setToolTip('Pause')
+            self.__playPause.setStatusTip('Pause')
+            self.__playSoundtrack()
+        else:
+            self.__playPause.setIcon(icons.get('Play'))
+            self.__playPause.setToolTip('Play')
+            self.__playPause.setStatusTip('Play')
+            self.__stopSoundtrack()
+
+    def __initAndStartSoundtrack(self):
+        if muteState():
+            return
+
+        if self.__soundtrack:
+            self.__soundtrack.play()
+            return self.__soundtrack
+
+        path = None
+        song = None
+        for ext in ('.wav', '.mp3'):
+            for fname in os.listdir(projectFolder()):
+                if fname.lower().endswith(ext):
+                    try:
+                        path = os.path.join(projectFolder(), fname)
+                        song = pyglet.media.load(path)
+                    except Exception, e:
+                        print 'Found a soundtrack that we could not play. pyglet or mp3 libs missing?\n%s' % e.message
+                        return
+                    break
+            if song:
+                break
+        if not song:
+            return
+
+        self.__soundtrackPath = path
+        self.__soundtrack = song.play()
+        self.__soundtrack.volume = 0 if muteState() else 100
+        return self.__soundtrack
+
+    def __seekSoundtrack(self, time):
+        if self.__playPause.toolTip() == 'Play':
+            # no need to seek when not playing
+            self.__stopSoundtrack()
+            return
+        if self.__initAndStartSoundtrack():
+            self.__soundtrack.seek(self.__timer.beatsToSeconds(time))
+
+    def __playSoundtrack(self):
+        if self.__initAndStartSoundtrack():
+            self.__soundtrack.seek(self.__timer.beatsToSeconds(self.__timer.time))
+
+    def __stopSoundtrack(self):
+        if self.__soundtrack:
+            self.__soundtrack.pause()
+        self.__soundtrack = None
+
+    def __toggleMute(self):
+        isMuted = not muteState()
+        setMuteState(isMuted)
+
+        self.__mute.setIcon(icons.get('Mute') if isMuted else icons.get('Medium Volume'))
+        self.__mute.setToolTip('Un-mute' if isMuted else 'Mute')
+        self.__mute.setStatusTip('Un-mute' if isMuted else 'Mute')
+
+        if self.__soundtrack:  # re-applies the mute state if soundtrack already exists
+            self.__soundtrack.volume = 0 if muteState() else 100
+
+    def soundtrackPath(self):
+        return self.__soundtrackPath

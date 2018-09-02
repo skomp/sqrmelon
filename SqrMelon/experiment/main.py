@@ -1,12 +1,16 @@
+# TODO: 3D view should adhere to some aspect ratio
+# TODO: Playback & more timeline controls
+# TODO: Save project & ask to save on exit
 import functools
+import json
 from experiment.demomodel import DemoModel
 from experiment.modelbase import UndoableModel
+from experiment.timelineview import TimelineManager
 from view3d import View3D
 from experiment.scenelist import SceneList
 from qtutil import *
-from experiment.curvemodel import HermiteCurve, HermiteKey, ELoopMode
+from experiment.curvemodel import HermiteCurve, HermiteKey, ELoopMode, ETangentMode
 from experiment.model import Clip, Event, Shot
-from experiment.timelineview import TimelineView
 from experiment.timer import Time
 from experiment.widgets import CurveUI, ClipUI, ShotManager, EventManager
 from experiment.projectutil import settings
@@ -25,31 +29,129 @@ def eventChanged(iterSelectedRows, curveUI):
     curveUI.setEvent(None)
 
 
+def openProjectDialog():
+    """
+    Prompts user to open a project json file and returns True if a project was succefully opened.
+    """
+    res = QFileDialog.getOpenFileName(None, 'Open project', os.path.dirname(os.path.abspath(__file__)), 'Project files (.json)')
+    if res[0] and res[1]:
+        with open(res[1]):
+            data = json.load(res[1])
+        if 'Identifier' in data and data['Identifier'] == 'SqrMelonProject':
+            settings().setValue('currentproject', res[1])
+            return res[1]
+
+
+class ProjectManager(object):
+    def __init__(self, undoStack, demoModel, clipsModel, eventManager, shotManager, timelineManager):
+        self.__undoStack = undoStack
+        self.__demoModel = demoModel
+        self.__clipsModel = clipsModel
+        self.__eventManager = eventManager
+        self.__shotManager = shotManager
+        self.__timelineManager = timelineManager
+
+    def open(self):
+        currentProject = openProjectDialog()
+        if not currentProject:
+            # no project opened
+            return False
+        self.reload(currentProject)
+        return True
+
+    def reload(self, currentProject):
+        with open(currentProject) as fh:
+            data = json.load(fh)
+
+        # load clips
+        clips = {}
+        for clipData in data['Clips']:
+            clip = Clip(clipData['Name'], self.__undoStack)
+            clips[clip.name] = clip
+
+            # load curves
+            for curveData in clipData['Curves']:
+                keyData = curveData['Keys']
+                keys = []
+                for i in xrange(0, len(keyData), 6):
+                    key = HermiteKey(keyData[i],
+                                     keyData[i + 1],
+                                     keyData[i + 2],
+                                     keyData[i + 3],
+                                     ETangentMode(keyData[i + 4]),
+                                     ETangentMode(keyData[i + 5]))
+                    keys.append(key)
+                curve = HermiteCurve(curveData['Name'], ELoopMode(curveData['LoopMode']), keys)
+                clip.curves.appendRow(curve.items)
+            self.__clipsModel.appendRow(clip.items)
+
+        # load events
+        for shotData in data['Shots']:
+            self.__demoModel.appendRow(Shot(shotData['Name'],
+                                            shotData['Scene'],
+                                            float(shotData['Start']),
+                                            float(shotData['End']),
+                                            int(shotData['Track'])).items)
+
+        for eventData in data['Events']:
+            self.__demoModel.appendRow(Event(eventData['Name'],
+                                             clips[eventData['Clip']],
+                                             float(eventData['Start']),
+                                             float(eventData['End']),
+                                             float(eventData['Speed']),
+                                             float(eventData['Roll']),
+                                             int(eventData['Track'])).items)
+
+        # restore other settings
+        self.__timelineManager.loopStart.setValue(data['LoopStart'])
+        self.__timelineManager.loopStop.setValue(data['LoopEnd'])
+        self.__timelineManager.bpm.setValue(data['BPM'])
+
+        # Fix widgets after content change
+        self.__timelineManager.view.frameAll()
+        self.__shotManager.view.updateSections()
+        self.__eventManager.view.updateSections()
+
+
 def run():
     app = QApplication([])
-    settings().setValue('currentproject', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'defaultproject'))
 
+    # initialze project sensitive elements
     # these elements are pretty "global" in that they are referenced by most widgets
     undoStack = QUndoStack()
     timer = Time()
     demoModel = DemoModel(timer, undoStack)
 
-    # main widgets
-    undoView = QUndoView(undoStack)
-    shotManager = ShotManager(undoStack, demoModel, timer)
+    # initialize objects that have the containers for project-level seriaized data
+    clipsModel = UndoableModel(undoStack)
 
     def iterItemRows(model):
+        # TODO: this pattern appears quite a lot, move to be a member of a model base class
         for row in xrange(model.rowCount()):
             yield model.index(row, 0).data(Qt.UserRole + 1)
 
-    clipsModel = UndoableModel(undoStack)
     iterClips = functools.partial(iterItemRows, clipsModel)
 
     eventManager = EventManager(undoStack, demoModel, timer, iterClips)
+    shotManager = ShotManager(undoStack, demoModel, timer)
+    timelineManager = TimelineManager(timer, undoStack, demoModel, (shotManager.view.selectionModel(), eventManager.view.selectionModel()))
+    projectManager = ProjectManager(undoStack, demoModel, clipsModel, eventManager, shotManager, timelineManager)
+
+    value = settings().value('currentproject', None)
+    if value is None or not os.path.exists(value):
+        if not projectManager.open():
+            # no project opened
+            return
+    else:
+        projectManager.reload(value)
+
+    # main widgets
+    undoView = QUndoView(undoStack)
+
     clips = ClipUI(clipsModel, undoStack, demoModel, timer, eventManager.view.selectionChange, eventManager.firstSelectedEvent)
     sceneList = SceneList(timer, clips.createClip, demoModel.addShot)
     curveUI = CurveUI(timer, clips.manager.selectionChange, clips.manager.firstSelectedItem, eventManager.firstSelectedEventWithClip, undoStack)
-    eventTimeline = TimelineView(timer, undoStack, demoModel, (shotManager.view.selectionModel(), eventManager.view.selectionModel()))
+
     camera = Camera()
 
     # the 3D view is the only widget that references other widgets
@@ -63,7 +165,7 @@ def run():
     mainWindow.createDockWidget(curveUI)
     mainWindow.createDockWidget(shotManager, name='Shots')
     mainWindow.createDockWidget(eventManager, name='Events')
-    mainWindow.createDockWidget(eventTimeline)
+    mainWindow.createDockWidget(timelineManager)
     mainWindow.createDockWidget(sceneList)
     mainWindow.createDockWidget(camera)
     mainWindow.createDockWidget(view)
@@ -72,7 +174,11 @@ def run():
     menuBar = QMenuBar()
     mainWindow.setMenuBar(menuBar)
 
-    editMenu = menuBar.addMenu('Edit')
+    fileMenu = menuBar.addMenu('&File')
+    openProj = fileMenu.addAction('&Open project')
+    openProj.triggered.connect(projectManager.open)
+
+    editMenu = menuBar.addMenu('&Edit')
 
     undo = undoStack.createUndoAction(editMenu, '&Undo ')
     editMenu.addAction(undo)
@@ -95,30 +201,6 @@ def run():
     resetCamera = editMenu.addAction('Snap came&ra to animation')
     resetCamera.setShortcuts(QKeySequence(Qt.Key_R))
     resetCamera.setShortcutContext(Qt.ApplicationShortcut)
-
-    # add test content
-    clip0 = Clip('Clip 0', undoStack)
-    clip0.curves.appendRow(HermiteCurve('uOrigin.x', ELoopMode.Clamp, [HermiteKey(0.0, 0.0, 0.0, 0.0), HermiteKey(4.0, 1.0, 1.0, 1.0)]).items)
-    clip0.curves.appendRow(HermiteCurve('uFlash', ELoopMode.Clamp, [HermiteKey(0.0, 1.0, 1.0, 1.0), HermiteKey(1.0, 0.0, 0.0, 0.0)]).items)
-
-    clip1 = Clip('Clip 1', undoStack)
-    clip1.curves.appendRow(HermiteCurve('uOrigin.x', ELoopMode.Clamp, [HermiteKey(2.0, 0.0, 0.0, 0.0), HermiteKey(3.0, 1.0, 0.0, 0.0)]).items)
-    clip1.curves.appendRow(HermiteCurve('uOrigin.y', ELoopMode.Clamp, [HermiteKey(0.0, 0.0, 1.0, 1.0), HermiteKey(1.0, 1.0, 1.0, 1.0)]).items)
-
-    demoModel.appendRow(Shot('New Shot', 'example', 0.0, 4.0, 0).items)
-
-    demoModel.appendRow(Event('New event', clip0, 0.0, 4.0, 1.0, 0.0, 2).items)
-    demoModel.appendRow(Event('New event', clip0, 0.0, 1.0, 1.0, 0.0, 1).items)
-    demoModel.appendRow(Event('New event', clip1, 1.0, 2.0, 0.5, 0.0, 1).items)
-    demoModel.appendRow(Event('New event', clip0, 2.0, 4.0, 0.25, 0.0, 1).items)
-
-    clips.manager.model().appendRow(clip0.items)
-    clips.manager.model().appendRow(clip1.items)
-
-    # Fix widgets after content change
-    eventTimeline.frameAll()
-    shotManager.view.updateSections()
-    eventManager.view.updateSections()
 
     # connection widgets together
     # changing the model contents seems to mess with the column layout stretch
