@@ -141,8 +141,9 @@ class ViewZoomAction(DirectionalAction):
 
 
 class MoveKeyAction(DirectionalAction):
-    def __init__(self, reproject, selectedKeys, triggerRepaint):
+    def __init__(self, reproject, snapTime, selectedKeys, triggerRepaint):
         super(MoveKeyAction, self).__init__(reproject)
+        self.__snapTime = snapTime
         self.__curves = {key.parent for key in selectedKeys}
         self.__selectedKeys = list(selectedKeys.iterkeys())
         self.__initialState = {key: key.copyData() for curve in self.__curves for key in curve.keys}
@@ -161,7 +162,7 @@ class MoveKeyAction(DirectionalAction):
         for key in self.__selectedKeys:
             value = self.__initialState[key]
             if self._mask & 1:
-                key.x = value[0] + ux
+                key.x = self.__snapTime(value[0] + ux)
             if self._mask & 2:
                 key.y = value[1] + uy
 

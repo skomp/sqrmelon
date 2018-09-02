@@ -7,7 +7,6 @@ from experiment.curveview import CurveView
 from experiment.delegates import UndoableSelectionView
 from experiment.demomodel import CreateShotDialog, CreateEventDialog
 from experiment.model import Shot, Clip, Event
-from experiment.modelbase import UndoableModel
 from qtutil import *
 
 
@@ -85,6 +84,8 @@ class CurveUI(QWidget):
         self._relative = QCheckBox()
         self._time = QDoubleSpinBox()
         self._value = QDoubleSpinBox()
+        self._snap = QComboBox()
+        self._snap.addItems(['1', '2', '4', '8',' 16', '32', '64', '128'])
 
         toolBar.addWidget(QLabel('Relative:'))
         toolBar.addWidget(self._relative)
@@ -92,6 +93,8 @@ class CurveUI(QWidget):
         toolBar.addWidget(self._time)
         toolBar.addWidget(QLabel('Value:'))
         toolBar.addWidget(self._value)
+        toolBar.addWidget(QLabel('Snap:'))
+        toolBar.addWidget(self._snap)
 
         self._time.editingFinished.connect(self.__timeChanged)
         self._value.editingFinished.connect(self.__valueChanged)
@@ -159,8 +162,12 @@ class CurveUI(QWidget):
         mainLayout.setStretch(0, 0)
         mainLayout.setStretch(1, 1)
 
+    def snapTime(self, time):
+        snap = int(self._snap.currentText())
+        return round(time * snap) / float(snap)
+
     def keyCamera(self, camera):
-        self.curveList.keyCamera(camera, self.view.time)
+        self.curveList.keyCamera(camera, self.snapTime(self.view.time))
         self.view.repaint()
 
     @property
@@ -201,7 +208,8 @@ class CurveUI(QWidget):
         self._time.setValue(cache.x)
         self._value.setValue(cache.y)
 
-    def __valueChanged(self, value):
+    def __valueChanged(self, __):
+        value = self._value.value()
         restore = {}
         for key, mask in self.view.selectionModel.iteritems():
             if not mask & 1:
@@ -210,7 +218,8 @@ class CurveUI(QWidget):
             key.y = value
         self._undostack.push(KeyEdit(restore, self.view.repaint))
 
-    def __timeChanged(self, value):
+    def __timeChanged(self, __):
+        value = self._time.value()
         restore = {}
         for key, mask in self.view.selectionModel.iteritems():
             if not mask & 1:

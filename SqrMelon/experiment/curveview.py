@@ -83,7 +83,7 @@ class CurveView(GridView):
         except RecursiveCommandError:
             pass
 
-    def _tangentEndPoint2(self, curve, i, isOut):
+    def _tangentEndPoint(self, curve, i, isOut):
         key = curve.key(i)
         if not isOut:
             dx = curve.key(i - 1).x - key.x
@@ -92,7 +92,7 @@ class CurveView(GridView):
             dx = curve.key(i + 1).x - key.x
             wt = key.outTangentY
 
-        TANGENT_LENGTH = 20.0
+        TANGENT_LENGTH = 40.0
         if abs(wt) == float('infinity'):
             return TANGENT_LENGTH, 0.0
 
@@ -104,17 +104,18 @@ class CurveView(GridView):
         f = TANGENT_LENGTH / (a ** 0.5)
         return dx * f, dy * f * (1 if isOut else -1)
 
-    def _drawTangent2(self, painter, isSelected, xpx, ypx, curve, i, isOut):
+    def _drawTangent(self, painter, isSelected, xpx, ypx, curve, i, isOut):
         # selection
         if isSelected:
-            painter.setPen(Qt.white)
+            cl = Qt.yellow
         else:
-            painter.setPen(Qt.magenta)
+            cl = Qt.magenta
 
-        dx, dy = self._tangentEndPoint2(curve, i, isOut)
+        dx, dy = self._tangentEndPoint(curve, i, isOut)
 
+        painter.setPen(cl)
         painter.drawLine(xpx, ypx, xpx + dx, ypx + dy)
-        painter.drawRect(xpx + dx - 1, ypx + dy - 1, 2, 2)
+        painter.fillRect(xpx + dx - 1, ypx + dy - 1, 3, 3, cl)
 
     def itemsAt(self, x, y, w, h):
         for curve in self._visibleCurves:
@@ -129,13 +130,13 @@ class CurveView(GridView):
 
                 # in tangent
                 if i > 0:
-                    tx, ty = self._tangentEndPoint2(curve, i, False)
+                    tx, ty = self._tangentEndPoint(curve, i, False)
                     if x <= kx + tx <= x + w and y < ky + ty <= y + h:
                         yield key, 1 << 1
 
                 # out tangent
                 if i < curve.keyCount() - 1:
-                    tx, ty = self._tangentEndPoint2(curve, i, True)
+                    tx, ty = self._tangentEndPoint(curve, i, True)
                     if x <= kx + tx <= x + w and y < ky + ty <= y + h:
                         yield key, 1 << 2
 
@@ -145,8 +146,17 @@ class CurveView(GridView):
         painter = QPainter(self)
         ppt = None
 
+        colorFromKey = {'x': Qt.red,
+                        'y': Qt.green,
+                        'z': Qt.blue}
+
         # paint evaluated data
         for curve in self._visibleCurves:
+            key = ''
+            if '.' in curve.name:
+                key = curve.name.rsplit('.', 1)[-1]
+            painter.setPen(colorFromKey.get(key, Qt.white))
+
             for x in xrange(0, self.width(), 4):
                 t = self.xToT(x)
                 y = self.vToY(curve.evaluate(t))
@@ -163,13 +173,13 @@ class CurveView(GridView):
 
                 # key selected
                 if selectionState & 1:
-                    painter.setPen(Qt.yellow)
+                    cl = Qt.yellow
                 else:
-                    painter.setPen(Qt.black)
+                    cl = Qt.black
 
                 # key
                 x, y = self.uToPx(key.x, key.y)
-                painter.drawRect(x - 2, y - 2, 4, 4)
+                painter.fillRect(x - 2, y - 2, 5, 5, cl)
 
                 # tangents not visible
                 if not selectionState:
@@ -177,11 +187,11 @@ class CurveView(GridView):
 
                 # in tangent
                 if i > 0:
-                    self._drawTangent2(painter, selectionState & (1 << 1), x, y, curve, i, False)
+                    self._drawTangent(painter, selectionState & (1 << 1), x, y, curve, i, False)
 
                 # out tangent
                 if i < curve.keyCount() - 1:
-                    self._drawTangent2(painter, selectionState & (1 << 2), x, y, curve, i, True)
+                    self._drawTangent(painter, selectionState & (1 << 2), x, y, curve, i, True)
 
         # paint loop range
         if self._event:
@@ -237,7 +247,7 @@ class CurveView(GridView):
                     break
             else:
                 # only keys selected
-                self._action = MoveKeyAction(self.pxToU, self.selectionModel, self.repaint)
+                self._action = MoveKeyAction(self.pxToU, self.parent().snapTime, self.selectionModel, self.repaint)
 
         else:
             # left click drag moves selection only when clicking a selected element
@@ -329,7 +339,7 @@ class CurveView(GridView):
             # insert key if there's no key at this time
             insert = {}  # type: Dict[HermiteCurve, HermiteKey]
             for curve in self._visibleCurves:
-                insert[curve] = HermiteKey(self.time, curve.evaluate(self.time), 0, 0, ETangentMode.Auto, ETangentMode.Auto, curve)
+                insert[curve] = HermiteKey(self.parent().snapTime(self.time), curve.evaluate(self.time), 0, 0, ETangentMode.Auto, ETangentMode.Auto, curve)
             self._undoStack.push(InsertKeys(insert, self.repaint))
         elif event.key() == Qt.Key_Delete:
             # delete selected keys
