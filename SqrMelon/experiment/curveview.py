@@ -247,7 +247,7 @@ class CurveView(GridView):
                     break
             else:
                 # only keys selected
-                self._action = MoveKeyAction(self.pxToU, self.parent().snapTime, self.selectionModel, self.repaint)
+                self._action = MoveKeyAction(self.pxToU, self.parent().parent().snapTime, self.selectionModel, self.repaint)
 
         else:
             # left click drag moves selection only when clicking a selected element
@@ -339,7 +339,7 @@ class CurveView(GridView):
             # insert key if there's no key at this time
             insert = {}  # type: Dict[HermiteCurve, HermiteKey]
             for curve in self._visibleCurves:
-                insert[curve] = HermiteKey(self.parent().snapTime(self.time), curve.evaluate(self.time), 0, 0, ETangentMode.Auto, ETangentMode.Auto, curve)
+                insert[curve] = HermiteKey(self.parent().parent().snapTime(self.time), curve.evaluate(self.time), 0, 0, ETangentMode.Auto, ETangentMode.Auto, curve)
             self._undoStack.push(InsertKeys(insert, self.repaint))
         elif event.key() == Qt.Key_Delete:
             # delete selected keys
