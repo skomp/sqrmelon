@@ -34,11 +34,10 @@ def run():
     # these elements are pretty "global" in that they are referenced by most widgets
     undoStack = QUndoStack()
     timer = Time()
-    demoModel = DemoModel(undoStack)
+    demoModel = DemoModel(timer, undoStack)
 
     # main widgets
     undoView = QUndoView(undoStack)
-    sceneList = SceneList(timer)
     shotManager = ShotManager(undoStack, demoModel, timer)
 
     def iterItemRows(model):
@@ -46,15 +45,14 @@ def run():
             yield model.index(row, 0).data(Qt.UserRole + 1)
 
     eventManager = EventManager(undoStack, demoModel, timer)
-    # TODO: passing in these callables is achieving the same as some of the "requestX" connections, perhaps we should settle on 1 mechanism (in which case the requestX actions feel less intuitive)
-    clips = ClipUI(eventManager.view.selectionChange, eventManager.view.firstSelectedEvent, undoStack)
-    # TODO: ClipUI context menu should use CreateEventDialog
-    # TODO: Bi-directional connection between ClipsUI and EventManager... need to rething this as it's quite an ugly workaround for a required argument
-    eventManager.iterClips = functools.partial(iterItemRows, clips.manager.model())
-
+    clips = ClipUI(undoStack, demoModel.addEvent, timer, eventManager.view.selectionChange, eventManager.view.firstSelectedEvent)
+    sceneList = SceneList(timer, clips.createClip, demoModel.addShot)
     curveUI = CurveUI(timer, clips.manager.selectionChange, clips.manager.firstSelectedItem, eventManager.view.firstSelectedEventWithClip, undoStack)
     eventTimeline = TimelineView(timer, undoStack, demoModel, (shotManager.view.selectionModel(), eventManager.view.selectionModel()))
     camera = Camera()
+
+    # TODO: Bi-directional connection between ClipsUI and EventManager... need to rethink this as it's quite an ugly workaround for a required argument
+    eventManager.iterClips = clips.iterClips
 
     # the 3D view is the only widget that references other widgets
     view = View3D(camera, demoModel, timer)
@@ -116,9 +114,6 @@ def run():
     demoModel.rowsRemoved.connect(shotManager.view.updateSections)
     demoModel.rowsRemoved.connect(eventManager.view.updateSections)
 
-    sceneList.requestCreateClip.connect(clips.createClip)
-    sceneList.requestCreateShot.connect(demoModel.addShot)
-    clips.requestEvent.connect(functools.partial(demoModel.createEvent, timer))
     eventManager.view.selectionChange.connect(functools.partial(eventChanged, eventManager.view, curveUI))
     camera.requestAnimatedCameraPosition.connect(functools.partial(evalCamera, camera, demoModel, timer))
 

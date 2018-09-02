@@ -6,11 +6,18 @@ from experiment.projectutil import iterSceneNames
 
 
 class DemoModel(UndoableModel):
+    def __init__(self, timer, undoStack):
+        super(DemoModel, self).__init__(undoStack)
+        self.__timer = timer
+
     def addShot(self, shot):
         self.undoStack.push(ModelEdit(self, [shot], []))
 
-    def createEvent(self, timer, clip):
-        time = timer.time
+    def addEvent(self, event):
+        self.undoStack.push(ModelEdit(self, [event], []))
+
+    def createEvent(self, clip):
+        time = self.__timer.time
         self.undoStack.push(ModelEdit(self, [Event(clip.name, clip, time, time + 8.0)], []))
 
     def evaluate(self, time):
@@ -67,8 +74,8 @@ class CreateItemRowDialog(QDialog):
         return self.options.currentText()
 
     @classmethod
-    def run(cls, data, time, initialSceneName, parent):
-        d = cls(data, initialSceneName, parent)
+    def run(cls, data, time, initialItemLabel, parent):
+        d = cls(data, initialItemLabel, parent)
         d.exec_()
         if d.result() != QDialog.Accepted:
             return

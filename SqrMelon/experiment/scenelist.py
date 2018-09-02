@@ -2,7 +2,6 @@ import functools
 import json
 import fileutil
 from experiment.demomodel import CreateShotDialog
-from experiment.model import Shot
 from experiment.projectutil import pipelineFolder, scenesFolder, iterPipelineNames, iterSceneStitches, iterSceneNames, SCENE_EXT, sceneDefaultChannels, iterPublicStitches, sceneStitchNames
 from qtutil import *
 import icons
@@ -12,13 +11,13 @@ import subprocess
 
 class SceneList(QWidget):
     currentChanged = pyqtSignal(QStandardItem)
-    requestCreateShot = pyqtSignal(Shot)
-    requestCreateClip = pyqtSignal(dict)
 
-    def __init__(self, timer):
+    def __init__(self, timer, createClipCallable, createShotCallable):
         super(SceneList, self).__init__()
 
-        self.timer = timer
+        self.__createShotCallable = createShotCallable
+        self.__createClipCallable= createClipCallable
+        self.__timer = timer
 
         main = vlayout()
         self.setLayout(main)
@@ -41,55 +40,59 @@ class SceneList(QWidget):
         belt.addStretch(1)
         main.addLayout(belt)
 
-        self.view = QTreeView()
-        self.view.header().hide()
-        self.view.setModel(QStandardItemModel())
-        self.view.activated.connect(self.__onOpenFile)
-        self.view.setEditTriggers(self.view.NoEditTriggers)
-        main.addWidget(self.view)
+        self.__view = QTreeView()
+        self.__view.header().hide()
+        self.__view.setModel(QStandardItemModel())
+        self.__view.activated.connect(self.__onOpenFile)
+        self.__view.setEditTriggers(self.__view.NoEditTriggers)
+        main.addWidget(self.__view)
         main.setStretch(1, 1)
-        self.view.selectionModel().currentChanged.connect(self.__onCurrentChanged)
+        self.__view.selectionModel().currentChanged.connect(self.__onCurrentChanged)
 
-        self.view.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.view.customContextMenuRequested.connect(self.__contextMenu)
+        self.__view.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.__view.customContextMenuRequested.connect(self.__contextMenu)
 
-        self.contextMenu = QMenu()
+        self.__contextMenu = QMenu()
 
-        self.updateWithCurrentProject()
+        self.__updateWithCurrentProject()
+
+    @property
+    def view(self):
+        return self.__view
 
     def __requestClip(self, item, isMaster=False):
-        self.requestCreateClip.emit(sceneDefaultChannels(item.text(), isMaster))
+        self.__createClipCallable(sceneDefaultChannels(item.text(), isMaster))
 
     def __requestShot(self, item):
-        shot = CreateShotDialog.run(self.timer.time, item.text(), self)
+        shot = CreateShotDialog.run(self.__timer.time, item.text(), self)
         if shot:
-            self.requestCreateShot.emit(shot)
+            self.__createShotCallable(shot)
 
     def selectSceneWithName(self, name):
-        items = self.view.model().findItems(name)
+        items = self.__view.model().findItems(name)
         if items:
-            self.view.setExpanded(items[0].index(), True)
-            self.view.selectionModel().select(items[0].index(), QItemSelectionModel.ClearAndSelect)
+            self.__view.setExpanded(items[0].index(), True)
+            self.__view.selectionModel().select(items[0].index(), QItemSelectionModel.ClearAndSelect)
 
     def __contextMenu(self, pos):
-        index = self.view.indexAt(pos)
+        index = self.__view.indexAt(pos)
         if not index.isValid():
             return
-        item = self.view.model().itemFromIndex(index)
+        item = self.__view.model().itemFromIndex(index)
 
-        self.contextMenu.clear()
-        action = self.contextMenu.addAction('Show in explorer')
+        self.__contextMenu.clear()
+        action = self.__contextMenu.addAction('Show in explorer')
         action.triggered.connect(functools.partial(self._showInExplorer, item))
 
         if not item.parent() and item.text()[0] != ':':
-            action = self.contextMenu.addAction('Create clip')
+            action = self.__contextMenu.addAction('Create clip')
             action.triggered.connect(functools.partial(self.__requestClip, item))
-            action = self.contextMenu.addAction('Create master clip')
+            action = self.__contextMenu.addAction('Create master clip')
             action.triggered.connect(functools.partial(self.__requestClip, item, True))
-            action = self.contextMenu.addAction('Create shot')
+            action = self.__contextMenu.addAction('Create shot')
             action.triggered.connect(functools.partial(self.__requestShot, item))
 
-        self.contextMenu.popup(self.view.mapToGlobal(pos))
+        self.__contextMenu.popup(self.__view.mapToGlobal(pos))
 
     @staticmethod
     def _showInExplorer(item):
@@ -98,20 +101,20 @@ class SceneList(QWidget):
     def __onOpenFile(self, current):
         if not current.parent().isValid():
             return
-        item = self.view.model().itemFromIndex(current)
+        item = self.__view.model().itemFromIndex(current)
         os.startfile(item.data())
 
     def __onCurrentChanged(self, current, __):
         if not current.parent().isValid():
-            self.currentChanged.emit(self.view.model().itemFromIndex(current))
+            self.currentChanged.emit(self.__view.model().itemFromIndex(current))
 
     def __onDeleteScene(self):
         if QMessageBox.warning(self, 'Deleting scene(s)', 'This action is not undoable! Continue?', QMessageBox.Yes | QMessageBox.No) != QMessageBox.Yes:
             return
         rows = []
-        for idx in self.view.selectionModel().selectedIndexes():
+        for idx in self.__view.selectionModel().selectedIndexes():
             rows.append(idx.row())
-            item = self.view.model().itemFromIndex(idx)
+            item = self.__view.model().itemFromIndex(idx)
             sceneName = str(item.text())
             sceneDir = os.path.join(scenesFolder(), sceneName)
             sceneFile = sceneDir + SCENE_EXT
@@ -119,16 +122,16 @@ class SceneList(QWidget):
             send2trash(sceneDir)
         rows.sort()
         for row in rows[::-1]:
-            self.view.model().removeRow(row)
+            self.__view.model().removeRow(row)
 
-    def updateWithCurrentProject(self):
+    def __updateWithCurrentProject(self):
         self.setEnabled(True)
-        self.clear()
-        self.initShared()
+        self.__clear()
+        self.__initShared()
         for scene in iterSceneNames():
-            self.appendSceneItem(scene)
+            self.__appendSceneItem(scene)
 
-    def initShared(self):
+    def __initShared(self):
         for pipelineName in iterPipelineNames():
             item = QStandardItem(':' + pipelineName)
             item.setData(os.path.join(pipelineFolder(), pipelineName))
@@ -140,12 +143,12 @@ class SceneList(QWidget):
                 sub.setData(path)
                 item.appendRow(sub)
             if item.rowCount():
-                self.view.model().appendRow(item)
+                self.__view.model().appendRow(item)
 
-    def appendSceneItem(self, sceneName):
+    def __appendSceneItem(self, sceneName):
         item = QStandardItem(sceneName)
         item.setData(os.path.join(scenesFolder(), sceneName))
-        self.view.model().appendRow(item)
+        self.__view.model().appendRow(item)
         filtered = {path.lower(): path for path in iterSceneStitches(sceneName)}
         allPaths = (filtered[key] for key in sorted(filtered.keys()))
         for path in allPaths:
@@ -154,8 +157,8 @@ class SceneList(QWidget):
             sub.setData(path)
             item.appendRow(sub)
 
-    def clear(self):
-        self.view.model().clear()
+    def __clear(self):
+        self.__view.model().clear()
 
     def __onAddScene(self):
         # request user for a template if there are multiple options
@@ -208,4 +211,4 @@ class SceneList(QWidget):
             with fileutil.edit(dst) as fh:
                 fh.write(text)
 
-        self.appendSceneItem(name[0])
+        self.__appendSceneItem(name[0])
