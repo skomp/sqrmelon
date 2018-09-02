@@ -339,8 +339,6 @@ class KeySelectionEdit(NestedCommand):
     Given a KeySelection instance and a dict of {HermiteKey: state} to apply
     this will will cache current state and support redo() and undo() to apply the proposed change.
     """
-    # TODO: Is there a reason this is not using _redoInternal and _undoInternal? Should it be a NestedCommand at all?
-
     def __init__(self, selectionDict, keyStateDict, parent=None):
         super(KeySelectionEdit, self).__init__('Key selection change', parent)
         self.__selectionModel = selectionDict
@@ -368,7 +366,7 @@ class KeySelectionEdit(NestedCommand):
         for remove in self.__apply[1]:
             self.__restore[0][remove] = self.__selectionModel[remove]
 
-    def redo(self):
+    def _redoInternal(self):
         oldState = self.__selectionModel.blockSignals(True)
 
         self.__selectionModel.update(self.__apply[0])
@@ -379,7 +377,7 @@ class KeySelectionEdit(NestedCommand):
         if not oldState:
             self.__selectionModel.changed.emit()
 
-    def undo(self):
+    def _undoInternal(self):
         oldState = self.__selectionModel.blockSignals(True)
 
         self.__selectionModel.update(self.__restore[0])

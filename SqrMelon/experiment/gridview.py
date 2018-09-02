@@ -76,7 +76,6 @@ class ViewRect(object):
 
 
 class GridView(QWidget):
-    # TODO: Cursor management
     CELL_SIZE_MAX_PX = 80
 
     def __init__(self, parent=None, mask=3):

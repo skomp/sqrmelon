@@ -1,3 +1,4 @@
+import os
 from collections import OrderedDict
 from glutil import *
 import json
@@ -13,6 +14,7 @@ class Pipeline(PooledResource):
     Lazily deserialized pipeline, invalidates on file change
     and pools to avoid data duplication.
     """
+
     def __init__(self, name):
         self.name = name
         self.pipelineDir = os.path.join(pipelineFolder(), self.name)
@@ -259,3 +261,37 @@ class Scene(PooledResource):
             renderBuffers[port.sourceNode].free()
 
         return frameBuffer
+
+
+def pipelineDefaultChannels(pipelineName):
+    return Pipeline.pool(pipelineName).channels
+
+
+def _iterStitches(pipelineName, scope):
+    for stitchName in Pipeline.pool(pipelineName).iterStitchNames(scope):
+        yield stitchName
+
+
+def iterPublicStitches(pipelineName):
+    folder = os.path.join(pipelineFolder(), pipelineName)
+    for stitchName in _iterStitches(pipelineName, EStitchScope.Public):
+        yield os.path.join(folder, stitchName + '.glsl')
+
+
+def sceneStitchNames(pipelineName):
+    return set(_iterStitches(pipelineName, EStitchScope.Scene))
+
+
+def iterSceneStitches(sceneName):
+    folder = os.path.join(scenesFolder(), sceneName)
+    for stitchName in Scene.pool(sceneName).pipeline.iterStitchNames(EStitchScope.Scene):
+        yield os.path.join(folder, stitchName + '.glsl')
+
+
+def sceneDefaultChannels(sceneName, includePipelineUniforms=False):
+    scene = Scene.pool(sceneName)
+    if not includePipelineUniforms:
+        return scene.channels.copy()
+    result = scene.pipeline.channels.copy()
+    result.update(scene.channels.copy())
+    return result

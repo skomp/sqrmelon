@@ -1,8 +1,6 @@
-# TODO: Press F and A to frame selection / all in timeline view
-# TODO: Delete shots and events from TimelineView with keyboard
-# TODO: Loop range and curve editor time changes are incorrect
 import functools
 from experiment.demomodel import DemoModel
+from experiment.modelbase import UndoableModel
 from view3d import View3D
 from experiment.scenelist import SceneList
 from qtutil import *
@@ -20,8 +18,8 @@ def evalCamera(camera, model, timer):
     camera.setData(anim.get('uOrigin.x', 0.0), anim.get('uOrigin.y', 0.0), anim.get('uOrigin.z', 0.0), anim.get('uAngles.x', 0.0), anim.get('uAngles.y', 0.0), anim.get('uAngles.z', 0.0))
 
 
-def eventChanged(eventManager, curveUI):
-    for event in eventManager.selectionModel().selectedRows():
+def eventChanged(iterSelectedRows, curveUI):
+    for event in iterSelectedRows():
         curveUI.setEvent(event.data(Qt.UserRole + 1))
         return
     curveUI.setEvent(None)
@@ -44,15 +42,15 @@ def run():
         for row in xrange(model.rowCount()):
             yield model.index(row, 0).data(Qt.UserRole + 1)
 
-    eventManager = EventManager(undoStack, demoModel, timer)
-    clips = ClipUI(undoStack, demoModel.addEvent, timer, eventManager.view.selectionChange, eventManager.view.firstSelectedEvent)
+    clipsModel = UndoableModel(undoStack)
+    iterClips = functools.partial(iterItemRows, clipsModel)
+
+    eventManager = EventManager(undoStack, demoModel, timer, iterClips)
+    clips = ClipUI(clipsModel, undoStack, demoModel, timer, eventManager.view.selectionChange, eventManager.firstSelectedEvent)
     sceneList = SceneList(timer, clips.createClip, demoModel.addShot)
-    curveUI = CurveUI(timer, clips.manager.selectionChange, clips.manager.firstSelectedItem, eventManager.view.firstSelectedEventWithClip, undoStack)
+    curveUI = CurveUI(timer, clips.manager.selectionChange, clips.manager.firstSelectedItem, eventManager.firstSelectedEventWithClip, undoStack)
     eventTimeline = TimelineView(timer, undoStack, demoModel, (shotManager.view.selectionModel(), eventManager.view.selectionModel()))
     camera = Camera()
-
-    # TODO: Bi-directional connection between ClipsUI and EventManager... need to rethink this as it's quite an ugly workaround for a required argument
-    eventManager.iterClips = clips.iterClips
 
     # the 3D view is the only widget that references other widgets
     view = View3D(camera, demoModel, timer)
@@ -107,6 +105,11 @@ def run():
     clips.manager.model().appendRow(clip0.items)
     clips.manager.model().appendRow(clip1.items)
 
+    # Fix widgets after content change
+    eventTimeline.frameAll()
+    shotManager.view.updateSections()
+    eventManager.view.updateSections()
+
     # connection widgets together
     # changing the model contents seems to mess with the column layout stretch
     demoModel.rowsInserted.connect(shotManager.view.updateSections)
@@ -114,7 +117,7 @@ def run():
     demoModel.rowsRemoved.connect(shotManager.view.updateSections)
     demoModel.rowsRemoved.connect(eventManager.view.updateSections)
 
-    eventManager.view.selectionChange.connect(functools.partial(eventChanged, eventManager.view, curveUI))
+    eventManager.view.selectionChange.connect(functools.partial(eventChanged, eventManager.view.selectionModel().selectedRows, curveUI))
     camera.requestAnimatedCameraPosition.connect(functools.partial(evalCamera, camera, demoModel, timer))
 
     # when animating, the camera will see about animation

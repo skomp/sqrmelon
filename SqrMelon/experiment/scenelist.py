@@ -2,7 +2,8 @@ import functools
 import json
 import fileutil
 from experiment.demomodel import CreateShotDialog
-from experiment.projectutil import pipelineFolder, scenesFolder, iterPipelineNames, iterSceneStitches, iterSceneNames, SCENE_EXT, sceneDefaultChannels, iterPublicStitches, sceneStitchNames
+from experiment.projectutil import pipelineFolder, scenesFolder, iterPipelineNames, iterSceneNames, SCENE_EXT
+from experiment.render import iterPublicStitches, sceneStitchNames, iterSceneStitches, sceneDefaultChannels
 from qtutil import *
 import icons
 from send2trash import send2trash

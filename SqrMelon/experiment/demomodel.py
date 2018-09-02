@@ -16,6 +16,14 @@ class DemoModel(UndoableModel):
     def addEvent(self, event):
         self.undoStack.push(ModelEdit(self, [event], []))
 
+    def deleteEventsWithClip(self, clip):
+        rowsToDelete = []
+        for row in xrange(self.rowCount()):
+            pyObj = self.index(row, 0).data(Qt.UserRole + 1)
+            if isinstance(pyObj, Event) and pyObj.clip == clip:
+                rowsToDelete.append(row)
+        self.undoStack.push(ModelEdit(self, [], rowsToDelete))
+
     def createEvent(self, clip):
         time = self.__timer.time
         self.undoStack.push(ModelEdit(self, [Event(clip.name, clip, time, time + 8.0)], []))

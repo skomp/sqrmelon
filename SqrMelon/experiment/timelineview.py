@@ -1,6 +1,7 @@
 import functools
 
 from experiment.actions import MarqueeActionBase, MoveTimeAction, MoveEventAction, DuplicateEventAction
+from experiment.commands import ModelEdit
 from experiment.gridview import GridView
 from experiment.model import Shot
 from experiment.timer import drawPlayhead
@@ -175,17 +176,17 @@ class TimelineMarqueeAction(MarqueeActionBase):
 
 
 class TimelineView(GridView):
-    # TODO: Mouse release after moving or rescaling events should repaint the curve view in case the loop-range should be updated
-    def __init__(self, timer, undoStack, model, selectionModels):
+    # TODO: Mouse release after moving or rescaling events should repaint the curve view in case the loop-range should be updated; connect demoModel itemChange to CurveView repaint ?
+    def __init__(self, timer, undoStack, demoModel, selectionModels):
         super(TimelineView, self).__init__(mask=1)
 
-        self.__model = model
+        self.__demoModel = demoModel
         self.__selectionModels = selectionModels
         for selectionModel in selectionModels:
             selectionModel.selectionChanged.connect(self.repaint)
-        model.dataChanged.connect(self.layout)
-        model.rowsInserted.connect(self.layout)
-        model.rowsRemoved.connect(self.layout)
+        demoModel.dataChanged.connect(self.layout)
+        demoModel.rowsInserted.connect(self.layout)
+        demoModel.rowsRemoved.connect(self.layout)
 
         self._timer = timer
         timer.changed.connect(self.repaint)
@@ -197,24 +198,12 @@ class TimelineView(GridView):
         self._viewRect.changed.disconnect(self.repaint)  # layout already calls repaint
         self._copyPasteAction = None
 
-    def frameAll(self):
-        start = float('inf')
-        end = float('-inf')
-        for pyObj in self.__iterAllItemRows():
-            start = min(start, pyObj.start)
-            end = max(end, pyObj.end)
-        if start == float('inf'):
-            start = 0.0
-            end = 1.0
-        self._viewRect.left = start
-        self._viewRect.right = end
-
     def resizeEvent(self, event):
         self.layout()
 
     def __iterAllItemRows(self):
-        for row in xrange(self.__model.rowCount()):
-            yield self.__model.item(row, 0).data()
+        for row in xrange(self.__demoModel.rowCount()):
+            yield self.__demoModel.item(row, 0).data()
 
     def layout(self):
         del self.__graphicsItems[:]
@@ -242,7 +231,7 @@ class TimelineView(GridView):
     def _selectedItems(self):
         for selectionModel in self.__selectionModels:
             for row in set(selectionModel.model().mapToSource(idx).row() for idx in selectionModel.selectedRows()):
-                yield self.__model.item(row).data()
+                yield self.__demoModel.item(row).data()
 
     @staticmethod
     def _itemHandleAt(itemRect, pos):
@@ -272,10 +261,11 @@ class TimelineView(GridView):
             events = {item.event for item in items}
             selected = set(self._selectedItems())
             if events & selected:
+                handle = 3
                 for item in items:
                     handle = self._itemHandleAt(item.rect, event.pos())
                     break
-                self._action = MoveEventAction(self._reproject, self.cellSize, selected, handle)
+                self._action = MoveEventAction(self._reproject, self.cellSize(self.width(), self._viewRect.left, self._viewRect.right), selected, handle)
 
         if not self._action:
             # else we start a new selection action
@@ -334,7 +324,55 @@ class TimelineView(GridView):
         if self._action is not None:
             self._action.draw(painter)
 
+    def frameAll(self):
+        self.__frameView()
+
+    def __iterSelectedItemRows(self):
+        for selectionModel in self.__selectionModels:
+            for idx in selectionModel.selectedRows():
+                yield idx.data(Qt.UserRole + 1)
+
+    def __frameView(self, pyObjs=tuple()):
+        if not pyObjs:
+            pyObjs = self.__iterAllItemRows()
+        start = float('inf')
+        end = float('-inf')
+        for pyObj in pyObjs:
+            start = min(start, pyObj.start)
+            end = max(end, pyObj.end)
+        try:
+            assert start < end
+        except AssertionError:
+            start = 0.0
+            end = 1.0
+        self._viewRect.left = start
+        self._viewRect.right = end
+
     def keyPressEvent(self, event):
+        if event.key() == Qt.Key_F:
+            # frame view to selected
+            self.__frameView(tuple(self.__iterSelectedItemRows()))
+
+        if event.key() == Qt.Key_A:
+            # frame view to all content
+            self.frameAll()
+
+        if event.key() == Qt.Key_Delete:
+            # delete selected
+            rows = set()
+            for selectionModel in self.__selectionModels:
+                # We get the pyObj which contains the source items to get source model row, as idx.row() just contains proxy data.
+                rows |= {idx.data(Qt.UserRole + 1).items[0].row() for idx in selectionModel.selectedRows()}
+            if rows:
+                # Macro to catch selection changes and group them with the delete action
+                self._undoStack.beginMacro('Delete timeline items')
+                try:
+                    self._undoStack.push(ModelEdit(self.__demoModel, [], list(rows)))
+                finally:
+                    self._undoStack.endMacro()
+                self.layout()
+                return
+
         if event.key() == Qt.Key_D and event.modifiers() & Qt.ControlModifier:
             # Duplicate items
             selected = list(self._selectedItems())

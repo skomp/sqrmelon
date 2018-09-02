@@ -352,7 +352,7 @@ class EventModel(NamedProxyModel):
 
 
 class FilteredView(UndoableSelectionView):
-    # TODO: Can not edit multiple elements at the same time, event when selecting multiple rows and using e.g. F2 to edit the item.
+    # TODO: Can not edit multiple elements at the same time, even when selecting multiple rows and using e.g. F2 to edit the item.
     # Override edit as described here https://stackoverflow.com/questions/14586715/how-can-i-achieve-to-update-multiple-rows-in-a-qtableview ?
     def __init__(self, undoStack, model, parent=None):
         super(FilteredView, self).__init__(undoStack, parent)
@@ -375,23 +375,10 @@ class FilteredView(UndoableSelectionView):
         return self.model().filterClass().properties()
 
 
-class EventView(FilteredView):
-    # TODO: Move these functions to EventManager
-    def firstSelectedEvent(self):
-        for container in self.selectionModel().selectedRows():
-            return container.data(Qt.UserRole + 1)
-
-    def firstSelectedEventWithClip(self, clip):
-        for container in self.selectionModel().selectedRows():
-            pyObj = container.data(Qt.UserRole + 1)
-            if pyObj.clip == clip:
-                return pyObj
-
-
 class ClipManager(UndoableSelectionView):
-    def __init__(self, selectionChange, firstSelectedEvent, undoStack, parent=None):
+    def __init__(self, model, selectionChange, firstSelectedEvent, undoStack, parent=None):
         super(ClipManager, self).__init__(undoStack, parent)
-        self.setModel(UndoableModel(undoStack))
+        self.setModel(model)
         self._firstSelectedEvent = firstSelectedEvent
         selectionChange.connect(self._pull)
 
@@ -418,11 +405,11 @@ class ClipManager(UndoableSelectionView):
 
 
 class ClipUI(QWidget):
-    def __init__(self, undoStack, addEvent, timer, selectionChange, firstSelectedEvent, parent=None):
+    def __init__(self, model, undoStack, demoModel, timer, selectionChange, firstSelectedEvent, parent=None):
         super(ClipUI, self).__init__(parent)
 
         self.__undoStack = undoStack
-        self.__addEvent = addEvent
+        self.__demoModel = demoModel
         self.__timer = timer
 
         main = vlayout()
@@ -431,7 +418,7 @@ class ClipUI(QWidget):
         hBar = hlayout()
 
         btn = createToolButton('Film Reel Create-48', 'Create clip', hBar)
-        btn.clicked.connect(self.createClip)
+        btn.clicked.connect(self.__createClip)
         btn.setIconSize(QSize(24, 24))
 
         btn = createToolButton('Film Reel Delete-48', 'Delete selected clips', hBar)
@@ -441,14 +428,14 @@ class ClipUI(QWidget):
         hBar.addStretch(1)
 
         main.addLayout(hBar)
-        self.manager = ClipManager(selectionChange, firstSelectedEvent, undoStack)
+        self.manager = ClipManager(model, selectionChange, firstSelectedEvent, undoStack)
         self.manager.setContextMenuPolicy(Qt.CustomContextMenu)
         self.manager.customContextMenuRequested.connect(self.__clipContextMenu)
         main.addWidget(self.manager)
 
         self.__contextMenu = QMenu()  # reference to avoid aggressive garbage collection
 
-    def iterClips(self):
+    def __iterClips(self):
         model = self.manager.model()
         for row in xrange(model.rowCount()):
             yield model.index(row, 0).data(Qt.UserRole + 1)
@@ -464,10 +451,13 @@ class ClipUI(QWidget):
         self.__contextMenu.popup(self.manager.mapToGlobal(pos))
 
     def __createEvent(self, clip):
-        event = CreateEventDialog.run(list(self.iterClips()), self.__timer.time, clip.name, self)
+        event = CreateEventDialog.run(list(self.__iterClips()), self.__timer.time, clip.name, self)
         if event is None:
             return
-        self.__addEvent(event)
+        self.__demoModel.addEvent(event)
+
+    def __createClip(self):
+        self.createClip()
 
     def createClip(self, defaultUniforms={}):
         result = QInputDialog.getText(self, 'Create clip', 'Clip name')
@@ -487,12 +477,20 @@ class ClipUI(QWidget):
         self.__undoStack.push(ModelEdit(self.manager.model(), [clip], []))
 
     def __deleteSelectedClips(self):
-        # TODO: Delete adds a selection change to the undo stack as well, should macro it somehow
-        # TODO: Delete must delete events using this clip as well
         rows = [idx.row() for idx in self.manager.selectionModel().selectedRows()]
         if not rows:
             return
-        self.__undoStack.push(ModelEdit(self.manager.model(), [], rows))
+        clips = [idx.data(Qt.UserRole + 1) for idx in self.manager.selectionModel().selectedRows()]
+
+        # Macro so that both the event deletes and clip delete get grouped.
+        # Additionally this catches any selection changes that are triggered by these actions.
+        self.__undoStack.beginMacro('Delete clip')
+        try:
+            for clip in clips:
+                self.__demoModel.deleteEventsWithClip(clip)
+            self.__undoStack.push(ModelEdit(self.manager.model(), [], rows))
+        finally:
+            self.__undoStack.endMacro()
 
 
 class GenericManager(QWidget):
@@ -519,7 +517,7 @@ class GenericManager(QWidget):
         toolBar.addStretch(1)
 
         self.undoStack = undoStack
-        self.view = self._viewClass(undoStack, self._modelClass(demoModel))
+        self.view = FilteredView(undoStack, self._modelClass(demoModel))
         layout.addWidget(self.view)
         layout.setStretch(1, 1)
 
@@ -534,12 +532,21 @@ class GenericManager(QWidget):
             self.undoStack.push(ModelEdit(model, [itemRow], []))
 
     def deleteSelected(self):
-        pyObjs = set()
+        rows = set()
         for idx in self.view.selectionModel().selectedIndexes():
-            pyObjs.add(idx.sibling(idx.row(), 0).data(Qt.UserRole + 1))
-        for pyObj in pyObjs:
-            model = self.view.model().sourceModel()
-            self.undoStack.push(ModelEdit(model, [], [pyObj.items[0].row()]))
+            # roundabout trip to get to the source model row
+            rows.add(idx.sibling(idx.row(), 0).data(Qt.UserRole + 1).items[0].row())
+        if not rows:
+            return
+
+        model = self.view.model().sourceModel()
+
+        # macro to avoid selection changes appearing in the undo stack
+        self.undoStack.beginMacro('Delete rows')
+        try:
+            self.undoStack.push(ModelEdit(model, [], list(rows)))
+        finally:
+            self.undoStack.endMacro()
 
 
 class ShotManager(GenericManager):
@@ -548,7 +555,6 @@ class ShotManager(GenericManager):
     _deleteIcon = 'Film Strip Delete-48'
     _deleteLabel = 'Delete selected shots'
     _modelClass = ShotModel
-    _viewClass = FilteredView
     _dialog = CreateShotDialog.run
 
 
@@ -558,12 +564,21 @@ class EventManager(GenericManager):
     _deleteIcon = 'Curves Delete-48'
     _deleteLabel = 'Delete selected events'
     _modelClass = EventModel
-    _viewClass = EventView
 
-    def __init__(self, undoStack, demoModel, timer, parent=None):
+    def __init__(self, undoStack, demoModel, timer, iterClips, parent=None):
         super(EventManager, self).__init__(undoStack, demoModel, timer, parent)
         self._dialog = self.runDialog
-        self.iterClips = None
+        self.__iterClips = iterClips
 
     def runDialog(self, *args):
-        return CreateEventDialog.run(list(self.iterClips()), *args)
+        return CreateEventDialog.run(list(self.__iterClips()), *args)
+
+    def firstSelectedEvent(self):
+        for container in self.view.selectionModel().selectedRows():
+            return container.data(Qt.UserRole + 1)
+
+    def firstSelectedEventWithClip(self, clip):
+        for container in self.view.selectionModel().selectedRows():
+            pyObj = container.data(Qt.UserRole + 1)
+            if pyObj.clip == clip:
+                return pyObj

@@ -11,7 +11,6 @@ from qtutil import *
 
 
 class CurveView(GridView):
-    # TODO: Cursor management
     requestAllCurvesVisible = pyqtSignal()
 
     def __init__(self, timer, source, undoStack, parent=None):
@@ -42,14 +41,14 @@ class CurveView(GridView):
     @property
     def time(self):
         if self._event:
-            return self._timer.time
+            return (self._timer.time - self._event.start) * self._event.speed + self._event.roll
         else:
             return self._time
 
     @time.setter
     def time(self, value):
         if self._event:
-            self._timer.time = value
+            self._timer.time = (value - self._event.roll) / self._event.speed + self._event.start
         else:
             self._time = value
             self.repaint()
@@ -188,7 +187,7 @@ class CurveView(GridView):
         if self._event:
             if isinstance(self._event, Event):
                 left = self.tToX(self._event.roll)
-                right = self.tToX(self._event.roll + self._event.duration / self._event.speed)
+                right = self.tToX(self._event.roll + self._event.duration * self._event.speed)
             else:
                 left = self.tToX(0.0)
                 right = self.tToX(self._event.duration)
