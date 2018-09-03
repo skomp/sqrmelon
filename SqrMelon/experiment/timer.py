@@ -2,10 +2,10 @@ from math import floor
 import time
 import icons
 from qtutil import *
-from OSC import OSCClientError, OSCMessage
+from OSC import OSCClientError, OSCMessage, OSCClient
 
 
-class OSCClient(object):
+class OSCManager(object):
     def __init__(self):
         self.__client = OSCClient()
         self.__client.connect(('127.0.0.1', 2223))
@@ -68,6 +68,7 @@ class OSCClient(object):
 
 class Time(QObject):
     timeChanged = pyqtSignal(float)
+    timeLooped = pyqtSignal(float)
     loopStartChanged = pyqtSignal(float)
     loopEndChanged = pyqtSignal(float)
     bpmChanged = pyqtSignal(float)
@@ -81,7 +82,7 @@ class Time(QObject):
         self._loopEnd = 10.0
         self._bpm = 120.0
 
-        self._osc = OSCClient()
+        self._osc = OSCManager()
         self.timeChanged.connect(self._osc.setPosition)
         self.loopStartChanged.connect(self._oscSetLoopRange)
         self.loopEndChanged.connect(self._oscSetLoopRange)
@@ -117,6 +118,11 @@ class Time(QObject):
         self._bpm = bpm
         self.bpmChanged.emit(self._bpm)
 
+    def setBpm(self, bpm):
+        self._bpm = bpm
+        self._osc.setBpm(int(bpm))
+        self.bpmChanged.emit(bpm)
+
     @property
     def loopStart(self):
         return self._loopStart
@@ -124,7 +130,10 @@ class Time(QObject):
     @loopStart.setter
     def loopStart(self, loopStart):
         self._loopStart = loopStart
-        self.startChanged.emit(self._loopStart)
+        self.loopStartChanged.emit(self._loopStart)
+
+    def setLoopStart(self, loopStart):
+        self.loopStart = loopStart
 
     @property
     def loopEnd(self):
@@ -133,20 +142,26 @@ class Time(QObject):
     @loopEnd.setter
     def loopEnd(self, loopEnd):
         self._loopEnd = loopEnd
-        self.endChanged.emit(self._loopEnd)
+        self.loopEndChanged.emit(self._loopEnd)
+
+    def setLoopEnd(self, loopEnd):
+        self.loopEnd = loopEnd
 
     def _tick(self):
         if self._prevTime is None:
             self._prevTime = time.time()
             return
-        delta = time.time() - self.__prevTime
+        delta = time.time() - self._prevTime
         self._prevTime = time.time()
 
         delta = self._secondsToBeats(delta)
 
         t = self._time + delta - self._loopStart
         r = self._loopEnd - self._loopStart
-        loop = floor(t / r)
+        if r > 0.001:
+            loop = floor(t / r)
+        else:
+            loop = 0.0
         self._time = t - loop * r + self._loopStart
         self.timeChanged.emit(self.time)
         if loop != 0:

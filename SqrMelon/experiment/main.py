@@ -53,13 +53,14 @@ def openProjectDialog():
 
 
 class ProjectManager(object):
-    def __init__(self, undoStack, demoModel, clipsModel, eventManager, shotManager, timelineManager):
+    def __init__(self, undoStack, demoModel, clipsModel, eventManager, shotManager, timer, timelineManager):
         self.__undoStack = undoStack
         self.__demoModel = demoModel
         self.__clipsModel = clipsModel
         self.__eventManager = eventManager
         self.__shotManager = shotManager
         self.__timelineManager = timelineManager
+        self.__timer = timer
 
     def open(self):
         currentProject = openProjectDialog()
@@ -113,9 +114,9 @@ class ProjectManager(object):
                                              int(eventData['Track'])).items)
 
         # restore other settings
-        self.__timelineManager.loopStart.setValue(data['LoopStart'])
-        self.__timelineManager.loopStop.setValue(data['LoopEnd'])
-        self.__timelineManager.bpm.setValue(data['BPM'])
+        self.__timer.loopStart = data['LoopStart']
+        self.__timer.loopEnd = data['LoopEnd']
+        self.__timer.bpm = data['BPM']
 
         # Fix widgets after content change
         self.__timelineManager.view.frameAll()
@@ -145,7 +146,7 @@ def run():
     eventManager = EventManager(undoStack, demoModel, timer, iterClips)
     shotManager = ShotManager(undoStack, demoModel, timer)
     timelineManager = TimelineManager(timer, undoStack, demoModel, (shotManager.view.selectionModel(), eventManager.view.selectionModel()))
-    projectManager = ProjectManager(undoStack, demoModel, clipsModel, eventManager, shotManager, timelineManager)
+    projectManager = ProjectManager(undoStack, demoModel, clipsModel, eventManager, shotManager, timer, timelineManager)
 
     value = settings().value('currentproject', None)
     if value is None or not os.path.exists(value):
@@ -213,8 +214,8 @@ def run():
     resetCamera.setShortcutContext(Qt.ApplicationShortcut)
 
     # connection widgets together
-    timelineManager.loopStart.valueChanged.connect(timelineManager.view.repaint)
-    timelineManager.loopStop.valueChanged.connect(timelineManager.view.repaint)
+    timer.loopStartChanged.connect(timelineManager.view.repaint)
+    timer.loopEndChanged.connect(timelineManager.view.repaint)
     
     # changing the model contents seems to mess with the column layout stretch
     demoModel.rowsInserted.connect(shotManager.view.updateSections)
@@ -230,12 +231,12 @@ def run():
     # when animating, the camera will see about animation
     # if it is not set to follow animation it will do nothing
     # else it will emit requestAnimatedCameraPosition, so that the internal state will match
-    timer.changed.connect(camera.followAnimation)
+    timer.timeChanged.connect(camera.followAnimation)
 
     # when the camera is changed  through flying (WASD, Mouse) or through the input widgets, it will emit an edited event, signaling repaint
     camera.edited.connect(view.repaint)
     # when the time changes, the camera is connected first so animation is applied, then we still have to manually trigger a repaint here
-    timer.changed.connect(view.repaint)
+    timer.timeChanged.connect(view.repaint)
 
     keyCamera.triggered.connect(functools.partial(curveUI.keyCamera, camera))
     toggleCamera.triggered.connect(camera.toggle)

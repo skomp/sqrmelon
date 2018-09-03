@@ -1,8 +1,8 @@
 {
   "Identifier": "SqrMelonProject",
-  "BPM": 120,
-  "LoopStart": 0,
-  "LoopEnd": 4,
+  "BPM": 120.0,
+  "LoopStart": 0.0,
+  "LoopEnd": 4.0,
   "Clips": [
     {
       "Name": "Clip 0",

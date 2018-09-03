@@ -81,6 +81,52 @@ class GraphicsItemShot(GraphicsItemEvent):
         return 'Film Strip'
 
 
+class TimestampDisplay(QLabel):
+    def __init__(self, timer):
+        super(TimestampDisplay, self).__init__()
+        self.__timer = timer
+        self.update()
+
+    def update(self, *args):
+        beat = self.__timer.time
+        minute = int(beat / self.__timer.bpm)
+        second = int(((beat * 60) / self.__timer.bpm) % 60)
+        fraction = int(round(((beat * 60 * 1000) / self.__timer.bpm) % 1000))
+        self.setText('%02d:%02d,%04d' % (minute, second, fraction))
+
+
+class BPMInput(QWidget):
+    def __init__(self, bpm):
+        super(BPMInput, self).__init__()
+        bpm = round(bpm, 2)
+        self._spinBox = DoubleSpinBox(bpm)
+        self.setLayout(QVBoxLayout())
+        self.layout().addWidget(self._spinBox)
+        self._label = QLabel('%s BPM' % bpm)
+        self.layout().addWidget(self._label)
+        self._spinBox.hide()
+        self._spinBox.editingFinished.connect(self.disable)
+
+    def spinBox(self):
+        return self._spinBox
+
+    def setValueSilent(self, bpm):
+        bpm = round(bpm, 2)
+        self._spinBox.setValueSilent(bpm)
+        self._label.setText('%s BPM' % bpm)
+
+    def disable(self):
+        self._label.show()
+        self._label.setText('%s BPM' % self._spinBox.value())
+        self._spinBox.hide()
+
+    def mouseDoubleClickEvent(self, *args, **kwargs):
+        self._spinBox.show()
+        self._spinBox.setFocus(Qt.MouseFocusReason)
+        self._spinBox.selectAll()
+        self._label.hide()
+
+
 class TimelineMarqueeAction(MarqueeActionBase):
     CLICK_SIZE = 2
 
@@ -188,7 +234,7 @@ class TimelineView(GridView):
         demoModel.rowsRemoved.connect(self.layout)
 
         self._timer = timer
-        timer.changed.connect(self.repaint)
+        timer.timeChanged.connect(self.repaint)
         self._undoStack = undoStack
         self.setMouseTracking(True)
         self.__graphicsItems = []
@@ -321,12 +367,12 @@ class TimelineView(GridView):
         drawPlayhead(painter, x, self.height())
 
         # paint loop range
-        loopStart = self.parent().loopStart.value()
-        loopStop = self.parent().loopStop.value()
-        if 0 <= loopStart < loopStop:
+        loopStart = self._timer.loopStart
+        loopEnd = self._timer.loopEnd
+        if 0 <= loopStart < loopEnd:
             loopStart = self.tToX(loopStart)
-            loopStop = self.tToX(loopStop)
-            drawLoopRange(painter, loopStart, loopStop, self.width(), self.height())
+            loopEnd = self.tToX(loopEnd)
+            drawLoopRange(painter, loopStart, loopEnd, self.width(), self.height())
 
         if self._action is not None:
             self._action.draw(painter)
@@ -427,12 +473,34 @@ class TimelineManager(QWidget):
         layout.addWidget(self.view)
         layout.setStretch(1, 1)
 
-        self.loopStart = DoubleSpinBox()
-        hbar.addWidget(self.loopStart)
-        self.loopStop = DoubleSpinBox()
-        hbar.addWidget(self.loopStop)
-        self.bpm = DoubleSpinBox()
-        hbar.addWidget(self.bpm)
+        currentSeconds = TimestampDisplay(timer)
+        currentSeconds.setToolTip('Current time in minutes:seconds,milliseconds')
+        currentSeconds.setStatusTip('Current time in minutes:seconds,milliseconds')
+        currentSeconds.setMinimumWidth(70)
+        hbar.addWidget(currentSeconds)
+        timer.timeChanged.connect(currentSeconds.update)
+
+        loopStart = DoubleSpinBox()
+        loopStart.setToolTip('Loop start')
+        loopStart.setStatusTip('Loop start')
+        loopStart.valueChanged.connect(timer.setLoopStart)
+        timer.loopStartChanged.connect(loopStart.setValue)
+        hbar.addWidget(loopStart)
+
+        loopEnd = DoubleSpinBox()
+        loopEnd.setToolTip('Loop end')
+        loopEnd.setStatusTip('Loop end')
+        loopEnd.valueChanged.connect(timer.setLoopEnd)
+        timer.loopEndChanged.connect(loopEnd.setValue)
+        hbar.addWidget(loopEnd)
+
+        bpm = BPMInput(int(round(timer.bpm)))
+        bpm.setToolTip('Beats per minute')
+        bpm.setStatusTip('Beats per minute, determines playback speed')
+        bpm.spinBox().setMinimum(1)
+        bpm.spinBox().valueChanged.connect(timer.setBpm)
+        timer.bpmChanged.connect(bpm.setValueSilent)
+        hbar.addWidget(bpm)
 
         self.__playPause = QPushButton(icons.get('Play'), '')
         self.__playPause.setToolTip('Play')
@@ -446,11 +514,11 @@ class TimelineManager(QWidget):
         shortcut1.setKey(QKeySequence(Qt.Key_P))
         shortcut1.setContext(Qt.ApplicationShortcut)
         self.__playPause.clicked.connect(self.__togglePlayPause)
-        # self.__playPause.clicked.connect(timer.playPause)
+        self.__playPause.clicked.connect(timer.playPause)
         shortcut0.activated.connect(self.__togglePlayPause)
-        # shortcut0.activated.connect(timer.playPause)
+        shortcut0.activated.connect(timer.playPause)
         shortcut1.activated.connect(self.__togglePlayPause)
-        # shortcut1.activated.connect(timer.playPause)
+        shortcut1.activated.connect(timer.playPause)
 
         isMuted = muteState()
         self.__mute = QPushButton(icons.get('Mute') if isMuted else icons.get('Medium Volume'), '')

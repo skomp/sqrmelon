@@ -26,7 +26,7 @@ class CurveView(GridView):
 
         # time
         self._timer = timer
-        self._timer.changed.connect(self.repaint)
+        self._timer.timeChanged.connect(self.repaint)
         self._time = 0.0
 
         self._event = None
