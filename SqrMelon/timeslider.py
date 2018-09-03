@@ -77,10 +77,10 @@ class OSCClient(object):
 
 class Timer(object):
     minTimeChanged = Signal()
+    timeChanged = Signal()
     startChanged = Signal()
     endChanged = Signal()
     maxTimeChanged = Signal()
-    timeChanged = Signal()
     timeLooped = Signal()
     bpmChanged = Signal()
 

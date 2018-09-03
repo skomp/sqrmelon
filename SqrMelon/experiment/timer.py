@@ -1,11 +1,103 @@
+from math import floor
+import time
 import icons
 from qtutil import *
+from OSC import OSCClientError, OSCMessage
 
 
-class Time(object):
-    def __init__(self, time=0.0):
+class OSCClient(object):
+    def __init__(self):
+        self.__client = OSCClient()
+        self.__client.connect(('127.0.0.1', 2223))
+        self.__isPlaying = False
+
+    def __del__(self):
+        self.__client.close()
+
+    def __sendSilent(self, msg):
+        # silently ignore any failure while sending
+        try:
+            self.__client.send(msg)
+        except OSCClientError:
+            return
+
+    def setPosition(self, time):
+        if self.__isPlaying:
+            return
+        msg = OSCMessage()
+        msg.setAddress('/position')
+        msg.append(time)
+        self.__sendSilent(msg)
+
+    def setBpm(self, bpm):
+        msg = OSCMessage()
+        msg.setAddress('/bpm')
+        msg.append(bpm)
+        self.__sendSilent(msg)
+
+    def play(self):
+        msg = OSCMessage()
+        msg.setAddress('/play')
+        msg.append(1)
+        self.__sendSilent(msg)
+        self.__isPlaying = True
+
+    def pause(self):
+        msg = OSCMessage()
+        msg.setAddress('/play')
+        msg.append(0)
+        self.__sendSilent(msg)
+        self.__isPlaying = False
+
+    def scrub(self, state):
+        msg = OSCMessage()
+        msg.setAddress('/scrub')
+        msg.append(state)
+        self.__sendSilent(msg)
+
+    def loop(self, start, end):
+        msg = OSCMessage()
+        msg.setAddress('/loopstart')
+        msg.append(start)
+        self.__sendSilent(msg)
+        msg = OSCMessage()
+        msg.setAddress('/looplength')
+        msg.append(end - start)
+        self.__sendSilent(msg)
+
+
+class Time(QObject):
+    timeChanged = pyqtSignal(float)
+    loopStartChanged = pyqtSignal(float)
+    loopEndChanged = pyqtSignal(float)
+    bpmChanged = pyqtSignal(float)
+
+    def __init__(self):
+        super(Time, self).__init__()
+
         self.changed = Signal()
-        self._time = time
+        self._time = 0.0
+        self._loopStart = 0.0
+        self._loopEnd = 10.0
+        self._bpm = 120.0
+
+        self._osc = OSCClient()
+        self.timeChanged.connect(self._osc.setPosition)
+        self.loopStartChanged.connect(self._oscSetLoopRange)
+        self.loopEndChanged.connect(self._oscSetLoopRange)
+
+        self._timer = QTimer()
+        self._timer.timeout.connect(self._tick)
+        self._prevTime = None
+
+    def _secondsToBeats(self, seconds):
+        return seconds * self._bpm / 60.0
+
+    def _oscSetLoopRange(self, *args):
+        self._osc.loop(self._loopStart, self._loopEnd)
+
+    # def oscScrub(self, state):
+    #    self._osc.scrub(state)
 
     @property
     def time(self):
@@ -14,7 +106,81 @@ class Time(object):
     @time.setter
     def time(self, time):
         self._time = time
-        self.changed.emit()
+        self.timeChanged.emit(self._time)
+
+    @property
+    def bpm(self):
+        return self._bpm
+
+    @bpm.setter
+    def bpm(self, bpm):
+        self._bpm = bpm
+        self.bpmChanged.emit(self._bpm)
+
+    @property
+    def loopStart(self):
+        return self._loopStart
+
+    @loopStart.setter
+    def loopStart(self, loopStart):
+        self._loopStart = loopStart
+        self.startChanged.emit(self._loopStart)
+
+    @property
+    def loopEnd(self):
+        return self._loopEnd
+
+    @loopEnd.setter
+    def loopEnd(self, loopEnd):
+        self._loopEnd = loopEnd
+        self.endChanged.emit(self._loopEnd)
+
+    def _tick(self):
+        if self._prevTime is None:
+            self._prevTime = time.time()
+            return
+        delta = time.time() - self.__prevTime
+        self._prevTime = time.time()
+
+        delta = self._secondsToBeats(delta)
+
+        t = self._time + delta - self._loopStart
+        r = self._loopEnd - self._loopStart
+        loop = floor(t / r)
+        self._time = t - loop * r + self._loopStart
+        self.timeChanged.emit(self.time)
+        if loop != 0:
+            self.timeLooped.emit(self.time)
+
+    def isPlaying(self):
+        return self._timer.isActive()
+
+    def playPause(self):
+        if self._timer.isActive():
+            self._prevTime = None
+            self._timer.stop()
+            self._osc.pause()
+        else:
+            self._timer.start(1.0 / 60.0)
+            self._osc.play()
+
+    def stepNext(self):
+        if self.time + 1.0 > self._loopEnd:
+            self.time = self._loopStart
+        else:
+            self.time += 1.0
+
+    def stepBack(self):
+        if self.time - 1.0 < self._loopStart:
+            self.time = self._loopEnd
+        else:
+            self.time -= 1.0
+
+    def goToStart(self):
+        self.time = self._loopStart
+
+    def goToEnd(self):
+        self._time = self._loopEnd
 
 
 def drawPlayhead(painter, x, height):

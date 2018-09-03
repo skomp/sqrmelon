@@ -43,13 +43,13 @@ def openProjectDialog():
     """
     Prompts user to open a project json file and returns True if a project was succefully opened.
     """
-    res = QFileDialog.getOpenFileName(None, 'Open project', os.path.dirname(os.path.abspath(__file__)), 'Project files (.json)')
-    if res[0] and res[1]:
-        with open(res[1]):
-            data = json.load(res[1])
+    res = QFileDialog.getOpenFileName(None, 'Open project', os.path.dirname(os.path.abspath(__file__)), 'Project files (*.json)')
+    if res:
+        with open(res) as fh:
+            data = json.load(fh)
         if 'Identifier' in data and data['Identifier'] == 'SqrMelonProject':
-            settings().setValue('currentproject', res[1])
-            return res[1]
+            settings().setValue('currentproject', res)
+            return res
 
 
 class ProjectManager(object):
@@ -213,6 +213,9 @@ def run():
     resetCamera.setShortcutContext(Qt.ApplicationShortcut)
 
     # connection widgets together
+    timelineManager.loopStart.valueChanged.connect(timelineManager.view.repaint)
+    timelineManager.loopStop.valueChanged.connect(timelineManager.view.repaint)
+    
     # changing the model contents seems to mess with the column layout stretch
     demoModel.rowsInserted.connect(shotManager.view.updateSections)
     demoModel.rowsInserted.connect(eventManager.view.updateSections)
