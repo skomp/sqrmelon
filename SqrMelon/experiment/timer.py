@@ -91,6 +91,9 @@ class Time(QObject):
         self._timer.timeout.connect(self._tick)
         self._prevTime = None
 
+    def beatsToSeconds(self, beats):
+        return beats * 60.0 / self._bpm
+
     def _secondsToBeats(self, seconds):
         return seconds * self._bpm / 60.0
 
@@ -108,6 +111,9 @@ class Time(QObject):
     def time(self, time):
         self._time = time
         self.timeChanged.emit(self._time)
+
+    def setTime(self, value):
+        self.time = value
 
     @property
     def bpm(self):
@@ -195,7 +201,7 @@ class Time(QObject):
         self.time = self._loopStart
 
     def goToEnd(self):
-        self._time = self._loopEnd
+        self.time = self._loopEnd
 
 
 def drawPlayhead(painter, x, height):

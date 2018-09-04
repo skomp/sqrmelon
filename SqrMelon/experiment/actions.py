@@ -10,6 +10,7 @@ class Action(object):
 
 class MoveTimeAction(Action):
     def __init__(self, originalTime, xToT, setTime, undoable=True):
+        self.valueChanged = Signal()
         self.__originalTime = originalTime
         self.__setTime = setTime
         self.__xToT = xToT
@@ -22,6 +23,7 @@ class MoveTimeAction(Action):
     def mouseMoveEvent(self, event):
         self.__newTime = self.__xToT(event.x())
         self.__setTime(self.__newTime)
+        self.valueChanged.emit(self.__newTime)
 
     def mouseReleaseEvent(self, undoStack):
         if self.__undoable:

@@ -1,3 +1,4 @@
+# TODO: Edit loop points in the view somehow
 import functools
 import pyglet
 from experiment.actions import MarqueeActionBase, MoveTimeAction, MoveEventAction, DuplicateEventAction
@@ -222,6 +223,8 @@ class TimelineMarqueeAction(MarqueeActionBase):
 
 
 class TimelineView(GridView):
+    valueChanged = pyqtSignal(float)
+
     def __init__(self, timer, undoStack, demoModel, selectionModels):
         super(TimelineView, self).__init__(mask=1)
 
@@ -299,6 +302,7 @@ class TimelineView(GridView):
         elif event.button() == Qt.RightButton:
             # Right button moves the time slider
             self._action = MoveTimeAction(self._timer.time, self.xToT, functools.partial(self._timer.__setattr__, 'time'))
+            self._action.valueChanged.connect(self.valueChanged.emit)
 
         elif event.button() == Qt.LeftButton:
             # Drag selected timeline item under mouse
@@ -473,13 +477,6 @@ class TimelineManager(QWidget):
         layout.addWidget(self.view)
         layout.setStretch(1, 1)
 
-        currentSeconds = TimestampDisplay(timer)
-        currentSeconds.setToolTip('Current time in minutes:seconds,milliseconds')
-        currentSeconds.setStatusTip('Current time in minutes:seconds,milliseconds')
-        currentSeconds.setMinimumWidth(70)
-        hbar.addWidget(currentSeconds)
-        timer.timeChanged.connect(currentSeconds.update)
-
         loopStart = DoubleSpinBox()
         loopStart.setToolTip('Loop start')
         loopStart.setStatusTip('Loop start')
@@ -494,6 +491,13 @@ class TimelineManager(QWidget):
         timer.loopEndChanged.connect(loopEnd.setValue)
         hbar.addWidget(loopEnd)
 
+        currentSeconds = TimestampDisplay(timer)
+        currentSeconds.setToolTip('Current time in minutes:seconds,milliseconds')
+        currentSeconds.setStatusTip('Current time in minutes:seconds,milliseconds')
+        currentSeconds.setMinimumWidth(70)
+        hbar.addWidget(currentSeconds)
+        timer.timeChanged.connect(currentSeconds.update)
+
         bpm = BPMInput(int(round(timer.bpm)))
         bpm.setToolTip('Beats per minute')
         bpm.setStatusTip('Beats per minute, determines playback speed')
@@ -502,11 +506,40 @@ class TimelineManager(QWidget):
         timer.bpmChanged.connect(bpm.setValueSilent)
         hbar.addWidget(bpm)
 
+        goToStart = QPushButton(icons.get('Rewind'), '')
+        goToStart.setToolTip('Go to start')
+        goToStart.setStatusTip('Go to start')
+        goToStart.clicked.connect(timer.goToStart)
+        goToStart.setFixedWidth(24)
+        hbar.addWidget(goToStart)
+
+        stepBack = QPushButton(icons.get('Skip to Start'), '')
+        stepBack.setToolTip('Step back')
+        stepBack.setStatusTip('Step back')
+        stepBack.clicked.connect(timer.stepBack)
+        stepBack.setFixedWidth(24)
+        hbar.addWidget(stepBack)
+
         self.__playPause = QPushButton(icons.get('Play'), '')
         self.__playPause.setToolTip('Play')
         self.__playPause.setStatusTip('Play')
         self.__playPause.setFixedWidth(24)
         hbar.addWidget(self.__playPause)
+
+        stepNext = QPushButton(icons.get('End'), '')
+        stepNext.setToolTip('Step forwards')
+        stepNext.setStatusTip('Step forwards')
+        stepNext.clicked.connect(timer.stepNext)
+        stepNext.setFixedWidth(24)
+        hbar.addWidget(stepNext)
+
+        goToEnd = QPushButton(icons.get('Fast Forward'), '')
+        goToEnd.setToolTip('Go to end')
+        goToEnd.setStatusTip('Go to end')
+        goToEnd.clicked.connect(timer.goToEnd)
+        goToEnd.setFixedWidth(24)
+        hbar.addWidget(goToEnd)
+
         shortcut0 = QShortcut(self)
         shortcut0.setKey(QKeySequence(Qt.Key_Space))
         shortcut0.setContext(Qt.ApplicationShortcut)
@@ -520,6 +553,15 @@ class TimelineManager(QWidget):
         shortcut1.activated.connect(self.__togglePlayPause)
         shortcut1.activated.connect(timer.playPause)
 
+        currentTime = DoubleSpinBox(timer.time)
+        currentTime.setToolTip('Current time in beats')
+        currentTime.setStatusTip('Current time in beats')
+        currentTime.setMinimumWidth(70)
+        currentTime.setDecimals(2)
+        currentTime.valueChanged.connect(timer.setTime)
+        timer.timeChanged.connect(currentTime.setValueSilent)
+        hbar.addWidget(currentTime)
+
         isMuted = muteState()
         self.__mute = QPushButton(icons.get('Mute') if isMuted else icons.get('Medium Volume'), '')
         self.__mute.setToolTip('Un-mute' if isMuted else 'Mute')
@@ -530,6 +572,13 @@ class TimelineManager(QWidget):
         self.__soundtrack = None
 
         hbar.addStretch(1)
+
+        self.__timer = timer
+        # When the user edits the time from the UI we should seek the audio
+        currentTime.valueChanged.connect(self.__seekSoundtrack)
+        self.view.valueChanged.connect(self.__seekSoundtrack)
+        # When we hit a loop point we should reset the audio
+        timer.timeLooped.connect(self.__seekSoundtrack)
 
     def __togglePlayPause(self):
         if self.__playPause.toolTip() == 'Play':
@@ -556,12 +605,12 @@ class TimelineManager(QWidget):
         for ext in ('.wav', '.mp3'):
             for fname in os.listdir(projectFolder()):
                 if fname.lower().endswith(ext):
-                    try:
-                        path = os.path.join(projectFolder(), fname)
-                        song = pyglet.media.load(path)
-                    except Exception, e:
-                        print 'Found a soundtrack that we could not play. pyglet or mp3 libs missing?\n%s' % e.message
-                        return
+                    #try:
+                    path = os.path.join(projectFolder(), fname)
+                    song = pyglet.media.load(path)
+                    #except Exception, e:
+                    #    print 'Found a soundtrack that we could not play. pyglet or mp3 libs missing?\n%s' % e.message
+                    #    return
                     break
             if song:
                 break
