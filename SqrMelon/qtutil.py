@@ -72,6 +72,12 @@ class QMainWindowState(QMainWindow):
         d.setObjectName(name)
         d.setWindowTitle(name)
         self.addDockWidget(where, d, direction)
+
+        widget.setMinimumSize(QSize(4,4))
+        d.setMinimumSize(QSize(4,4))
+        widget.setSizePolicy(QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum))
+        d.setSizePolicy(QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum))
+
         return d
 
 
