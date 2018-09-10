@@ -108,7 +108,12 @@ class View3D(QGLWidget):
             if self._lastRenderedScene is not None:
                 self._lastRenderedScene.changed.connect(self.update)
 
-        scene.render((self.width(), self.height()), uniforms)
+        w, h = self.width(), self.height()
+        if w < 64 or h < 64:
+            glClearColor(1, 0, 1, 1)
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+            return
+        scene.render((w, h), uniforms)
 
     # forward events to camera
     def keyPressEvent(self, keyEvent):
