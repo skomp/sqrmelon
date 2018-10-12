@@ -13,12 +13,14 @@ const float BPM = 84.0f;
 #include <xmmintrin.h>
 
 // #define SUPPORT_3D_TEXTURE
+#define RESOLUTION_SELECTOR
 
-#ifndef DEMO_WIDTH
+// set resolution settings here if not using resolution selector
+// set resolution to 0 to get screen resolution, it will force to windowed because there is no reason to change to full screen at the current resolution
+#ifndef RESOLUTION_SELECTOR
 #define DEMO_WIDTH 1920
-#endif
-#ifndef DEMO_HEIGHT
 #define DEMO_HEIGHT 1080
+#define IS_WINDOWED 0
 #endif
 
 #ifdef NO_AUDIO
@@ -236,7 +238,6 @@ float animData[sizeof(float) * 4 * gAnimEntriesMax];
 			static float buffer[128*128*128*4];
 			glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, buffer);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-					
 			glGenTextures(1, &texture);
 			*(gFrameBufferColorBuffers[frameBufferId] + j) = texture;
 			glBindTexture(GL_TEXTURE_3D, texture);
@@ -296,14 +297,48 @@ void TickLoader()
 	DrawLoader(1.0f);
 }
 
-#ifdef DEMO
-#if DEMO_WIDTH != 0
-DEVMODE dmScreenSettings =
+#ifdef RESOLUTION_SELECTOR
+#include "Dialog.h"
+
+int resolutionIndex;
+bool isWindowed;
+
+INT_PTR CALLBACK ConfigDialogProc(HWND hwndDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	"", 0, 0, sizeof(dmScreenSettings), 0, DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFIXEDOUTPUT,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, DEMO_WIDTH, DEMO_HEIGHT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-};
-#endif
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		{
+			HWND hwndRes = GetDlgItem(hwndDlg, IDC_COMBORESO);
+		
+			SendMessage(hwndRes, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)"native");
+			SendMessage(hwndRes, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)"1280 x 720");
+			SendMessage(hwndRes, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)"1920 x 1080");
+		
+			SendMessage(hwndRes, CB_SETCURSEL, 0, 0);
+		}
+
+		return true;
+
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		
+		case IDOK:
+			resolutionIndex = SendMessage(GetDlgItem(hwndDlg, IDC_COMBORESO), CB_GETCURSEL, 0, 0);
+			isWindowed = IsDlgButtonChecked(hwndDlg, IDC_CHECKWIN) == BST_CHECKED;
+			
+			EndDialog(hwndDlg, IDOK);
+			break;
+
+		case IDCANCEL:
+			EndDialog(hwndDlg, IDCANCEL);
+			break;
+		}
+	}
+
+	return false;
+}
 #endif
 
 void main()
@@ -312,15 +347,62 @@ void main()
 	_64klang2_Init();
 #endif
 	
-	#ifdef DEMO
-	#if DEMO_WIDTH != 0
+#ifdef RESOLUTION_SELECTOR
+	// resolution selector
+	INT_PTR result = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOGCONFIG), NULL, ConfigDialogProc);
+	if (result != IDOK)
+		return 0;
+
+	int width, height;
+	switch (resolutionIndex)
+	{
+	case 1: // HD ready
+		width = 1280;
+		height = 720;
+		break;
+	case 2: // full HD
+		width = 1920;
+		height = 1080;
+		break;
+	default: // native
+		width = GetSystemMetrics(SM_CXSCREEN);
+		height = GetSystemMetrics(SM_CYSCREEN);
+		isWindowed = true; // going to full screen only makes sense if we want to change the resolution of the screen
+		break;
+	}
+
+	HWND window;
+	if (isWindowed)
+	{
+		window = CreateWindowExA(0, (LPCSTR)49177, 0, WS_POPUP | WS_VISIBLE, 0, 0, width, height, 0, 0, 0, 0);
+	}
+	else
+	{
+		DEVMODE dmScreenSettings =
+		{
+			"", 0, 0, sizeof(dmScreenSettings), 0, DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFIXEDOUTPUT,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, width, height, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		};
 		ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN);
-	#endif
-		HWND window = CreateWindowExA(0, (LPCSTR)49177, 0, WS_POPUP | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
+		window = CreateWindowExA(0, (LPCSTR)49177, 0, WS_POPUP | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
+	}
+#else
+
+	#if IS_WINDOWED || ((DEMO_WIDTH == 0) && (DEMO_HEIGHT == 0))
+		window = CreateWindowExA(0, (LPCSTR)49177, 0, WS_POPUP | WS_VISIBLE, 0, 0, DEMO_WIDTH, DEMO_HEIGHT, 0, 0, 0, 0);
 	#else
-		HWND window = CreateWindowExA(0, (LPCSTR)49177, 0, WS_POPUP | WS_VISIBLE, 0, 0, DEMO_WIDTH, DEMO_HEIGHT, 0, 0, 0, 0);
+		DEVMODE dmScreenSettings =
+		{
+			"", 0, 0, sizeof(dmScreenSettings), 0, DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFIXEDOUTPUT,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, DEMO_WIDTH, DEMO_HEIGHT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		};
+		ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN);
+		window = CreateWindowExA(0, (LPCSTR)49177, 0, WS_POPUP | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
 	#endif
-		ShowCursor(0);
+
+#endif
+	
+	ShowCursor(0);
 	
 	device = GetDC(window);
 	SetPixelFormat(device, ChoosePixelFormat(device, &pfd), &pfd);
