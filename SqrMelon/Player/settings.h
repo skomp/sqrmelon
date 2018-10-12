@@ -17,3 +17,6 @@
 // #define NO_AUDIO
 // #define AUDIO_64KLANG2
 #define AUDIO_BASS
+
+// #define SUPPORT_3D_TEXTURE
+#define SUPPORT_PNG

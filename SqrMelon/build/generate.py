@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from build.codeoptimize import optimizeText
 import fileutil
-from util import ParseXMLWithIncludes, ScenesPath, SCENE_EXT
+from util import ParseXMLWithIncludes, ScenesPath, SCENE_EXT, ProjectDir
 
 gAnimEntriesMax = 0.0
 
@@ -134,7 +134,7 @@ class FrameBufferPool(object):
                 return cursor + localOutput, self.data[frameBuffer][-1]
             cursor += data[0]
 
-    def serialize(self):
+    def serialize(self, texturePaths):
         allData = []
         totalTextures = 0
         for data in self.data:
@@ -146,12 +146,28 @@ class FrameBufferPool(object):
             allData += [int(x) for x in data]
             totalTextures += int(data[0])
 
+        procTextures = totalTextures
+
+        # Tally file textures up to the total so gTextures has right size
+        totalTextures += len(texturePaths)
+
+        if totalTextures:
+            yield 'GLuint gTextures[%s];\n' % totalTextures
+
         if allData:
             global gFrameBufferData
             gFrameBufferData = ints.addInts(allData)
-            yield 'GLuint gTextures[%s];\n' % totalTextures
             yield 'GLuint gFrameBuffers[%s];\n' % (len(self.data) + 1)
             yield 'GLuint* gFrameBufferColorBuffers[%s];\n' % (len(self.data) + 1)
+
+        # TODO: Then when we encounter a file input, we must do some kind of look up table to convert the name to the right index to bind when forwarding uniforms, ofc we do that in python and just hard code the ints in the generated code
+        # Generate texture loading code for those textures, for sanity we keep track of the "file texture start index" and have them at the end of gTextures
+        yield '__forceinline void initFileTextures()\n{\n'
+        if texturePaths:
+            for i, texturePath in enumerate(texturePaths):
+                yield '\tloadTexture(gTextures[%s], "%s");\n' % (procTextures + i, texturePath)
+        yield '}\n\n'
+
         yield '\n\n__forceinline void widthHeight(int i, int width, int height, int& w, int& h)\n{\n'
         if allData:
             yield '\tw = gIntData[i * %s + %s];\n' % (FrameBufferPool.BLOCK_SIZE, gFrameBufferData + 1)
@@ -205,6 +221,13 @@ class PassPool(object):
             n = len(self.data)
             self.data.append(v)
             return n
+
+    def texturePaths(self):
+        for entry in self.data:  # foreach pass
+            for tex in entry[2]:
+                if isinstance(tex, basestring):
+                    assert tex.lower().endswith('.png'), 'We only include picopng for images, so files must be PNG files. "%s" is not.' % tex
+                    yield tex
 
     def serialize(self):
         yield '\n\n__forceinline void applyUniform(int dataSize, GLint uniformLocation, const float* dataHandle)\n{\n'
@@ -415,11 +438,14 @@ def run():
             inputs = []
             while key in xPass.attrib:
                 v = xPass.attrib[key]
-                if '.' in v:
-                    a, b = v.split('.')
+                if os.path.exists(os.path.join(ProjectDir(), v)):
+                    inputs.append(v)
                 else:
-                    a, b = v, 0
-                inputs.append((int(a), int(b)))
+                    if '.' in v:
+                        a, b = v.split('.')
+                    else:
+                        a, b = v, 0
+                    inputs.append((int(a), int(b)))
                 i += 1
                 key = 'input%s' % i
 
@@ -512,8 +538,9 @@ def run():
             for ln in serializable.serialize():
                 yield ln
         buffer2 = []
-        for serializable in (shaders, framebuffers, passes):
-            buffer2 += list(serializable.serialize())
+        buffer2 += list(shaders.serialize())
+        buffer2 += list(framebuffers.serialize(list(passes.texturePaths())))
+        buffer2 += list(passes.serialize())
         global gScenePassIds
         gScenePassIds = ints.addInts(scenes)
         for ln in ints.serialize():

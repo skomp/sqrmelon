@@ -56,7 +56,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
-      <AdditionalDependencies>opengl32.lib;winmm.lib;msvcrtd.lib;ucrtd.lib;vcruntime.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;winmm.lib;msvcrtd.lib;ucrtd.lib;vcruntime.lib;Bass.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -96,29 +96,57 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="64klang2\64k2Patch.h" />
-    <ClInclude Include="64klang2\64k2Song.h" />
-    <ClInclude Include="64klang2\sample_t.h" />
-    <ClInclude Include="64klang2\Synth.h" />
-    <ClInclude Include="64klang2\SynthAllocator.h" />
-    <ClInclude Include="64klang2\SynthNode.h" />
-    <ClInclude Include="64klang2\SynthPlayer.h" />
+    <ClInclude Include="64klang2\64k2Patch.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="64klang2\64k2Song.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="64klang2\sample_t.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="64klang2\Synth.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="64klang2\SynthAllocator.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="64klang2\SynthNode.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="64klang2\SynthPlayer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Dialog.h" />
     <ClInclude Include="generated.hpp" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="wglext.h" />
     <ClInclude Include="windowdump.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="64klang2\sample_t.cpp" />
-    <ClCompile Include="64klang2\Synth.cpp" />
-    <ClCompile Include="64klang2\SynthAllocator.cpp" />
-    <ClCompile Include="64klang2\SynthNode.cpp" />
-    <ClCompile Include="64klang2\SynthPlayer.cpp" />
+    <ClCompile Include="64klang2\sample_t.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="64klang2\Synth.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="64klang2\SynthAllocator.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="64klang2\SynthNode.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="64klang2\SynthPlayer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="wglext.cpp" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="sinf.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Dialog.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

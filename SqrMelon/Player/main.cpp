@@ -1,3 +1,4 @@
+#include "picopnggl.h"
 #include "settings.h"
 #include <cfloat>
 #include "generated.hpp"
@@ -12,7 +13,6 @@ const float BPM = 84.0f;
 #endif
 #include <xmmintrin.h>
 
-// #define SUPPORT_3D_TEXTURE
 #define RESOLUTION_SELECTOR
 
 // set resolution settings here if not using resolution selector
@@ -351,7 +351,7 @@ void main()
 	// resolution selector
 	INT_PTR result = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOGCONFIG), NULL, ConfigDialogProc);
 	if (result != IDOK)
-		return 0;
+		return;
 
 	int width, height;
 	switch (resolutionIndex)
@@ -448,15 +448,12 @@ void main()
 	BASS_Init(-1, 44100, 0, NULL, NULL);
 	HSTREAM chan = BASS_StreamCreateFile(false, "audio.mp3", 0, 0, 0);
 	BASS_ChannelPlay(chan, true);
-	start = GetTickCount();
 #endif
 
 	TickLoader();
 	// end loading process
 	
 	MSG msg;
-	int safeguard = 2;
-
 	do
 	{
 		while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -480,7 +477,7 @@ void main()
 #endif
 
 #ifdef AUDIO_BASS
-		float seconds = (GetTickCount() - start) * 0.001f;
+		float seconds = (float)BASS_ChannelBytes2Seconds(chan, BASS_ChannelGetPosition(chan, BASS_POS_BYTE));
 #endif
 
 		if(!evalDemo(seconds, seconds * ((float)BPM / 60.0f), width, height))
