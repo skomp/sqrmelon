@@ -30,7 +30,7 @@ const float BPM = 100.0f;
 // #define SUPPORT_3D_TEXTURE
 #define SUPPORT_PNG
 
-// #define RESOLUTION_SELECTOR
+#define RESOLUTION_SELECTOR
 // set resolution settings here if not using resolution selector
 // set resolution to 0 to get screen resolution, it will force to windowed because there is no reason to change to full screen at the current resolution
 #ifndef RESOLUTION_SELECTOR

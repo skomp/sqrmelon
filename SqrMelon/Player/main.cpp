@@ -379,9 +379,9 @@ INT_PTR CALLBACK ConfigDialogProc(HWND hwndDlg, UINT message, WPARAM wParam, LPA
 			SendMessage(hwndRes, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)"1280 x 720");
 			SendMessage(hwndRes, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)"1920 x 1080");
 		
-			SendMessage(hwndRes, CB_SETCURSEL, 1, 0);
+			SendMessage(hwndRes, CB_SETCURSEL, 0, 0);
 
-			SendMessage(GetDlgItem(hwndDlg, IDC_CHECKWIN), BM_SETCHECK, BST_CHECKED, 0);
+			// SendMessage(GetDlgItem(hwndDlg, IDC_CHECKWIN), BM_SETCHECK, BST_CHECKED, 0);
 		}
 
 		return true;
