@@ -9,25 +9,8 @@
 #endif
 #ifdef AUDIO_BASS
 #include "bass.h"
-const float BPM = 84.0f;
 #endif
 #include <xmmintrin.h>
-
-#define RESOLUTION_SELECTOR
-
-// set resolution settings here if not using resolution selector
-// set resolution to 0 to get screen resolution, it will force to windowed because there is no reason to change to full screen at the current resolution
-#ifndef RESOLUTION_SELECTOR
-#define DEMO_WIDTH 1280
-#define DEMO_HEIGHT 720
-#define IS_WINDOWED 1
-#endif
-
-#ifdef NO_AUDIO
-	#define BPM 124.0f
-	#define START_BEAT 0.0f
-	#define SPEED 1.0f
-#endif
 
 extern "C"{int _fltused;}
 
@@ -132,6 +115,7 @@ struct Mat44
 };
 
 float uV[16] = { 0 };
+float uDrone[16] = { 0 };
 float uFrustum[16];
 float animData[sizeof(float) * 4 * gAnimEntriesMax];
 
@@ -160,7 +144,7 @@ float animData[sizeof(float) * 4 * gAnimEntriesMax];
 			animData[uniformId * 4 + 3] = evalCurve(&gFloatData[gIntData[idx + gShotUniformData + 8]], gIntData[idx + gShotUniformData + 9], localBeats);
 		
 		// Do what python does in animationprocessor.py
-		if(lstrcmpiA(gTextPool[gIntData[idx + gShotUniformData]], "uOrigin") == 0)
+		if (lstrcmpiA(gTextPool[gIntData[idx + gShotUniformData]], "uOrigin") == 0)
 		{
 			uV[12] = animData[uniformId * 4];
 			uV[13] = animData[uniformId * 4 + 1];
@@ -177,14 +161,43 @@ float animData[sizeof(float) * 4 * gAnimEntriesMax];
 			uV[0] = orient.data.elems[0];
 			uV[1] = orient.data.elems[1];
 			uV[2] = orient.data.elems[2];
-			
+
 			uV[4] = orient.data.elems[4];
 			uV[5] = orient.data.elems[5];
 			uV[6] = orient.data.elems[6];
-			
+
 			uV[8] = orient.data.elems[8];
 			uV[9] = orient.data.elems[9];
 			uV[10] = orient.data.elems[10];
+		}
+
+		if (lstrcmpiA(gTextPool[gIntData[idx + gShotUniformData]], "uDronePos") == 0)
+		{
+			uDrone[12] = animData[uniformId * 4];
+			uDrone[13] = animData[uniformId * 4 + 1];
+			uDrone[14] = animData[uniformId * 4 + 2];
+			uDrone[15] = 1.0f;
+		}
+
+		if (lstrcmpiA(gTextPool[gIntData[idx + gShotUniformData]], "uDroneAngles") == 0)
+		{
+			const float deg2rad = 0.0174532925199444;
+
+			Mat44 orient = Mat44::RotateY(-animData[uniformId * 4 + 1] * deg2rad);
+			orient *= Mat44::RotateX(animData[uniformId * 4] * deg2rad);
+			orient *= Mat44::RotateZ(animData[uniformId * 4 + 2] * deg2rad);
+
+			uDrone[0] = orient.data.elems[0];
+			uDrone[1] = orient.data.elems[1];
+			uDrone[2] = orient.data.elems[2];
+
+			uDrone[4] = orient.data.elems[4];
+			uDrone[5] = orient.data.elems[5];
+			uDrone[6] = orient.data.elems[6];
+
+			uDrone[8] = orient.data.elems[8];
+			uDrone[9] = orient.data.elems[9];
+			uDrone[10] = orient.data.elems[10];
 		}
 
 		if (lstrcmpiA(gTextPool[gIntData[idx + gShotUniformData]], "uFovBias") == 0)
@@ -214,6 +227,7 @@ float animData[sizeof(float) * 4 * gAnimEntriesMax];
 			applyUniform(gIntData[idx + gShotUniformData + 1], loc, &animData[uniformId * 4]);
 		}
 		glUniformMatrix4fv(glGetUniformLocation(gPrograms[gIntData[passIndex * 2 + gPassProgramsAndTargets]], "uV"), 1, GL_FALSE, uV);
+		glUniformMatrix4fv(glGetUniformLocation(gPrograms[gIntData[passIndex * 2 + gPassProgramsAndTargets]], "uDrone"), 1, GL_FALSE, uDrone);
 		glUniformMatrix4fv(glGetUniformLocation(gPrograms[gIntData[passIndex * 2 + gPassProgramsAndTargets]], "uFrustum"), 1, GL_FALSE, uFrustum);
 		glRecti(-1, -1, 1, 1);
 		// patch 3D textures
@@ -260,7 +274,7 @@ float animData[sizeof(float) * 4 * gAnimEntriesMax];
 }
 
 
-const char* loader = "#version 420\n\
+const char* loader = "#version 410\n\
 uniform vec4 u;\
 out vec3 o;\
 void main()\
@@ -315,7 +329,9 @@ INT_PTR CALLBACK ConfigDialogProc(HWND hwndDlg, UINT message, WPARAM wParam, LPA
 			SendMessage(hwndRes, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)"1280 x 720");
 			SendMessage(hwndRes, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)"1920 x 1080");
 		
-			SendMessage(hwndRes, CB_SETCURSEL, 0, 0);
+			SendMessage(hwndRes, CB_SETCURSEL, 1, 0);
+
+			SendMessage(GetDlgItem(hwndDlg, IDC_CHECKWIN), BM_SETCHECK, BST_CHECKED, 0);
 		}
 
 		return true;
@@ -430,9 +446,15 @@ void main()
 	initPrograms();
 	// allocate frame buffers
 	initFrameBuffers(width, height);
-	TickLoader();
 	// precalc textures
 	evalDemo(0.0f, 0.0f, width, height, true);
+	TickLoader();
+	
+	initFileTextures(
+#ifdef _DEBUG 
+		window 
+#endif
+		);
 	TickLoader();
 
 #ifdef NO_AUDIO
@@ -477,7 +499,8 @@ void main()
 #endif
 
 #ifdef AUDIO_BASS
-		float seconds = (float)BASS_ChannelBytes2Seconds(chan, BASS_ChannelGetPosition(chan, BASS_POS_BYTE));
+		unsigned __int64 pos = BASS_ChannelGetPosition(chan, BASS_POS_BYTE);
+		float seconds = (float)BASS_ChannelBytes2Seconds(chan, pos);
 #endif
 
 		if(!evalDemo(seconds, seconds * ((float)BPM / 60.0f), width, height))

@@ -51,13 +51,10 @@
     <ClInclude Include="64klang2\sample_t.h">
       <Filter>64klang2</Filter>
     </ClInclude>
-    <ClInclude Include="picopnggl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="picopng.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Dialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lodepng.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -83,10 +80,7 @@
     <ClCompile Include="64klang2\sample_t.cpp">
       <Filter>64klang2</Filter>
     </ClCompile>
-    <ClCompile Include="picopnggl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="picopng.cpp">
+    <ClCompile Include="lodepng.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -99,5 +93,10 @@
     <ResourceCompile Include="Dialog.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="filetextures.inc">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

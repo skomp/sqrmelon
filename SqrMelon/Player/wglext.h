@@ -11,6 +11,7 @@
 #define GL_VERTEX_SHADER 0x8B31
 #define GL_COMPILE_STATUS 0x8B81
 #define GL_LINK_STATUS 0x8B82
+#define GL_VALIDATE_STATUS 0x8B83
 #define GL_INFO_LOG_LENGTH 0x8B84
 #define GL_RGBA32F 0x8814
 #define GL_COLOR_ATTACHMENT0 0x8CE0
@@ -72,6 +73,7 @@ typedef void (WINAPI* PFNglCompileShader)(GLuint);
 typedef GLuint (WINAPI* PFNglCreateProgram)();
 typedef void (WINAPI* PFNglAttachShader)(GLuint, GLuint);
 typedef void (WINAPI* PFNglLinkProgram)(GLuint);
+typedef void (WINAPI* PFNglValidateProgram)(GLuint);
 typedef void (WINAPI* PFNglDetachShader)(GLuint, GLuint);
 typedef void (WINAPI* PFNglDeleteShader)(GLuint);
 typedef void (WINAPI* PFNglGetShaderiv)(GLuint, GLenum, GLint*);
@@ -89,6 +91,7 @@ typedef void (WINAPI* glDeleteFramebuffers_proc)(GLsizei, GLuint*);
 #define glProgramParameteri ((PFNglProgramParameteri)wglGetProcAddress("glProgramParameteri"))
 #define glAttachShader ((PFNglAttachShader)wglGetProcAddress("glAttachShader"))
 #define glLinkProgram ((PFNglLinkProgram)wglGetProcAddress("glLinkProgram"))
+#define glValidateProgram ((PFNglValidateProgram)wglGetProcAddress("glValidateProgram"))
 #define glDetachShader ((PFNglDetachShader)wglGetProcAddress("glDetachShader"))
 #define glDeleteShader ((PFNglDeleteShader)wglGetProcAddress("glDeleteShader"))
 #define glGetShaderiv ((PFNglGetShaderiv)wglGetProcAddress("glGetShaderiv"))

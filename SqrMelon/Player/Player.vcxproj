@@ -123,8 +123,7 @@
     </ClInclude>
     <ClInclude Include="Dialog.h" />
     <ClInclude Include="generated.hpp" />
-    <ClInclude Include="picopng.h" />
-    <ClInclude Include="picopnggl.h" />
+    <ClInclude Include="lodepng.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="wglext.h" />
     <ClInclude Include="windowdump.h" />
@@ -145,9 +144,8 @@
     <ClCompile Include="64klang2\SynthPlayer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="picopng.cpp" />
-    <ClCompile Include="picopnggl.cpp" />
     <ClCompile Include="wglext.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +155,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Dialog.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="filetextures.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

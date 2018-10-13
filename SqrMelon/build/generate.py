@@ -169,7 +169,7 @@ class FrameBufferPool(object):
         # Generate texture loading code for file textures, for sanity we keep track of the "file texture start index" and have them at the end of gTextures
         # When we encounter a file input, we must do some kind of look up table to convert the name to the right index to bind when forwarding uniforms,
         # we do that in python and just hard code the ints in the generated code
-        yield '\n\n#include "picopnggl.h"\n'
+        yield '\n\n#include "filetextures.inc"\n'
         yield '\n\n__forceinline void initFileTextures(\n#ifdef _DEBUG\nHWND window\n#endif\n)\n{\n'
         if filePaths:
             for i, texturePath in enumerate(filePaths):
@@ -242,7 +242,7 @@ class PassPool(object):
                 if isinstance(tex, basestring):
                     reachedImageInputs = True
                     assert tex.lower().endswith('.png'),\
-                        'We only include picopng for images, so files must be PNG files. "%s" is not.' % tex
+                        'We only include LodePNG for images, so files must be PNG files. "%s" is not.' % tex
                     indexToFileMap[i] = tex
                 else:
                     if reachedImageInputs:
@@ -302,7 +302,8 @@ class PassPool(object):
                 inputData[offset] += 1
                 inputData.extend(framebuffers.textureId(*tex))
             inputData += [0] * ((maxInputs - len(entry[2])) * 2)
-        if constUniformData:
+        assert not maxConstUniforms, 'Uniforms set from template has been deprecated. Use animation or shader default values (& stitch the hell out of it)'
+        if maxConstUniforms:
             global gPassConstUniforms
             gPassConstUniforms = ints.addInts(constUniformData)
         global gPassInputs
@@ -317,7 +318,7 @@ class PassPool(object):
             yield '\t\t}\n'
             yield '\t}\n'
             yield '\telse if (!isPrecalcStep && gIntData[frameBufferId * %s + %s])\n\t{\n' % (
-            FrameBufferPool.BLOCK_SIZE, gFrameBufferData + 4)
+                FrameBufferPool.BLOCK_SIZE, gFrameBufferData + 4)
             yield '\t\treturn false;\n'
             yield '\t}\n'
 
@@ -331,7 +332,7 @@ class PassPool(object):
             yield '\tglBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffers[frameBufferId + 1]);\n'
             yield '\tif(frameBufferId >= 0)\n\t{\n'
             yield '\t\tglDrawBuffers(gIntData[frameBufferId * %s + %s], gBufferBindings);\n' % (
-            FrameBufferPool.BLOCK_SIZE, gFrameBufferData)
+                FrameBufferPool.BLOCK_SIZE, gFrameBufferData)
             yield '\t\twidthHeight(frameBufferId, width, height, w, h);\n'
             yield '\t}\n'
         yield '\tglViewport(0, 0, w, h);\n'
@@ -340,18 +341,18 @@ class PassPool(object):
         yield '\tglUniform1f(glGetUniformLocation(shader, "uBeats"), beats);\n'
         if framebuffers.hasData():
             yield '\tint j3d = 0;\n\tint j2d = 0;\n\tfor(int j = 0 ; j < gIntData[passIndex * %s + %s]; ++j)\n\t{\n' % (
-            maxInputs * 2 + 1, gPassInputs)
+                maxInputs * 2 + 1, gPassInputs)
             yield '\t\tglActiveTexture(GL_TEXTURE0 + j);\n'
             yield '#ifdef SUPPORT_3D_TEXTURE\n'
             yield '\t\tint mode = gIntData[passIndex * %s + %s + j * 2];\n' % (maxInputs * 2 + 1, gPassInputs + 2)
             yield '\t\tglBindTexture(mode ? GL_TEXTURE_3D : GL_TEXTURE_2D, gTextures[gIntData[passIndex * %s + %s + j * 2]]);\n' % (
-            maxInputs * 2 + 1, gPassInputs + 1)
+                maxInputs * 2 + 1, gPassInputs + 1)
             yield '\t\tsprintf_s(gFormatBuffer, mode ? "uImages3D[%i]" : "uImages[%i]", mode ? j3d : j2d);\n'
             yield '\t\tglUniform1i(glGetUniformLocation(shader, gFormatBuffer), j);\n'
             yield '\t\tif(mode) ++j3d; else ++j2d;\n'
             yield '#else\n'
             yield '\t\tglBindTexture(GL_TEXTURE_2D, gTextures[gIntData[passIndex * %s + %s + j * 2]]);\n' % (
-            maxInputs * 2 + 1, gPassInputs + 1)
+                maxInputs * 2 + 1, gPassInputs + 1)
             yield '\t\tsprintf_s(gFormatBuffer, "uImages[%i]", j2d);\n'
             yield '\t\tglUniform1i(glGetUniformLocation(shader, gFormatBuffer), j);\n'
             yield '\t\t++j2d;\n'
@@ -370,13 +371,13 @@ class PassPool(object):
 
         if maxConstUniforms:
             yield '\tfor(int j = 0; j < gIntData[passIndex * %s + %s]; ++j)\n\t{\n' % (
-            3 * maxConstUniforms + 1, gPassConstUniforms)
+                3 * maxConstUniforms + 1, gPassConstUniforms)
             yield '\t\tGLint loc = glGetUniformLocation(shader, gTextPool[gIntData[passIndex * %s + %s + j * 3]]);\n' % (
-            3 * maxConstUniforms + 1, gPassConstUniforms + 1)
+                3 * maxConstUniforms + 1, gPassConstUniforms + 1)
             yield '\t\tconst float* ptr = &gFloatData[gIntData[passIndex * %s + %s + j * 3]];\n' % (
-            3 * maxConstUniforms + 1, gPassConstUniforms + 2)
+                3 * maxConstUniforms + 1, gPassConstUniforms + 2)
             yield '\t\tapplyUniform(gIntData[passIndex * %s + %s + j * 3], loc, ptr);\n' % (
-            3 * maxConstUniforms + 1, gPassConstUniforms + 3)
+                3 * maxConstUniforms + 1, gPassConstUniforms + 3)
             yield '\t}\n'
         yield '\treturn true;\n'
         yield '}\n'
@@ -662,6 +663,7 @@ def run():
     dst = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'Player', 'generated.hpp')
     with fileutil.edit(dst, 'w') as fh:
         fh.write(''.join(data))
+    print 'wrote to %s' % dst
 
 
 if __name__ == '__main__':
