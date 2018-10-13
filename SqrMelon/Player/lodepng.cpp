@@ -1,3 +1,4 @@
+#include "settings.h"
 /*
 LodePNG version 20180910
 
@@ -53,16 +54,36 @@ with the "LODEPNG_COMPILE_" #defines divide this up further in an intermixed way
 /*The malloc, realloc and free functions defined here with "lodepng_" in front
 of the name, so that you can easily change them to others related to your
 platform if needed. Everything else in the code calls these. Pass
--DLODEPNG_NO_COMPILE_ALLOCATORS to the compiler, or comment out
+-DLODEPNG_NO_COMPILE_ALLOCATORS to the compiler, or	 comment out
 #define LODEPNG_COMPILE_ALLOCATORS in the header, to disable the ones here and
 define them in your own project's source files without needing to change
 lodepng source code. Don't forget to remove "static" if you copypaste them
 from here.*/
 
 #include <Windows.h>
-static void lodepng_free(void* ptr) { HeapFree(GetProcessHeap(), 0, ptr); }
-static void* lodepng_malloc(size_t size) { return HeapAlloc(GetProcessHeap(), 0, size); }
-static void* lodepng_realloc(void* ptr, size_t size)
+void lodepng_cpy(void* dst, void* src, size_t size) 
+{
+	unsigned __int32	size32 = size >> 2;
+	unsigned __int32	*dest32 = (unsigned __int32*)dst;
+	unsigned __int32	*src32 = (unsigned __int32*)src;
+
+	switch ((size - (size32 << 2)))
+	{
+	case 3:	((unsigned __int8*)dst)[size - 3] =
+		((unsigned __int8*)src)[size - 3];
+	case 2:	((unsigned __int8*)dst)[size - 2] =
+		((unsigned __int8*)src)[size - 2];
+	case 1:	((unsigned __int8*)dst)[size - 1] =
+		((unsigned __int8*)src)[size - 1];
+	}
+
+	/* Modified [05-01-03] to use forward caching */
+	while (size32-- > 0)
+		*(dest32++) = *(src32++);
+}
+void lodepng_free(void* ptr) { HeapFree(GetProcessHeap(), 0, ptr); }
+void* lodepng_malloc(size_t size) { return HeapAlloc(GetProcessHeap(), 0, size); }
+void* lodepng_realloc(void* ptr, size_t size)
 {
 	if (ptr)
 		return HeapReAlloc(GetProcessHeap(), 0, ptr, size);
@@ -80,7 +101,7 @@ static void* lodepng_realloc(void* ptr, size_t size)
 }
 
 #ifdef LODEPNG_COMPILE_ALLOCATORS
-static void* lodepng_malloc(size_t size)
+void* lodepng_malloc(size_t size)
 {
 #ifdef LODEPNG_MAX_ALLOC
   if(size > LODEPNG_MAX_ALLOC) return 0;
@@ -88,7 +109,7 @@ static void* lodepng_malloc(size_t size)
   return malloc(size);
 }
 
-static void* lodepng_realloc(void* ptr, size_t new_size)
+void* lodepng_realloc(void* ptr, size_t new_size)
 {
 #ifdef LODEPNG_MAX_ALLOC
   if(new_size > LODEPNG_MAX_ALLOC) return 0;
@@ -96,14 +117,20 @@ static void* lodepng_realloc(void* ptr, size_t new_size)
   return realloc(ptr, new_size);
 }
 
-static void lodepng_free(void* ptr)
+void lodepng_free(void* ptr)
 {
   free(ptr);
+}
+
+void lodepng_cpy(void* dst, void* src, size_t size)
+{
+	memcpy(dst, src, size);
 }
 #else /*LODEPNG_COMPILE_ALLOCATORS*/
 void* lodepng_malloc(size_t size);
 void* lodepng_realloc(void* ptr, size_t new_size);
 void lodepng_free(void* ptr);
+void lodepng_cpy(void* dst, void* src, size_t size);
 #endif /*LODEPNG_COMPILE_ALLOCATORS*/
 
 /* ////////////////////////////////////////////////////////////////////////// */
@@ -766,7 +793,7 @@ static void bpmnode_sort(BPMNode* leaves, size_t num)
     }
     counter++;
   }
-  if(counter & 1) memcpy(leaves, mem, sizeof(*leaves) * num);
+  if(counter & 1) lodepng_cpy(leaves, mem, sizeof(*leaves) * num);
   lodepng_free(mem);
 }
 
@@ -1215,7 +1242,7 @@ static unsigned inflateHuffmanBlock(ucvector* out, const unsigned char* in, size
           out->data[(*pos)++] = out->data[backward++];
         }
       } else {
-        memcpy(out->data + *pos, out->data + backward, length);
+		  lodepng_cpy(out->data + *pos, out->data + backward, length);
         *pos += length;
       }
     }
@@ -3012,7 +3039,7 @@ static unsigned lodepng_assign_icc(LodePNGInfo* info, const char* name, const un
 
   if(!info->iccp_name || !info->iccp_profile) return 83; /*alloc fail*/
 
-  memcpy(info->iccp_profile, profile, profile_size);
+  lodepng_cpy(info->iccp_profile, profile, profile_size);
   info->iccp_profile_size = profile_size;
 
   return 0; /*ok*/
@@ -4863,7 +4890,7 @@ static unsigned readChunk_iCCP(LodePNGInfo* info, const LodePNGDecompressSetting
     info->iccp_profile_size = decoded.size;
     info->iccp_profile = (unsigned char*)lodepng_malloc(decoded.size);
     if(info->iccp_profile) {
-      memcpy(info->iccp_profile, decoded.data, decoded.size);
+		lodepng_cpy(info->iccp_profile, decoded.data, decoded.size);
     } else {
       error = 83; /* alloc fail */
     }

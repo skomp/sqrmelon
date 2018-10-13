@@ -1,4 +1,3 @@
-#include "picopnggl.h"
 #include "settings.h"
 #include <cfloat>
 #include "generated.hpp"
@@ -29,6 +28,7 @@ float tanf(float v) { return sinf(v) / cosf(v); }
 #define LODEPNG_NO_COMPILE_ERROR_TEXT
 #endif
 #include "lodepng.h"
+void lodepng_cpy(void* dst, void* src, size_t size);
 void loadTextureFile(unsigned int& t, const char* filename
 #ifdef _DEBUG
 	, HWND window
@@ -48,11 +48,11 @@ void loadTextureFile(unsigned int& t, const char* filename
 	}
 #endif
 	// flip vertically
-	//unsigned char* flipped = (unsigned char*)HeapAlloc(GetProcessHeap(), 0, width * height * 4);
-	//for (size_t y = 0; y < height; ++y)
-	//	CopyMemory(&flipped[(height - y - 1) * width * 4], &image[y * width * 4], width * 4);
+	unsigned char* flipped = (unsigned char*)HeapAlloc(GetProcessHeap(), 0, width * height * 4);
+	for (size_t y = 0; y < height; ++y)
+		lodepng_cpy(&flipped[(height - y - 1) * width * 4], &image[y * width * 4], width * 4);
 	glBindTexture(GL_TEXTURE_2D, t);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &flipped[0]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
