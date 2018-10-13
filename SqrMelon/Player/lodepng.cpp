@@ -59,6 +59,26 @@ define them in your own project's source files without needing to change
 lodepng source code. Don't forget to remove "static" if you copypaste them
 from here.*/
 
+#include <Windows.h>
+static void lodepng_free(void* ptr) { HeapFree(GetProcessHeap(), 0, ptr); }
+static void* lodepng_malloc(size_t size) { return HeapAlloc(GetProcessHeap(), 0, size); }
+static void* lodepng_realloc(void* ptr, size_t size)
+{
+	if (ptr)
+		return HeapReAlloc(GetProcessHeap(), 0, ptr, size);
+	else
+		return HeapAlloc(GetProcessHeap(), 0, size);
+	/*void* result = HeapReAlloc(GetProcessHeap(), 0, ptr, size); 
+	if (!result) 
+	{
+		result = HeapAlloc(GetProcessHeap(), 0, size);
+		size_t old_size = HeapSize(GetProcessHeap(), 0, ptr);
+		CopyMemory(result, ptr, min(old_size, size));
+		HeapFree(GetProcessHeap(), 0, ptr);
+	}
+	return result;*/
+}
+
 #ifdef LODEPNG_COMPILE_ALLOCATORS
 static void* lodepng_malloc(size_t size)
 {

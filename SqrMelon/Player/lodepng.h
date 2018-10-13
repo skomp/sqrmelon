@@ -54,7 +54,7 @@ the custom_zlib field of the compress and decompress settings*/
 #endif
 /*deflate&zlib encoder and png encoder*/
 #ifndef LODEPNG_NO_COMPILE_ENCODER
-#define LODEPNG_COMPILE_ENCODER
+//#define LODEPNG_COMPILE_ENCODER
 #endif
 /*the optional built in harddisk file loading and saving functions*/
 #ifndef LODEPNG_NO_COMPILE_DISK
@@ -62,7 +62,7 @@ the custom_zlib field of the compress and decompress settings*/
 #endif
 /*support for chunks other than IHDR, IDAT, PLTE, tRNS, IEND: ancillary and unknown chunks*/
 #ifndef LODEPNG_NO_COMPILE_ANCILLARY_CHUNKS
-#define LODEPNG_COMPILE_ANCILLARY_CHUNKS
+//#define LODEPNG_COMPILE_ANCILLARY_CHUNKS
 #endif
 /*ability to convert error numerical codes to English text string*/
 #ifndef LODEPNG_NO_COMPILE_ERROR_TEXT
@@ -72,12 +72,12 @@ the custom_zlib field of the compress and decompress settings*/
 you can define the functions lodepng_free, lodepng_malloc and lodepng_realloc in your
 source files with custom allocators.*/
 #ifndef LODEPNG_NO_COMPILE_ALLOCATORS
-#define LODEPNG_COMPILE_ALLOCATORS
+//#define LODEPNG_COMPILE_ALLOCATORS
 #endif
 /*compile the C++ version (you can disable the C++ wrapper here even when compiling for C++)*/
 #ifdef __cplusplus
 #ifndef LODEPNG_NO_COMPILE_CPP
-#define LODEPNG_COMPILE_CPP
+//#define LODEPNG_COMPILE_CPP
 #endif
 #endif
 

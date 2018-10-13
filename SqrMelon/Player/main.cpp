@@ -181,7 +181,7 @@ float animData[sizeof(float) * 4 * gAnimEntriesMax];
 
 		if (lstrcmpiA(gTextPool[gIntData[idx + gShotUniformData]], "uDroneAngles") == 0)
 		{
-			const float deg2rad = 0.0174532925199444;
+			const float deg2rad = 0.0174532925199444f;
 
 			Mat44 orient = Mat44::RotateY(-animData[uniformId * 4 + 1] * deg2rad);
 			orient *= Mat44::RotateX(animData[uniformId * 4] * deg2rad);

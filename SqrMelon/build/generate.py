@@ -363,10 +363,10 @@ class PassPool(object):
             yield '\tint offset = gIntData[passIndex * 3 + %s];\n' % (gPassProgramsAndTargets + 2)
             yield '\tfor(int i = 0; i < gIntData[offset]; ++i)\n\t{\n'
             yield '\t\tint inputId = gIntData[offset + 1 + i * 2];\n'
-            yield '\t\tint textureId = gIntData[offset + 1 + i * 2];\n'
-            yield '\t\tglActiveTexture(GL_TEXTURE0 + inputId);'
-            yield '\t\tglBindTexture(GL_TEXTURE_2D, gTextures[textureId]);'
-            yield '\t\tglUniform1i(glGetUniformLocation(shader, "uImages[inputId]"), inputId);'
+            yield '\t\tint textureId = gIntData[offset + 2 + i * 2];\n'
+            yield '\t\tglActiveTexture(GL_TEXTURE0 + inputId);\n'
+            yield '\t\tglBindTexture(GL_TEXTURE_2D, gTextures[textureId]);\n'
+            yield '\t\tglUniform1i(glGetUniformLocation(shader, "uImages[inputId]"), inputId);\n'
             yield '\t}\n'
 
         if maxConstUniforms:
