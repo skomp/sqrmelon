@@ -24,6 +24,42 @@ extern "C"
 float cosf(float v) { return sinf(v + 3.14159265359f * 0.5f); }
 float tanf(float v) { return sinf(v) / cosf(v); }
 
+#ifdef SUPPORT_PNG
+#ifndef _DEBUG
+#define LODEPNG_NO_COMPILE_ERROR_TEXT
+#endif
+#include "lodepng.h"
+void loadTextureFile(unsigned int& t, const char* filename
+#ifdef _DEBUG
+	, HWND window
+#endif
+)
+{
+	unsigned error;
+	unsigned char* image;
+	size_t width, height;
+	error = lodepng_decode_file(&image, &width, &height, filename, LCT_RGBA, 8);
+#ifdef _DEBUG
+	if (error != 0)
+	{
+		MessageBox(window, filename, "Error loading PNG", MB_OK);
+		MessageBox(window, lodepng_error_text(error), "Error loading PNG", MB_OK);
+		ExitProcess(0);
+	}
+#endif
+	// flip vertically
+	//unsigned char* flipped = (unsigned char*)HeapAlloc(GetProcessHeap(), 0, width * height * 4);
+	//for (size_t y = 0; y < height; ++y)
+	//	CopyMemory(&flipped[(height - y - 1) * width * 4], &image[y * width * 4], width * 4);
+	glBindTexture(GL_TEXTURE_2D, t);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+}
+#endif
+
 // Copied necessary functions from cgmath/Mat44.cpp::Mat44
 // should probably just be included in project directly.
 __declspec(align(16))
@@ -118,8 +154,9 @@ float uV[16] = { 0 };
 float uDrone[16] = { 0 };
 float uFrustum[16];
 float animData[sizeof(float) * 4 * gAnimEntriesMax];
+GLuint gVisor_BossRings[2];
 
- bool evalDemo(float seconds, float beats, int width, int height, bool isPrecalcStep=false)
+bool evalDemo(float seconds, float beats, int width, int height, bool isPrecalcStep=false)
 {
 	float localBeats;
 	int shot = shotAtBeats(beats, localBeats);
@@ -229,6 +266,19 @@ float animData[sizeof(float) * 4 * gAnimEntriesMax];
 		glUniformMatrix4fv(glGetUniformLocation(gPrograms[gIntData[passIndex * 2 + gPassProgramsAndTargets]], "uV"), 1, GL_FALSE, uV);
 		glUniformMatrix4fv(glGetUniformLocation(gPrograms[gIntData[passIndex * 2 + gPassProgramsAndTargets]], "uDrone"), 1, GL_FALSE, uDrone);
 		glUniformMatrix4fv(glGetUniformLocation(gPrograms[gIntData[passIndex * 2 + gPassProgramsAndTargets]], "uFrustum"), 1, GL_FALSE, uFrustum);
+
+#ifdef SUPPORT_PNG
+		// hard code to be > max inputs used in the render pipeline
+		const int USER_IMAGE_START = 10;
+		glActiveTexture(GL_TEXTURE0 + USER_IMAGE_START);
+		glBindTexture(GL_TEXTURE_2D, gVisor_BossRings[0]);
+		glUniform1i(glGetUniformLocation(gPrograms[gIntData[passIndex * 2 + gPassProgramsAndTargets]], "uVisor"), USER_IMAGE_START);
+		
+		glActiveTexture(GL_TEXTURE0 + USER_IMAGE_START + 1);
+		glBindTexture(GL_TEXTURE_2D, gVisor_BossRings[1]);
+		glUniform1i(glGetUniformLocation(gPrograms[gIntData[passIndex * 2 + gPassProgramsAndTargets]], "uBossRings"), USER_IMAGE_START + 1);
+#endif
+
 		glRecti(-1, -1, 1, 1);
 		// patch 3D textures
 #ifdef SUPPORT_3D_TEXTURE
@@ -450,12 +500,23 @@ void main()
 	evalDemo(0.0f, 0.0f, width, height, true);
 	TickLoader();
 	
-	initFileTextures(
+#ifdef SUPPORT_PNG
+	// load images
+	glGenTextures(2, gVisor_BossRings);
+	loadTextureFile(gVisor_BossRings[0], "visor.png"
 #ifdef _DEBUG 
-		window 
+		, window
 #endif
-		);
+	);
 	TickLoader();
+
+	loadTextureFile(gVisor_BossRings[1], "boss_rings.png"
+#ifdef _DEBUG 
+		, window
+#endif
+	);
+	TickLoader();
+#endif
 
 #ifdef NO_AUDIO
 	start = GetTickCount();

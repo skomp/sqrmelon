@@ -105,7 +105,7 @@ for scene in os.listdir(scenesDir):
             localRequiredUniforms.extend(('uOrigin', 'uAngles'))
 
         # ignore builtins & uniforms output by animationprocessor.py
-        builtins = set(('uVignette', 'uBloom', 'uDrone', 'uV', 'uImages', 'uFrustum', 'uResolution', 'uBeats', 'uSeconds'))
+        builtins = set(('uVignette', 'uBloom', 'uDrone', 'uV', 'uImages', 'uFrustum', 'uResolution', 'uBeats', 'uSeconds', 'uVisor', 'uBossRings'))
         localRequiredUniforms = set(localRequiredUniforms)
         localRequiredUniforms -= builtins
         # accumulate uniforms to animate
