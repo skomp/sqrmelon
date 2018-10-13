@@ -51,6 +51,12 @@
     <ClInclude Include="64klang2\sample_t.h">
       <Filter>64klang2</Filter>
     </ClInclude>
+    <ClInclude Include="picopnggl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="picopng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Dialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -76,6 +82,12 @@
     </ClCompile>
     <ClCompile Include="64klang2\sample_t.cpp">
       <Filter>64klang2</Filter>
+    </ClCompile>
+    <ClCompile Include="picopnggl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="picopng.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

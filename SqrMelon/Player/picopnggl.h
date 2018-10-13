@@ -1,8 +1,8 @@
 #pragma once
-#include "picopng.h"
+#include "settings.h"
 #ifdef SUPPORT_PNG
 void loadTextureFile(unsigned int& t, const char* filename
-#ifdef DEBUG
+#ifdef _DEBUG
 	, HWND window
 #endif
 );

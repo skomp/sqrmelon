@@ -18,9 +18,9 @@ const float BPM = 84.0f;
 // set resolution settings here if not using resolution selector
 // set resolution to 0 to get screen resolution, it will force to windowed because there is no reason to change to full screen at the current resolution
 #ifndef RESOLUTION_SELECTOR
-#define DEMO_WIDTH 1920
-#define DEMO_HEIGHT 1080
-#define IS_WINDOWED 0
+#define DEMO_WIDTH 1280
+#define DEMO_HEIGHT 720
+#define IS_WINDOWED 1
 #endif
 
 #ifdef NO_AUDIO
@@ -346,7 +346,8 @@ void main()
 #ifdef AUDIO_64KLANG2
 	_64klang2_Init();
 #endif
-	
+
+	HWND window;
 #ifdef RESOLUTION_SELECTOR
 	// resolution selector
 	INT_PTR result = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOGCONFIG), NULL, ConfigDialogProc);
@@ -371,7 +372,6 @@ void main()
 		break;
 	}
 
-	HWND window;
 	if (isWindowed)
 	{
 		window = CreateWindowExA(0, (LPCSTR)49177, 0, WS_POPUP | WS_VISIBLE, 0, 0, width, height, 0, 0, 0, 0);
@@ -381,7 +381,7 @@ void main()
 		DEVMODE dmScreenSettings =
 		{
 			"", 0, 0, sizeof(dmScreenSettings), 0, DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFIXEDOUTPUT,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, width, height, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, (DWORD)width, (DWORD)height, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		};
 		ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN);
 		window = CreateWindowExA(0, (LPCSTR)49177, 0, WS_POPUP | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);

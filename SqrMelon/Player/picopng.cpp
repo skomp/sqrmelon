@@ -1,56 +1,11 @@
-#include "picopng.h"
+#include "settings.h"
 #ifdef SUPPORT_PNG
 #include <vector>
+#include <iostream>
+#include <fstream>
 
-/*
-decodePNG: The picoPNG function, decodes a PNG file buffer in memory, into a raw pixel buffer.
-out_image: output parameter, this will contain the raw pixels after decoding.
-  By default the output is 32-bit RGBA color.
-  The std::vector is automatically resized to the correct size.
-image_width: output_parameter, this will contain the width of the image in pixels.
-image_height: output_parameter, this will contain the height of the image in pixels.
-in_png: pointer to the buffer of the PNG file in memory. To get it from a file on
-  disk, load it and store it in a memory buffer yourself first.
-in_size: size of the input PNG file in bytes.
-convert_to_rgba32: optional parameter, true by default.
-  Set to true to get the output in RGBA 32-bit (8 bit per channel) color format
-  no matter what color type the original PNG image had. This gives predictable,
-  useable data from any random input PNG.
-  Set to false to do no color conversion at all. The result then has the same data
-  type as the PNG image, which can range from 1 bit to 64 bits per pixel.
-  Information about the color type or palette colors are not provided. You need
-  to know this information yourself to be able to use the data so this only
-  works for trusted PNG files. Use LodePNG instead of picoPNG if you need this information.
-return: 0 if success, not 0 if some error occured.
-*/
-int decodePNG(std::vector<unsigned char>& out_image, unsigned long& image_width, unsigned long& image_height, const unsigned char* in_png, size_t in_size, bool convert_to_rgba32 = true)
+int decodePNG(std::vector<unsigned char>& out_image, unsigned long& image_width, unsigned long& image_height, const unsigned char* in_png, size_t in_size, bool convert_to_rgba32)
 {
-  // picoPNG version 20101224
-  // Copyright (c) 2005-2010 Lode Vandevenne
-  //
-  // This software is provided 'as-is', without any express or implied
-  // warranty. In no event will the authors be held liable for any damages
-  // arising from the use of this software.
-  //
-  // Permission is granted to anyone to use this software for any purpose,
-  // including commercial applications, and to alter it and redistribute it
-  // freely, subject to the following restrictions:
-  //
-  //     1. The origin of this software must not be misrepresented; you must not
-  //     claim that you wrote the original software. If you use this software
-  //     in a product, an acknowledgment in the product documentation would be
-  //     appreciated but is not required.
-  //     2. Altered source versions must be plainly marked as such, and must not be
-  //     misrepresented as being the original software.
-  //     3. This notice may not be removed or altered from any source distribution.
-  
-  // picoPNG is a PNG decoder in one C++ function of around 500 lines. Use picoPNG for
-  // programs that need only 1 .cpp file. Since it's a single function, it's very limited,
-  // it can convert a PNG to raw pixel data either converted to 32-bit RGBA color or
-  // with no color conversion at all. For anything more complex, another tiny library
-  // is available: LodePNG (lodepng.c(pp)), which is a single source and header file.
-  // Apologies for the compact code style, it's to make this tiny.
-  
   static const unsigned long LENBASE[29] =  {3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258};
   static const unsigned long LENEXTRA[29] = {0,0,0,0,0,0,0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4,  4,  5,  5,  5,  5,  0};
   static const unsigned long DISTBASE[30] =  {1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577};
@@ -534,15 +489,6 @@ int decodePNG(std::vector<unsigned char>& out_image, unsigned long& image_width,
   return decoder.error;
 }
 
-
-
-
-
-//an example using the PNG loading function:
-
-#include <iostream>
-#include <fstream>
-
 void loadFile(std::vector<unsigned char>& buffer, const std::string& filename) //designed for loading files from hard disk in an std::vector
 {
   std::ifstream file(filename.c_str(), std::ios::in|std::ios::binary|std::ios::ate);
@@ -560,35 +506,4 @@ void loadFile(std::vector<unsigned char>& buffer, const std::string& filename) /
   }
   else buffer.clear();
 }
-
-/*int main(int argc, char *argv[])
-{
-  const char* filename = argc > 1 ? argv[1] : "test.png";
-  
-  //load and decode
-  std::vector<unsigned char> buffer, image;
-  loadFile(buffer, filename);
-  unsigned long w, h;
-  int error = decodePNG(image, w, h, buffer.empty() ? 0 : &buffer[0], (unsigned long)buffer.size());
-  
-  //if there's an error, display it
-  if(error != 0) std::cout << "error: " << error << std::endl;
-  
-  //the pixels are now in the vector "image", use it as texture, draw it, ...
-  
-  if(image.size() > 4) std::cout << "width: " << w << " height: " << h << " first pixel: " << std::hex << int(image[0]) << int(image[1]) << int(image[2]) << int(image[3]) << std::endl;
-}*/
-
-/*
-  //this is test code, it displays the pixels of a 1 bit PNG. To use it, set the flag convert_to_rgba32 to false and load a 1-bit PNG image with a small size (so that its ASCII representation can fit in a console window)
-  for(int y = 0; y < h; y++)
-  {
-    for(int x = 0; x < w; x++)
-    {
-      int i = y * h + x;
-      std::cout << (((image[i/8] >> (7-i%8)) & 1) ? '.' : '#');
-    }
-    std::cout << std::endl;
-  }
-*/
 #endif

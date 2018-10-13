@@ -1,7 +1,9 @@
-#include "picopnggl.h"
+#include "settings.h"
 #ifdef SUPPORT_PNG
+#include "picopng.h"
 #include <windows.h>
 #include <gl/GL.h>
+#include <vector>
 
 void loadTextureFile(unsigned int& t, const char* filename
 #ifdef DEBUG

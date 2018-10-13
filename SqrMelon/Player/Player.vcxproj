@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7B3546B1-13C1-4ADE-85DE-E970A1D92C22}</ProjectGuid>
     <RootNamespace>Player</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -52,11 +52,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
+      <CompileAsManaged>false</CompileAsManaged>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>false</ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>main</EntryPointSymbol>
-      <AdditionalDependencies>opengl32.lib;winmm.lib;msvcrtd.lib;ucrtd.lib;vcruntime.lib;Bass.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ucrtd.lib;vcruntimed.lib;opengl32.lib;winmm.lib;Bass.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -119,6 +123,8 @@
     </ClInclude>
     <ClInclude Include="Dialog.h" />
     <ClInclude Include="generated.hpp" />
+    <ClInclude Include="picopng.h" />
+    <ClInclude Include="picopnggl.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="wglext.h" />
     <ClInclude Include="windowdump.h" />
@@ -140,10 +146,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="picopng.cpp" />
+    <ClCompile Include="picopnggl.cpp" />
     <ClCompile Include="wglext.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="sinf.asm" />
+    <MASM Include="sinf.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </MASM>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Dialog.rc" />

@@ -96,11 +96,13 @@ class ShaderPool(object):
         yield '__forceinline void TickLoader();\n'
         yield '__forceinline void initPrograms()\n{\n'
         yield '\tint i = 0;\n'
-        yield '\tconst char* gShaderStitchOrder[] = {gTextPool[%s]};\n' % '], gTextPool['.join(str(x) for x in self.data)
+        yield '\tconst char* gShaderStitchOrder[] = {gTextPool[%s]};\n' % '], gTextPool['.join(
+            str(x) for x in self.data)
         yield '\tdo\n\t{\n'
         yield """\t\t#ifdef _DEBUG\n\t\tOutputDebugString("\\n\\n\\n--------------------------------\\n\\n\\n");\n\t\tfor (int j = 0; j < gIntData[%s + i * 2]; ++j)\n\t\t{\n\t\t\tOutputDebugString(gShaderStitchOrder[gIntData[%s + i * 2] + j]);\n\t\t}\n\t\tOutputDebugString("\\n\\n\\n--------------------------------\\n\\n\\n");\n\t\t#endif\n""" % (
             cursor, cursor + 1)
-        yield '\t\tgPrograms[i] = glCreateShaderProgramv(GL_FRAGMENT_SHADER, gIntData[%s + i * 2], &gShaderStitchOrder[gIntData[%s + i * 2]]);\n' % (cursor, cursor + 1)
+        yield '\t\tgPrograms[i] = glCreateShaderProgramv(GL_FRAGMENT_SHADER, gIntData[%s + i * 2], &gShaderStitchOrder[gIntData[%s + i * 2]]);\n' % (
+        cursor, cursor + 1)
         yield '\t\tTickLoader();\n'
         yield '\t}\n\twhile(++i < %s);\n' % len(self.offsets)
         yield '}\n'
@@ -119,7 +121,8 @@ class FrameBufferPool(object):
     def add(self, index, numOutputs, width, height, factor, static, is3d):
         if index in self.keys:
             idx = self.keys.index(index)
-            assert self.data[idx] == (numOutputs, width, height, factor, static, is3d), '%s != %s' % (self.data[idx], (numOutputs, width, height, factor, static, is3d))
+            assert self.data[idx] == (numOutputs, width, height, factor, static, is3d), '%s != %s' % (
+            self.data[idx], (numOutputs, width, height, factor, static, is3d))
             return idx
         else:
             self.data.append((numOutputs, width, height, factor, static, is3d))
@@ -134,7 +137,7 @@ class FrameBufferPool(object):
                 return cursor + localOutput, self.data[frameBuffer][-1]
             cursor += data[0]
 
-    def serialize(self, texturePaths):
+    def serialize(self, filesPerProgramId, ioTexturePathToId):
         allData = []
         totalTextures = 0
         for data in self.data:
@@ -149,10 +152,13 @@ class FrameBufferPool(object):
         procTextures = totalTextures
 
         # Tally file textures up to the total so gTextures has right size
-        totalTextures += len(texturePaths)
-
+        filePaths = set()
+        for programFileInputs in filesPerProgramId.itervalues():
+            for filePath in programFileInputs.itervalues():
+                filePaths.add(filePath)
+        totalTextures += len(filePaths)
         if totalTextures:
-            yield 'GLuint gTextures[%s];\n' % totalTextures
+            yield '\n\nGLuint gTextures[%s];\n' % totalTextures
 
         if allData:
             global gFrameBufferData
@@ -160,13 +166,16 @@ class FrameBufferPool(object):
             yield 'GLuint gFrameBuffers[%s];\n' % (len(self.data) + 1)
             yield 'GLuint* gFrameBufferColorBuffers[%s];\n' % (len(self.data) + 1)
 
-        # TODO: Then when we encounter a file input, we must do some kind of look up table to convert the name to the right index to bind when forwarding uniforms, ofc we do that in python and just hard code the ints in the generated code
-        # Generate texture loading code for those textures, for sanity we keep track of the "file texture start index" and have them at the end of gTextures
-        yield '__forceinline void initFileTextures()\n{\n'
-        if texturePaths:
-            for i, texturePath in enumerate(texturePaths):
-                yield '\tloadTexture(gTextures[%s], "%s");\n' % (procTextures + i, texturePath)
-        yield '}\n\n'
+        # Generate texture loading code for file textures, for sanity we keep track of the "file texture start index" and have them at the end of gTextures
+        # When we encounter a file input, we must do some kind of look up table to convert the name to the right index to bind when forwarding uniforms,
+        # we do that in python and just hard code the ints in the generated code
+        yield '\n\n#include "picopnggl.h"\n'
+        yield '\n\n__forceinline void initFileTextures(\n#ifdef _DEBUG\nHWND window\n#endif\n)\n{\n'
+        if filePaths:
+            for i, texturePath in enumerate(filePaths):
+                yield '\tloadTextureFile(gTextures[%s], "%s"\n#ifdef _DEBUG\n, window\n#endif\n);\n' % (procTextures + i, texturePath)
+                ioTexturePathToId[texturePath] = procTextures + i
+        yield '}\n'
 
         yield '\n\n__forceinline void widthHeight(int i, int width, int height, int& w, int& h)\n{\n'
         if allData:
@@ -223,13 +232,25 @@ class PassPool(object):
             return n
 
     def texturePaths(self):
+        # we basically want to hardcode texture bindings and then have existing loops solve the rest of the bindings
+        # which works best if all image textures are at the end of the inputs of every pass
+        filesPerProgramId = {}
         for entry in self.data:  # foreach pass
-            for tex in entry[2]:
+            reachedImageInputs = False
+            indexToFileMap = {}
+            for i, tex in enumerate(entry[2]):
                 if isinstance(tex, basestring):
-                    assert tex.lower().endswith('.png'), 'We only include picopng for images, so files must be PNG files. "%s" is not.' % tex
-                    yield tex
+                    reachedImageInputs = True
+                    assert tex.lower().endswith('.png'),\
+                        'We only include picopng for images, so files must be PNG files. "%s" is not.' % tex
+                    indexToFileMap[i] = tex
+                else:
+                    if reachedImageInputs:
+                        raise RuntimeError('A pass with file inputs must have all file inputs gathered at the end.')
+            filesPerProgramId[entry[0]] = indexToFileMap
+        return filesPerProgramId
 
-    def serialize(self):
+    def serialize(self, filesPerProgramId, texturePathToId):
         yield '\n\n__forceinline void applyUniform(int dataSize, GLint uniformLocation, const float* dataHandle)\n{\n'
         yield '\tswitch(dataSize)\n\t{\n'
         yield '\tcase 1:\n'
@@ -251,7 +272,14 @@ class PassPool(object):
         yield 'const GLenum gBufferBindings[] = { GL_COLOR_ATTACHMENT0 , GL_COLOR_ATTACHMENT0 + 1, GL_COLOR_ATTACHMENT0 + 2, GL_COLOR_ATTACHMENT0 + 3, GL_COLOR_ATTACHMENT0 + 4 , GL_COLOR_ATTACHMENT0 + 5, GL_COLOR_ATTACHMENT0 + 6, GL_COLOR_ATTACHMENT0 + 7};\n'
         flat = []
         for x in self.data:
-            flat += [x[0], x[1]]
+            if filesPerProgramId:
+                extra = [len(filesPerProgramId[x[0]])]
+                for id, pth in filesPerProgramId[x[0]].iteritems():
+                    extra.append(id)
+                    extra.append(texturePathToId[pth])
+                flat += [x[0], x[1], ints.addInts(extra)]
+            else:
+                flat += [x[0], x[1]]
         global gPassProgramsAndTargets
         gPassProgramsAndTargets = ints.addInts(flat)
         maxConstUniforms = max(len(x[3]) for x in self.data)
@@ -266,8 +294,12 @@ class PassPool(object):
                 constUniformData.append(floatOffset)
                 constUniformData.append(uniformSize)
             constUniformData += [0] * (3 * (maxConstUniforms - len(entry[3])))
-            inputData.append(len(entry[2]))
+            offset = len(inputData)
+            inputData.append(0)
             for tex in entry[2]:
+                if isinstance(tex, basestring):
+                    continue
+                inputData[offset] += 1
                 inputData.extend(framebuffers.textureId(*tex))
             inputData += [0] * ((maxInputs - len(entry[2])) * 2)
         if constUniformData:
@@ -278,24 +310,28 @@ class PassPool(object):
         yield '__forceinline bool bindPass(int passIndex, float seconds, float beats, int width, int height, bool isPrecalcStep)\n{\n'
         global gFrameBufferData
         if framebuffers.hasData():
-            yield '\tint frameBufferId = gIntData[passIndex * 2 + %s] - 1;\n' % (gPassProgramsAndTargets + 1)
+            yield '\tint frameBufferId = gIntData[passIndex * %s + %s] - 1;\n' % (3 if filesPerProgramId else 2, gPassProgramsAndTargets + 1)
             yield '\tif(frameBufferId < 0)\n\t{\n'
             yield '\t\tif(isPrecalcStep)\n\t\t{\n'
             yield '\t\t\treturn false;\n'
             yield '\t\t}\n'
             yield '\t}\n'
-            yield '\telse if (!isPrecalcStep && gIntData[frameBufferId * %s + %s])\n\t{\n' % (FrameBufferPool.BLOCK_SIZE, gFrameBufferData + 4)
+            yield '\telse if (!isPrecalcStep && gIntData[frameBufferId * %s + %s])\n\t{\n' % (
+            FrameBufferPool.BLOCK_SIZE, gFrameBufferData + 4)
             yield '\t\treturn false;\n'
             yield '\t}\n'
 
         yield '\tint w = width;\n'
         yield '\tint h = height;\n'
-        yield '\tGLuint shader = gPrograms[gIntData[passIndex * 2 + %s]];\n' % gPassProgramsAndTargets
+        yield '\tGLuint shader = gPrograms[gIntData[passIndex * %s + %s]];\n' % (3 if filesPerProgramId else 2, gPassProgramsAndTargets)
+
         yield '\tglUseProgram(shader);\n'
+
         if framebuffers.hasData():
             yield '\tglBindFramebuffer(GL_FRAMEBUFFER, gFrameBuffers[frameBufferId + 1]);\n'
             yield '\tif(frameBufferId >= 0)\n\t{\n'
-            yield '\t\tglDrawBuffers(gIntData[frameBufferId * %s + %s], gBufferBindings);\n' % (FrameBufferPool.BLOCK_SIZE, gFrameBufferData)
+            yield '\t\tglDrawBuffers(gIntData[frameBufferId * %s + %s], gBufferBindings);\n' % (
+            FrameBufferPool.BLOCK_SIZE, gFrameBufferData)
             yield '\t\twidthHeight(frameBufferId, width, height, w, h);\n'
             yield '\t}\n'
         yield '\tglViewport(0, 0, w, h);\n'
@@ -303,27 +339,44 @@ class PassPool(object):
         yield '\tglUniform1f(glGetUniformLocation(shader, "uSeconds"), seconds);\n'
         yield '\tglUniform1f(glGetUniformLocation(shader, "uBeats"), beats);\n'
         if framebuffers.hasData():
-            yield '\tint j3d = 0;\n\tint j2d = 0;\n\tfor(int j = 0 ; j < gIntData[passIndex * %s + %s]; ++j)\n\t{\n' % (maxInputs * 2 + 1, gPassInputs)
+            yield '\tint j3d = 0;\n\tint j2d = 0;\n\tfor(int j = 0 ; j < gIntData[passIndex * %s + %s]; ++j)\n\t{\n' % (
+            maxInputs * 2 + 1, gPassInputs)
             yield '\t\tglActiveTexture(GL_TEXTURE0 + j);\n'
             yield '#ifdef SUPPORT_3D_TEXTURE\n'
             yield '\t\tint mode = gIntData[passIndex * %s + %s + j * 2];\n' % (maxInputs * 2 + 1, gPassInputs + 2)
-            yield '\t\tglBindTexture(mode ? GL_TEXTURE_3D : GL_TEXTURE_2D, gTextures[gIntData[passIndex * %s + %s + j * 2]]);\n' % (maxInputs * 2 + 1, gPassInputs + 1)
+            yield '\t\tglBindTexture(mode ? GL_TEXTURE_3D : GL_TEXTURE_2D, gTextures[gIntData[passIndex * %s + %s + j * 2]]);\n' % (
+            maxInputs * 2 + 1, gPassInputs + 1)
             yield '\t\tsprintf_s(gFormatBuffer, mode ? "uImages3D[%i]" : "uImages[%i]", mode ? j3d : j2d);\n'
             yield '\t\tglUniform1i(glGetUniformLocation(shader, gFormatBuffer), j);\n'
             yield '\t\tif(mode) ++j3d; else ++j2d;\n'
             yield '#else\n'
-            yield '\t\tglBindTexture(GL_TEXTURE_2D, gTextures[gIntData[passIndex * %s + %s + j * 2]]);\n' % (maxInputs * 2 + 1, gPassInputs + 1)
+            yield '\t\tglBindTexture(GL_TEXTURE_2D, gTextures[gIntData[passIndex * %s + %s + j * 2]]);\n' % (
+            maxInputs * 2 + 1, gPassInputs + 1)
             yield '\t\tsprintf_s(gFormatBuffer, "uImages[%i]", j2d);\n'
             yield '\t\tglUniform1i(glGetUniformLocation(shader, gFormatBuffer), j);\n'
             yield '\t\t++j2d;\n'
             yield '#endif\n'
             yield '\t}\n'
 
+        if filesPerProgramId:
+            yield '\tint offset = gIntData[passIndex * 3 + %s];\n' % (gPassProgramsAndTargets + 2)
+            yield '\tfor(int i = 0; i < gIntData[offset]; ++i)\n\t{\n'
+            yield '\t\tint inputId = gIntData[offset + 1 + i * 2];\n'
+            yield '\t\tint textureId = gIntData[offset + 1 + i * 2];\n'
+            yield '\t\tglActiveTexture(GL_TEXTURE0 + inputId);'
+            yield '\t\tglBindTexture(GL_TEXTURE_2D, gTextures[textureId]);'
+            yield '\t\tglUniform1i(glGetUniformLocation(shader, "uImages[inputId]"), inputId);'
+            yield '\t}\n'
+
         if maxConstUniforms:
-            yield '\tfor(int j = 0; j < gIntData[passIndex * %s + %s]; ++j)\n\t{\n' % (3 * maxConstUniforms + 1, gPassConstUniforms)
-            yield '\t\tGLint loc = glGetUniformLocation(shader, gTextPool[gIntData[passIndex * %s + %s + j * 3]]);\n' % (3 * maxConstUniforms + 1, gPassConstUniforms + 1)
-            yield '\t\tconst float* ptr = &gFloatData[gIntData[passIndex * %s + %s + j * 3]];\n' % (3 * maxConstUniforms + 1, gPassConstUniforms + 2)
-            yield '\t\tapplyUniform(gIntData[passIndex * %s + %s + j * 3], loc, ptr);\n' % (3 * maxConstUniforms + 1, gPassConstUniforms + 3)
+            yield '\tfor(int j = 0; j < gIntData[passIndex * %s + %s]; ++j)\n\t{\n' % (
+            3 * maxConstUniforms + 1, gPassConstUniforms)
+            yield '\t\tGLint loc = glGetUniformLocation(shader, gTextPool[gIntData[passIndex * %s + %s + j * 3]]);\n' % (
+            3 * maxConstUniforms + 1, gPassConstUniforms + 1)
+            yield '\t\tconst float* ptr = &gFloatData[gIntData[passIndex * %s + %s + j * 3]];\n' % (
+            3 * maxConstUniforms + 1, gPassConstUniforms + 2)
+            yield '\t\tapplyUniform(gIntData[passIndex * %s + %s + j * 3], loc, ptr);\n' % (
+            3 * maxConstUniforms + 1, gPassConstUniforms + 3)
             yield '\t}\n'
         yield '\treturn true;\n'
         yield '}\n'
@@ -383,7 +436,8 @@ def Template(templatePath):
     except:
         xTemplate = ParseXMLWithIncludes(templatePath)
         if _templates:
-            raise RuntimeError('Found multiple templates in project, this is currently not supported by the player code.')
+            raise RuntimeError(
+                'Found multiple templates in project, this is currently not supported by the player code.')
         _templates[key] = xTemplate
         return xTemplate
 
@@ -478,7 +532,8 @@ def run():
                         if j == 0 or j == 4 or j > 5:
                             continue
                         if j == 5:  # out tangent y
-                            if v == float('inf'):  # stepped tangents are implemented as out tangentY = positive infinity
+                            if v == float(
+                                    'inf'):  # stepped tangents are implemented as out tangentY = positive infinity
                                 v = 'FLT_MAX'
                         keyframes.append(v)
                     assert len(keyframes) / 4.0 == int(len(keyframes) / 4), len(keyframes)
@@ -491,12 +546,14 @@ def run():
                 # TODO we can not / do not check if the channelStack length matches the uniform dimensions inside the shader (e.g. are we sure we're not gonna call glUniform2f for a vec3?)
                 assert None not in channelStack, 'Animation provided for multiple channels but there is one missing (Y if a vec3 or also Z if a vec4).'
 
-            shots.append((float(xShot.attrib['start']), float(xShot.attrib['end']), sceneIndex, animations, float(xShot.attrib['preroll']), float(xShot.attrib['speed'])))
+            shots.append((float(xShot.attrib['start']), float(xShot.attrib['end']), sceneIndex, animations,
+                          float(xShot.attrib['preroll']), float(xShot.attrib['speed'])))
 
     # sort shots by start time
     def _serializeShots(shots):
         shots.sort(key=lambda x: x[0])
-        shotTimesStartEndPrerollSpeed = floats.addFloats([x for shot in shots for x in (shot[0], shot[1], shot[4], shot[5])])
+        shotTimesStartEndPrerollSpeed = floats.addFloats(
+            [x for shot in shots for x in (shot[0], shot[1], shot[4], shot[5])])
         yield '\n\n__forceinline int shotAtBeats(float beats, float& localBeats)\n{\n'
         if len(shots) == 1:
             yield '\tlocalBeats = beats - gFloatData[%s];\n' % shotTimesStartEndPrerollSpeed
@@ -505,7 +562,8 @@ def run():
             yield '\tint shotTimeCursor = 0;\n'
             yield '\tdo\n\t{\n'
             yield '\t\tif(beats < gFloatData[shotTimeCursor * 4 + %s])\n\t\t{\n' % (shotTimesStartEndPrerollSpeed + 1)
-            yield '\t\t\tlocalBeats = (beats - gFloatData[shotTimeCursor * 4 + %s]) * gFloatData[shotTimeCursor * 4 + %s] - gFloatData[shotTimeCursor * 4 + %s];\n' % (shotTimesStartEndPrerollSpeed, shotTimesStartEndPrerollSpeed + 3, shotTimesStartEndPrerollSpeed + 2)
+            yield '\t\t\tlocalBeats = (beats - gFloatData[shotTimeCursor * 4 + %s]) * gFloatData[shotTimeCursor * 4 + %s] - gFloatData[shotTimeCursor * 4 + %s];\n' % (
+            shotTimesStartEndPrerollSpeed, shotTimesStartEndPrerollSpeed + 3, shotTimesStartEndPrerollSpeed + 2)
             yield '\t\t\treturn shotTimeCursor;\n'
             yield '\t\t}\n'
             yield '\t}\n\twhile(++shotTimeCursor < %s);\n' % len(shots)
@@ -539,8 +597,10 @@ def run():
                 yield ln
         buffer2 = []
         buffer2 += list(shaders.serialize())
-        buffer2 += list(framebuffers.serialize(list(passes.texturePaths())))
-        buffer2 += list(passes.serialize())
+        texturePathToId = {}
+        filesPerProgramId = passes.texturePaths()
+        buffer2 += list(framebuffers.serialize(filesPerProgramId, texturePathToId))
+        buffer2 += list(passes.serialize(filesPerProgramId, texturePathToId))
         global gScenePassIds
         gScenePassIds = ints.addInts(scenes)
         for ln in ints.serialize():
@@ -596,7 +656,8 @@ def run():
 #define gFrameBufferData %s
 #define gFrameBufferBlockSize %s
 #define gProgramCount %s
-""" % (gAnimEntriesMax, gShotAnimationDataIds, gShotScene, gScenePassIds, gPassProgramsAndTargets, gShotUniformData, gFrameBufferData, FrameBufferPool.BLOCK_SIZE, len(shaders.offsets)))
+""" % (gAnimEntriesMax, gShotAnimationDataIds, gShotScene, gScenePassIds, gPassProgramsAndTargets, gShotUniformData,
+       gFrameBufferData, FrameBufferPool.BLOCK_SIZE, len(shaders.offsets)))
 
     dst = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'Player', 'generated.hpp')
     with fileutil.edit(dst, 'w') as fh:
