@@ -154,7 +154,50 @@ float uV[16] = { 0 };
 float uDrone[16] = { 0 };
 float uFrustum[16];
 float animData[sizeof(float) * 4 * gAnimEntriesMax];
-GLuint gVisor_BossRings[2];
+
+// todo: move these variable declarations to generated.hpp / generate.py, detecting unique shot-image uniforms for the entire demo & asserting duplicate uniforms point to the same path
+const int USER_IMAGE_START = 10;
+const int NUM_USER_IMAGES = 3;
+const char* userImageUniforms[3] = { "uVisor", "uBossRings", "uPipe" };
+const char* userImageFilePaths[3] = { "visor.png", "boss_rings.png", "pipe.png" };
+unsigned int gUserImages[3];
+
+void initUserImages(
+#ifdef _DEBUG
+	HWND window
+#endif
+)
+{
+#ifdef SUPPORT_PNG
+	// load images
+	glGenTextures(NUM_USER_IMAGES, gUserImages);
+	
+	int i = NUM_USER_IMAGES-1;
+	do
+	{
+		loadTextureFile(gUserImages[i], userImageFilePaths[i]
+#ifdef _DEBUG 
+			, window
+#endif
+		);
+		TickLoader();
+	} while (i--);
+#endif
+}
+
+void bindUserImages(unsigned int program) 
+{
+	#ifdef SUPPORT_PNG
+	// hard code to be > max inputs used in the render pipeline
+	int i = NUM_USER_IMAGES - 1;
+	do
+	{
+		glActiveTexture(GL_TEXTURE0 + USER_IMAGE_START + i);
+		glBindTexture(GL_TEXTURE_2D, gUserImages[i]);
+		glUniform1i(glGetUniformLocation(program, userImageUniforms[i]), USER_IMAGE_START + i);
+	} while (i--);
+	#endif
+}
 
 bool evalDemo(float seconds, float beats, int width, int height, bool isPrecalcStep=false)
 {
@@ -267,17 +310,7 @@ bool evalDemo(float seconds, float beats, int width, int height, bool isPrecalcS
 		glUniformMatrix4fv(glGetUniformLocation(gPrograms[gIntData[passIndex * 2 + gPassProgramsAndTargets]], "uDrone"), 1, GL_FALSE, uDrone);
 		glUniformMatrix4fv(glGetUniformLocation(gPrograms[gIntData[passIndex * 2 + gPassProgramsAndTargets]], "uFrustum"), 1, GL_FALSE, uFrustum);
 
-#ifdef SUPPORT_PNG
-		// hard code to be > max inputs used in the render pipeline
-		const int USER_IMAGE_START = 10;
-		glActiveTexture(GL_TEXTURE0 + USER_IMAGE_START);
-		glBindTexture(GL_TEXTURE_2D, gVisor_BossRings[0]);
-		glUniform1i(glGetUniformLocation(gPrograms[gIntData[passIndex * 2 + gPassProgramsAndTargets]], "uVisor"), USER_IMAGE_START);
-		
-		glActiveTexture(GL_TEXTURE0 + USER_IMAGE_START + 1);
-		glBindTexture(GL_TEXTURE_2D, gVisor_BossRings[1]);
-		glUniform1i(glGetUniformLocation(gPrograms[gIntData[passIndex * 2 + gPassProgramsAndTargets]], "uBossRings"), USER_IMAGE_START + 1);
-#endif
+		bindUserImages(gPrograms[gIntData[passIndex * 2 + gPassProgramsAndTargets]]);
 
 		glRecti(-1, -1, 1, 1);
 		// patch 3D textures
@@ -500,23 +533,11 @@ void main()
 	evalDemo(0.0f, 0.0f, width, height, true);
 	TickLoader();
 	
-#ifdef SUPPORT_PNG
-	// load images
-	glGenTextures(2, gVisor_BossRings);
-	loadTextureFile(gVisor_BossRings[0], "visor.png"
-#ifdef _DEBUG 
-		, window
+	initUserImages(
+#ifdef _DEBUG
+		window
 #endif
 	);
-	TickLoader();
-
-	loadTextureFile(gVisor_BossRings[1], "boss_rings.png"
-#ifdef _DEBUG 
-		, window
-#endif
-	);
-	TickLoader();
-#endif
 
 #ifdef NO_AUDIO
 	start = GetTickCount();
