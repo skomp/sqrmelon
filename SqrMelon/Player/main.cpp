@@ -155,13 +155,6 @@ float uDrone[16] = { 0 };
 float uFrustum[16];
 float animData[sizeof(float) * 4 * gAnimEntriesMax];
 
-// todo: move these variable declarations to generated.hpp / generate.py, detecting unique shot-image uniforms for the entire demo & asserting duplicate uniforms point to the same path
-const int USER_IMAGE_START = 10;
-const int NUM_USER_IMAGES = 3;
-const char* userImageUniforms[3] = { "uVisor", "uBossRings", "uPipe" };
-const char* userImageFilePaths[3] = { "visor.png", "boss_rings.png", "pipe.png" };
-unsigned int gUserImages[3];
-
 void initUserImages(
 #ifdef _DEBUG
 	HWND window

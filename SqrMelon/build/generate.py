@@ -366,6 +366,7 @@ def Template(templatePath):
 
 
 def run():
+    textureUsage = []
     shots = []
     scenes = []
     scenesDir = ScenesPath()
@@ -434,6 +435,10 @@ def run():
                 continue
             animations = {}
             for xChannel in xShot:
+                if xChannel.tag == 'Texture':
+                    sceneName = str(os.path.splitext(os.path.basename(scenePath))[0])
+                    textureUsage.append((sceneName, xShot.attrib['name'], xChannel.attrib['name'], xChannel.attrib['path']))
+                    continue
                 uname = xChannel.attrib['name']
                 n = uname
                 x = 0
@@ -479,7 +484,8 @@ def run():
             yield '\tint shotTimeCursor = 0;\n'
             yield '\tdo\n\t{\n'
             yield '\t\tif(beats < gFloatData[shotTimeCursor * 4 + %s])\n\t\t{\n' % (shotTimesStartEndPrerollSpeed + 1)
-            yield '\t\t\tlocalBeats = (beats - gFloatData[shotTimeCursor * 4 + %s]) * gFloatData[shotTimeCursor * 4 + %s] - gFloatData[shotTimeCursor * 4 + %s];\n' % (shotTimesStartEndPrerollSpeed, shotTimesStartEndPrerollSpeed + 3, shotTimesStartEndPrerollSpeed + 2)
+            yield '\t\t\tlocalBeats = (beats - gFloatData[shotTimeCursor * 4 + %s]) * gFloatData[shotTimeCursor * 4 + %s] - gFloatData[shotTimeCursor * 4 + %s];\n' % (
+                shotTimesStartEndPrerollSpeed, shotTimesStartEndPrerollSpeed + 3, shotTimesStartEndPrerollSpeed + 2)
             yield '\t\t\treturn shotTimeCursor;\n'
             yield '\t\t}\n'
             yield '\t}\n\twhile(++shotTimeCursor < %s);\n' % len(shots)
@@ -570,6 +576,27 @@ def run():
 #define gFrameBufferBlockSize %s
 #define gProgramCount %s
 """ % (gAnimEntriesMax, gShotAnimationDataIds, gShotScene, gScenePassIds, gPassProgramsAndTargets, gShotUniformData, gFrameBufferData, FrameBufferPool.BLOCK_SIZE, len(shaders.offsets)))
+
+    # make sure uniforms are always connected to the same path
+    registry = {}
+    for scene, shot, uniform, path in textureUsage:
+        if uniform not in registry:
+            registry[uniform] = path
+            continue
+        else:
+            assert registry[uniform] == path
+
+    offset = 10
+    count = len(registry)
+    keys = '"%s"' % '", "'.join(registry.keys())
+    values = '"%s"' % '", "'.join(registry.values())
+    data.append("""
+    const int USER_IMAGE_START = %s;
+    const int NUM_USER_IMAGES = %s;
+    const char* userImageUniforms[%s] = { %s };
+    const char* userImageFilePaths[%s] = { %s };
+    unsigned int gUserImages[%s];
+    """ % (offset, count, count, keys, count, values, count))
 
     dst = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'Player', 'generated.hpp')
     with fileutil.edit(dst, 'w') as fh:
