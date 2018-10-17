@@ -1,4 +1,4 @@
-windowTitle = 'Anatomic Kittens - Extrapurrestrial Impawsibility'
+windowTitle = 'Made with SqrMelon'
 
 import os
 import sys
