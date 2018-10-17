@@ -1,3 +1,5 @@
+windowTitle = 'Anatomic Kittens - Extrapurrestrial Impawsibility'
+
 import os
 import sys
 import struct
@@ -93,15 +95,15 @@ class ShaderPool(object):
         for offset in self.offsets:
             flat += [offset[1], offset[0]]
         cursor = ints.addInts(flat)
-        yield '__forceinline void TickLoader();\n'
-        yield '__forceinline void initPrograms()\n{\n'
+        yield 'void TickLoader(int width, int height);\n'
+        yield '__forceinline void initPrograms(int width, int height)\n{\n'
         yield '\tint i = 0;\n'
         yield '\tconst char* gShaderStitchOrder[] = {gTextPool[%s]};\n' % '], gTextPool['.join(str(x) for x in self.data)
         yield '\tdo\n\t{\n'
         yield """\t\t#ifdef _DEBUG\n\t\tOutputDebugString("\\n\\n\\n--------------------------------\\n\\n\\n");\n\t\tfor (int j = 0; j < gIntData[%s + i * 2]; ++j)\n\t\t{\n\t\t\tOutputDebugString(gShaderStitchOrder[gIntData[%s + i * 2] + j]);\n\t\t}\n\t\tOutputDebugString("\\n\\n\\n--------------------------------\\n\\n\\n");\n\t\t#endif\n""" % (
             cursor, cursor + 1)
         yield '\t\tgPrograms[i] = glCreateShaderProgramv(GL_FRAGMENT_SHADER, gIntData[%s + i * 2], &gShaderStitchOrder[gIntData[%s + i * 2]]);\n' % (cursor, cursor + 1)
-        yield '\t\tTickLoader();\n'
+        yield '\t\tTickLoader(width, height);\n'
         yield '\t}\n\twhile(++i < %s);\n' % len(self.offsets)
         yield '}\n'
 
@@ -586,19 +588,31 @@ def run():
         else:
             assert registry[uniform] == path
 
-    offset = 10
+    offset = 10  # TODO: get this number pased on the max inputs in a shot (and possibly analyze the shader code for the biggest number in uImages[#] and use the max)
     count = len(registry)
     keys = '"%s"' % '", "'.join(registry.keys())
     values = '"%s"' % '", "'.join(registry.values())
     data.append("""
-    const int USER_IMAGE_START = %s;
-    const int NUM_USER_IMAGES = %s;
-    const char* userImageUniforms[%s] = { %s };
-    const char* userImageFilePaths[%s] = { %s };
-    unsigned int gUserImages[%s];
-    """ % (offset, count, count, keys, count, values, count))
+const int USER_IMAGE_START = %s;
+const int NUM_USER_IMAGES = %s;
+const char* userImageUniforms[%s] = { %s };
+const char* userImageFilePaths[%s] = { %s };
+unsigned int gUserImages[%s];
+const char* gWindowTitle = "%s";
+""" % (offset, count, count, keys, count, values, count, windowTitle))
 
-    dst = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'Player', 'generated.hpp')
+    # windowTitle must be hacked into dialog.rc to have the resolution selector automate it's title as well
+    dstDir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'Player')
+    dst = os.path.join(dstDir, 'Dialog.rc')
+    with open(dst, 'r') as fh:
+        dialogCode = fh.read()
+    captionLineStart = dialogCode.find('CAPTION "')
+    captionLineEnd = dialogCode.find('\n', captionLineStart)
+    dialogCode = dialogCode[:captionLineStart] + 'CAPTION "%s"' % windowTitle + dialogCode[captionLineEnd:]
+    with open(dst, 'w') as fh:
+        fh.write(dialogCode)
+
+    dst = os.path.join(dstDir, 'generated.hpp')
     with fileutil.edit(dst, 'w') as fh:
         fh.write(''.join(data))
 
