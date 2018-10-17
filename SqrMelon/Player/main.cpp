@@ -155,9 +155,9 @@ float uDrone[16] = { 0 };
 float uFrustum[16];
 float animData[sizeof(float) * 4 * gAnimEntriesMax];
 
-void initUserImages(
+void initUserImages(int width, int height
 #ifdef _DEBUG
-	HWND window
+	, HWND window
 #endif
 )
 {
@@ -173,7 +173,7 @@ void initUserImages(
 			, window
 #endif
 		);
-		TickLoader();
+		TickLoader(width, height);
 	} while (i--);
 #endif
 }
@@ -350,7 +350,7 @@ bool evalDemo(float seconds, float beats, int width, int height, bool isPrecalcS
 }
 
 
-const char* loader = "#version 410\n\
+const char* loader = "#version 420\n\
 uniform vec4 u;\
 out vec3 o;\
 void main()\
@@ -364,27 +364,25 @@ const float loaderStep = 1.0f / (5.0f + gProgramCount);
 float loaderState = 0.0f;
 GLuint loaderProgram;
 HDC device;
-int width;
-int height;
 
 void InitLoader()
 {
 	loaderProgram = glCreateShaderProgramv(GL_FRAGMENT_SHADER, 1, &loader);
 }
 
-void DrawLoader(float fade)
+void DrawLoader(float fade, float width, float height)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glUseProgram(loaderProgram);
-	glUniform4f(glGetUniformLocation(loaderProgram, "u"), loaderState, (float)width, (float)height, fade);
+	glUniform4f(glGetUniformLocation(loaderProgram, "u"), loaderState, width, height, fade);
 	glRecti(-1, -1, 1, 1);
 	SwapBuffers(device);
 }
 
-void TickLoader()
+void TickLoader(int width, int height)
 {
 	loaderState += loaderStep;
-	DrawLoader(1.0f);
+	DrawLoader(1.0f, (float)width, (float)height);
 }
 
 #ifdef RESOLUTION_SELECTOR
@@ -405,9 +403,12 @@ INT_PTR CALLBACK ConfigDialogProc(HWND hwndDlg, UINT message, WPARAM wParam, LPA
 			SendMessage(hwndRes, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)"1280 x 720");
 			SendMessage(hwndRes, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR)"1920 x 1080");
 		
+#ifdef _DEBUG
+			SendMessage(hwndRes, CB_SETCURSEL, 1, 0);
+			SendMessage(GetDlgItem(hwndDlg, IDC_CHECKWIN), BM_SETCHECK, BST_CHECKED, 0);
+#else
 			SendMessage(hwndRes, CB_SETCURSEL, 0, 0);
-
-			// SendMessage(GetDlgItem(hwndDlg, IDC_CHECKWIN), BM_SETCHECK, BST_CHECKED, 0);
+#endif
 		}
 
 		return true;
@@ -440,13 +441,15 @@ void main()
 #endif
 
 	HWND window;
+
+	int width, height;
+
 #ifdef RESOLUTION_SELECTOR
 	// resolution selector
 	INT_PTR result = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOGCONFIG), NULL, ConfigDialogProc);
 	if (result != IDOK)
 		return;
 
-	int width, height;
 	switch (resolutionIndex)
 	{
 	case 1: // HD ready
@@ -466,7 +469,7 @@ void main()
 
 	if (isWindowed)
 	{
-		window = CreateWindowExA(0, (LPCSTR)49177, 0, WS_POPUP | WS_VISIBLE, 0, 0, width, height, 0, 0, 0, 0);
+		window = CreateWindowExA(0, (LPCSTR)49177, gWindowTitle, WS_POPUP | WS_VISIBLE, 0, 0, width, height, 0, 0, 0, 0);
 	}
 	else
 	{
@@ -476,12 +479,11 @@ void main()
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, (DWORD)width, (DWORD)height, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		};
 		ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN);
-		window = CreateWindowExA(0, (LPCSTR)49177, 0, WS_POPUP | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
+		window = CreateWindowExA(0, (LPCSTR)49177, gWindowTitle, WS_POPUP | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
 	}
 #else
-
 	#if IS_WINDOWED || ((DEMO_WIDTH == 0) && (DEMO_HEIGHT == 0))
-		window = CreateWindowExA(0, (LPCSTR)49177, 0, WS_POPUP | WS_VISIBLE, 0, 0, DEMO_WIDTH, DEMO_HEIGHT, 0, 0, 0, 0);
+		window = CreateWindowExA(0, (LPCSTR)49177, gWindowTitle, WS_POPUP | WS_VISIBLE, 0, 0, DEMO_WIDTH, DEMO_HEIGHT, 0, 0, 0, 0);
 	#else
 		DEVMODE dmScreenSettings =
 		{
@@ -489,9 +491,8 @@ void main()
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, DEMO_WIDTH, DEMO_HEIGHT, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		};
 		ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN);
-		window = CreateWindowExA(0, (LPCSTR)49177, 0, WS_POPUP | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
+		window = CreateWindowExA(0, (LPCSTR)49177, gWindowTitle, WS_POPUP | WS_VISIBLE | WS_MAXIMIZE, 0, 0, 0, 0, 0, 0, 0, 0);
 	#endif
-
 #endif
 	
 	ShowCursor(0);
@@ -511,24 +512,24 @@ void main()
 	float opacity = 0.0f;
 	do
 	{
-		DrawLoader(opacity);
+		DrawLoader(opacity, (float)width, (float)height);
 		opacity = (GetTickCount() - start) * 0.004f;
 	}
 	while(opacity < 1.0f);
 
-	TickLoader();
+	TickLoader(width, height);
 
 	// compile shaders
-	initPrograms();
+	initPrograms(width, height);
 	// allocate frame buffers
 	initFrameBuffers(width, height);
 	// precalc textures
 	evalDemo(0.0f, 0.0f, width, height, true);
-	TickLoader();
+	TickLoader(width, height);
 	
-	initUserImages(
+	initUserImages(width, height
 #ifdef _DEBUG
-		window
+		, window
 #endif
 	);
 
@@ -547,7 +548,7 @@ void main()
 	BASS_ChannelPlay(chan, true);
 #endif
 
-	TickLoader();
+	TickLoader(width, height);
 	// end loading process
 	
 	MSG msg;
