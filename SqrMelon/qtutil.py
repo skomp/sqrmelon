@@ -58,10 +58,11 @@ class QMainWindowState(QMainWindow):
         if s is not None:
             self.restoreState(s)
 
-    def showEvent(self, event):
+    def show(self):
+        super(QMainWindowState, self).show()
         self._restore()
 
-    def hideEvent(self, event):
+    def closeEvent(self, event):
         self._store()
 
     def createDockWidget(self, widget, name=None, where=Qt.RightDockWidgetArea, direction=Qt.Horizontal):
@@ -106,10 +107,11 @@ class QSplitterState(QSplitter):
             if state:
                 self.restoreState(state)
 
-    def showEvent(self, event):
+    def show(self):
+        super(QSplitterState, self).show()
         self._restore()
 
-    def hideEvent(self, event):
+    def closeEvent(self, event):
         self._store()
 
 
