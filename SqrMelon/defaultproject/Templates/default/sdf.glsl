@@ -111,7 +111,7 @@ float fGreeble(vec3 p,float h)
 }
 
 // http://mercury.sexy/hg_sdf/
-const vec2 GDFa=vec2(sqrt(1./3.),-sqrt(1./3.));const vec3 GDFb=vec3(0.85065080835,0.52573111211,0);const vec3 GDFc=vec3(0.93417235896,0.35682208977,0);vec3 GDFVectors[19] = vec3[19](vec3(1,0,0),vec3(0,1,0),vec3(0,0,1),GDFa.xxx,GDFa.yxx,GDFa.xyx,GDFa.xxy,GDFc.zyx,GDFc.zyx*vec3(1,-1,1),GDFc.xzy,GDFc.xzy*vec3(1,-1,1),GDFc.yxz,GDFc.yxz*vec3(-1,1,1),GDFb.zxy,GDFb.zxy*vec3(1,-1,1),GDFb.yzx,GDFb.yzx*vec3(-1,1,1),GDFb,GDFb*vec3(-1,1,1));
+const vec2 GDFa=vec2(sqrt(1./3.),-sqrt(1./3.));const vec3 GDFb=vec3(0.85065080835,0.52573111211,0);const vec3 GDFc=vec3(0.93417235896,0.35682208977,0);vec3 GDFVectors[19] = vec3[19](vec3(1,0,0),vec3(0,1,0),vec3(0,0,1),GDFa.xxx,GDFa.yxx,GDFa.xyx,GDFa.xxy,GDFc.zyx,GDFc.zyx*vec3(1,-1,1),GDFc.xzy,GDFc.xzy*vec3(-1,1,1),GDFc.yxz,GDFc.yxz*vec3(-1,1,1),GDFb.zxy,GDFb.zxy*vec3(1,-1,1),GDFb.yzx,GDFb.yzx*vec3(-1,1,1),GDFb,GDFb*vec3(-1,1,1));
 float fGDF(vec3 p,float r,int s,int e){float d=0;for(int i=s;i<=e;++i)d=max(d,abs(dot(p,GDFVectors[i])));return d-r;}
 float fIcosahedron(vec3 p,float r){return fGDF(p,r,3,12);}
 float fDodecahedron(vec3 p,float r){return fGDF(p,r,13,18);}
