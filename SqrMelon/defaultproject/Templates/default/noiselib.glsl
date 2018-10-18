@@ -181,11 +181,10 @@ vec4 voronoiFast(vec2 x)
         vec2 g = vec2(float(i),float(j));
         vec2 o = h2( n + g );
         vec2 r = g + o - f;
-        vec2 _ = abs(mr-r);
         if(dot(mr-r,mr-r) > EPSILON)
-            md = min( md, dot( 0.5*(mr+r), normalize(r-mr) ) );
+            md = min(md, dot(0.5 * (mr + r), normalize(r - mr)));
     }
 
     // md1 is worley
-    return vec4(md, s, mr);
+    return vec4(md, s, md1);
 }

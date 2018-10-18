@@ -45,7 +45,7 @@ Hit Trace(Ray ray, float near, float far, int steps)
 // TraceAndShade returns the light data to be used in the g buffers.
 LightData TraceAndShade(Ray ray, float near, float far, int steps)
 {
-    Hit hit=Trace(ray, near, FAR, STEPS);
+    Hit hit=Trace(ray, near, far, steps);
 
     // Get fog
     float fog = sat(FogRemap(sat(hit.totalDistance/FAR)));
@@ -61,7 +61,7 @@ LightData TraceAndShade(Ray ray, float near, float far, int steps)
     hit.normal = Normal(hit);
 
     // Compute material
-    Material material = GetMaterial(hit);
+    Material material = GetMaterial(hit,ray);
 
     // Ambient occlusion
     float ao = 1.0;

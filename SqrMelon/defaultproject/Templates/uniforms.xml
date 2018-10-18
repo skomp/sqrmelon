@@ -12,5 +12,19 @@
         <channel name="uShake.z" value="0.2"/>
         <channel name="uFishEye" value="0.0"/>
         <channel name="uChromaticAberrationRadius" value="0.2"/>
+        <channel name="uWhite" value="0.0"/>
+        <channel name="uBlack" value="0.0"/>
+        <channel name="uSaturation" value="1.0"/>
+        <channel name="uExposure" value="0.0"/>
+        <channel name="uGamma" value="1.0"/>
+        <channel name="uBlurFalloff" value="400.0"/>
+        <channel name="uSharpDist" value="50.0"/>
+        <channel name="uSharpRange" value="0.0"/>
+        <channel name="uMaxBlur" value="4.0"/>
+        <channel name="uGlitchAmountA" value="0.0"/>
+        <channel name="uGlitchAmountB.x" value="9.0"/>
+        <channel name="uGlitchAmountB.y" value="16.0"/>
+        <channel name="uGlitchAmountB.z" value="0.0"/>
+        <channel name="uGlitchAmountB.w" value="9.0"/>
     </template>
 </templates>
