@@ -118,7 +118,7 @@ float fField(vec3 p, out vec4 m)
 }
 
 // Material based on traced point, normal, distance & materialId derived from fField above.
-Material GetMaterial(Hit hit)
+Material GetMaterial(Hit hit, Ray ray)
 {
     int objectId = int(hit.materialId.w);
 
