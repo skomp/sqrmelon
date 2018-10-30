@@ -1,6 +1,7 @@
 from experiment.actions import zoom, ViewZoomAction, ViewPanAction
 from qtutil import *
 from math import log, floor, ceil
+import re
 
 
 def clamp(v, n, x):
@@ -8,6 +9,7 @@ def clamp(v, n, x):
 
 
 class ViewRect(object):
+    # Rectangle representing a 2D viewport
     def __init__(self, left=-1.0, right=1.0, top=1.0, bottom=-1.0):
         self.changed = Signal()
         self._left = left
@@ -119,6 +121,14 @@ class GridView(QWidget):
         return cellSize
 
     def iterAxis(self, pixels, start, end, textBoundsMin, textBoundsMax, uToPx):
+        def _prettyFloatString(floatString):
+            for m in re.finditer(r'(\.0+)$|\.[0-9]+?(0+)$', floatString):
+                if m.group(2):
+                    return floatString[:m.start(2)] + floatString[m.end(2):]
+                else:
+                    return floatString[:m.start(1)] + floatString[m.end(1):]
+            return floatString
+
         view = end - start
         cellSize = self.cellSize(pixels, start, end)
         cursor = int(ceil(start / cellSize))
@@ -135,7 +145,7 @@ class GridView(QWidget):
                 cl = QColor(80, 80, 80)
             else:
                 cl = QColor(100, 100, 100)
-            yield x, clamp(y, textBoundsMin, textBoundsMax), ('%.3f' % v).rstrip('.0') or '0', cl
+            yield x, clamp(y, textBoundsMin, textBoundsMax), _prettyFloatString('%.6f' % v), cl
             cursor += 1
 
     def paintEvent(self, event):
